@@ -1,0 +1,47 @@
+<?php declare(strict_types=1);
+require './components/_start.php';
+/**
+ * @var $db DBConnection
+ */
+$feedback = check_feedback_POST();
+?>
+
+<!DOCTYPE html>
+<html lang="fi">
+
+<?php require './components/html-head.php'; ?>
+
+<body>
+
+<?php require './components/html-header.php'; ?>
+
+<main class="main_body_container">
+
+    <div class="feedback" id="feedback"><?= $feedback ?></div>
+
+	<form>
+		<input type="text" placeholder="ID of collection">
+		<input type="submit" value="Show collection">
+	</form>
+
+	<!--// similar behavior as clicking on a link
+		window.location.href = "http://stackoverflow.com";-->
+	<hr>
+
+	<a href="upload.php">Upload new collection</a>
+
+	<hr>
+
+	<form>
+		<input type="password" placeholder="Password" autocomplete="current-password">
+		<input type="submit" value="For Admin">
+	</form>
+</main>
+
+<?php require './components/html-footer.php'; ?>
+
+<script>
+</script>
+
+</body>
+</html>
