@@ -50,4 +50,4 @@ session_start();
 /*
  * Creating necessary objects
  */
-$db = new DBConnection();
+//$db = new DBConnection();
