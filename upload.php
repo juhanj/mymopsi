@@ -27,8 +27,8 @@ function create_new_directory () : array {
 
         $new_coll_folder = "./collections/{$uid}";
 
-        if ( file_exists( $new_coll_folder ) ) {
-            continue;
+        if ( !file_exists( $new_coll_folder ) ) {
+            break;
         }
 	}
     return ( mkdir( $new_coll_folder, 0755, true )
@@ -99,7 +99,7 @@ function create_complex_and_fancy_feedback ( array $failure, array $success ) : 
         <p class='success'>
             <details>
                 <summary>Successful uploads: {$success_count} / {$total}</summary>
-                <ul>{$fail_String}</ul>
+                <ul>{$succes_string}</ul>
             </details>
         </p>";
 
@@ -107,7 +107,9 @@ function create_complex_and_fancy_feedback ( array $failure, array $success ) : 
 }
 
 if ( !empty($_FILES['images']) ) {
-    $img_array = $_FILES['images'];
+//	ini_set('max_execution_time', '30');
+
+	$img_array = $_FILES['images'];
 
     $new_dir = create_new_directory();
 
@@ -136,7 +138,8 @@ if ( !empty($_FILES['images']) ) {
 			    continue;
 		    }
 
-		    move_uploaded_file( $img_array['tmp_name'][$key], "{$new_dir['path']}/{$key}" );
+		    $new_path = $new_dir['path'] ."/". sprintf('%04d', $key) . "." . pathinfo($img_array['name'][$key],PATHINFO_EXTENSION );
+		    move_uploaded_file( $img_array['tmp_name'][$key], $new_path );
 
 		    $successful_uploads[$key] = array(
 			    'name' => $img_array['name'][$key]
@@ -177,10 +180,10 @@ $feedback = check_feedback_POST();
 
     <div class="feedback" id="feedback"><?= $feedback ?></div>
 
-    <?php if ( $_SESSION['new_coll_id'] ) : ?>
+    <?php if ( !empty($_SESSION['new_coll_id']) ) : ?>
     <div class="" id="success-redirect">
         <p class="loading-icon" id="collection-loading"></p>
-        <a href="collection.php?id=<?= $_SESSION['new_coll_id'] ?>">Link to newly created collection</a>
+        <a href="./collection.php?id=<?= $_SESSION['new_coll_id'] ?>">Link to newly created collection</a>
     </div>
     <?php endif; ?>
 
@@ -215,7 +218,7 @@ $feedback = check_feedback_POST();
         tempHTMLlist = "<ul>";
 
         Array.from(target.files).forEach( file => {
-            tempHTMLlist += `<li>${file.name} - ${file.size/1000}kb - ${file.lastModifiedDate}</li>`;
+            tempHTMLlist += `<li>${file.name} - ${file.size/1000}kb - ${new Date(file.lastModifiedDate).toLocaleString()}</li>`;
         });
 
         tempHTMLlist += "</ul>";
@@ -223,7 +226,7 @@ $feedback = check_feedback_POST();
         submitButton.disabled = false;
     };
 
-    <?php if ( $_SESSION['new_coll_id'] ) : ?>
+    <?php if ( !empty($_SESSION['new_coll_id']) ) : ?>
 
         let exiftoolRequest = {
             req : "runExiftool",
@@ -242,8 +245,8 @@ $feedback = check_feedback_POST();
         });
 
     <?php
-        endif;
         unset( $_SESSION['new_coll_id']);
+        endif;
     ?>
 </script>
 
