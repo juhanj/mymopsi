@@ -1,0 +1,7 @@
+/**
+ * Set margin top on all elements, except first child
+ * See: https://alistapart.com/article/axiomatic-css-and-lobotomized-owls
+ */
+* + * {
+    margin-top: 1.5em;
+}
