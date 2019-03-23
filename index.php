@@ -33,6 +33,7 @@ $feedback = check_feedback_POST();
 	<hr>
 
 	<form>
+        <input type="text" placeholder="admin" value="admin" autocomplete="username" hidden aria-hidden="true">
 		<input type="password" placeholder="Password" autocomplete="current-password">
 		<input type="submit" value="For Admin">
 	</form>
