@@ -1,4 +1,6 @@
-<?php declare(strict_types=1); ?>
+<?php declare(strict_types=1);
+$current_page = basename( $_SERVER[ 'SCRIPT_NAME' ], ".php" );
+?>
 
 <head>
 	<meta charset="UTF-8">
@@ -13,9 +15,9 @@
 
 	<!-- Main CSS file -->
 	<link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/<?= $_SERVER[ 'SCRIPT_NAME' ] ?>.css">
+    <link rel="stylesheet" href="./css/<?= $current_page ?>.css">
 
     <!-- Main javascript file -->
 	<script async src="./js/main.js"></script>
-    <script async src="./js/<?= $_SERVER[ 'SCRIPT_NAME' ] ?>.js"></script>
+    <script async src="./js/<?= $current_page ?>.js"></script>
 </head>
