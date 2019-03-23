@@ -8,11 +8,14 @@
 	<link rel="stylesheet"
 	      href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-	<!-- Oma CSS -->
-	<link rel="stylesheet" href="./css/main.css">
-<!--    <link rel="stylesheet" href="./css/--><?//= $page_name ?><!--.css">-->
+    <!-- Modern-Normalize CSS -->
+    <link rel="stylesheet" href="./css/modern-normalize.css">
 
-    <!-- Oma javascript -->
+	<!-- Main CSS file -->
+	<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/<?= $_SERVER[ 'SCRIPT_NAME' ] ?>.css">
+
+    <!-- Main javascript file -->
 	<script async src="./js/main.js"></script>
-<!--    <script async src="./js/--><?//= $page_name ?><!--.js">-->
+    <script async src="./js/<?= $_SERVER[ 'SCRIPT_NAME' ] ?>.js"></script>
 </head>
