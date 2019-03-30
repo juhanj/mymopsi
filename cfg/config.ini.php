@@ -12,7 +12,9 @@ pass = ""
 password = ""
 
 [Misc]
-perl = "path/to/perl"
+perl = "./path/to/perl"
+path_to_collections = "./path/to/collections/"
+web_root_path = "/web/root/path/to/files/"
 
 [Testing]
 perl = "path/to/perl"
