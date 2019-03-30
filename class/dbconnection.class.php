@@ -50,12 +50,11 @@ class DBConnection {
 	 * @param array $config       [optional] <p> Order of fields: <br>
 	 *                            - If enum: host, name, user, pass (same as in config.ini)<br>
 	 *                            - If assoc: Doesn't matter, but field names must be the same as in config.ini -file.
-	 * @param string $iniFileName [optional], default = "../cfg/config.ini.php"
 	 */
-	public function __construct( array $config = [], string $iniFileName = './cfg/config.ini.php' ) {
+	public function __construct( array $config = [] ) {
 		define( 'FETCH_ALL', true );
 		if ( empty($config) ) {
-			$config = parse_ini_file( $iniFileName );
+			$config = INI['Database'];
 		}
 		elseif ( isset( $config[ 0 ] ) ) {
 			$config = [ 'host' => $config[ 0 ], 'name' => $config[ 1 ], 'user' => $config[ 2 ], 'pass' => $config[ 3 ] ];

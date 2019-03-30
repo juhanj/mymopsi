@@ -14,8 +14,9 @@ require './components/_start.php';
  * @return array|bool Returns <code>['path', 'id']</code>, or false on failure.
  */
 function create_new_directory () : array {
-	$new_coll_folder = "./collections/foobar";
-	$uid = '';
+    $new_coll_folder = INI['Misc']['path_to_collections'];
+    $uid = '';
+
 	while ( true ) {
         try {
 	        $uid = bin2hex( random_bytes( 2 ) );
@@ -25,15 +26,19 @@ function create_new_directory () : array {
             $uid = (string)rand(1000,9999);
         }
 
-        $new_coll_folder = "./collections/{$uid}";
+		/**
+		 * Multiple slashes in paths should not cause problems.
+		 */
+        $new_coll_folder = "{$new_coll_folder}/{$uid}";
 
         if ( !file_exists( $new_coll_folder ) ) {
             break;
         }
 	}
+
     return ( mkdir( $new_coll_folder, 0755, true )
         ? array( 'path'=>$new_coll_folder, 'id'=>$uid )
-        : false );
+        : array() );
 }
 
 /**
@@ -107,7 +112,7 @@ function create_complex_and_fancy_feedback ( array $failure, array $success ) : 
 }
 
 if ( !empty($_FILES['images']) ) {
-//	ini_set('max_execution_time', '30');
+    // ini_set('max_execution_time', '30');
 
 	$img_array = $_FILES['images'];
 
@@ -138,7 +143,8 @@ if ( !empty($_FILES['images']) ) {
 			    continue;
 		    }
 
-		    $new_path = $new_dir['path'] ."/". sprintf('%04d', $key) . "." . pathinfo($img_array['name'][$key],PATHINFO_EXTENSION );
+		    $new_path = $new_dir['path'] . '/' . sprintf('%04d', $key) . "."
+                . pathinfo($img_array['name'][$key],PATHINFO_EXTENSION );
 		    move_uploaded_file( $img_array['tmp_name'][$key], $new_path );
 
 		    $successful_uploads[$key] = array(
@@ -164,17 +170,18 @@ if ( !empty($_FILES['images']) ) {
 	    $_SESSION['feedback'] = "<p class='error'>Could not create directory. Could not create collection.</p>";
     }
 }
+
 $feedback = check_feedback_POST();
 ?>
 
 <!DOCTYPE html>
 <html lang="fi">
 
-<?php require './components/html-head.php'; ?>
+<?php require DOC_ROOT . '/components/html-head.php'; ?>
 
 <body>
 
-<?php require './components/html-header.php'; ?>
+<?php require DOC_ROOT . '/components/html-header.php'; ?>
 
 <main class="main_body_container">
 
@@ -203,7 +210,7 @@ $feedback = check_feedback_POST();
     </p>
 </main>
 
-<?php require './components/html-footer.php'; ?>
+<?php require DOC_ROOT . '/components/html-footer.php'; ?>
 
 <script>
     "use strict";
@@ -227,23 +234,18 @@ $feedback = check_feedback_POST();
     };
 
     <?php if ( !empty($_SESSION['new_coll_id']) ) : ?>
+        window.onload = () => {
 
-        let exiftoolRequest = {
-            req : "runExiftool",
-            id: <?= $_SESSION['new_coll_id'] ?>
+            sendJSON( { "req" : "runExiftool", id: "<?= $_SESSION[ 'new_coll_id' ] ?>"} )
+                .then( (jsonResponse) => {
+                    /*
+                        TODO: Should only be receiving a boolean from here.
+                        Show loading icon? Need a callback function for that, not in the ajax-function.
+                        Show ID somewhere, outside just a link.
+                     */
+                    console.log(jsonResponse);
+                } );
         };
-
-        ajax(
-            exiftoolRequest,
-            ( responseJSON ) => {
-                /*
-                    TODO: Should only be receiving a boolean from here.
-                    Show loading icon? Need a callback function for that, not in the ajax-function.
-                    Show ID somewhere, outside just a link.
-                 */
-                console.log(responseJSON);
-        });
-
     <?php
         unset( $_SESSION['new_coll_id']);
         endif;

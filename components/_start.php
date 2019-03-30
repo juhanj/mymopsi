@@ -38,10 +38,54 @@ function check_feedback_POST() {
 	return $feedback;
 }
 
+/**
+ * This is me being too smart/clever for my own good.
+ * Two days wasted because I wanted absolute paths so that if I move files
+ * I don't have to change few dozen links with IDE search & replace.
+ */
+define(
+	'ENV',
+	($_SERVER['SERVER_NAME'] == 'localhost') ? '/mymopsi/' : '/mopsi_dev/mymopsi/'
+);
+
+/**
+ * For easier access. This way any includes/requires and such can be written shorter, and not be dependant on location.
+ */
+define(
+	'DOC_ROOT',
+	$_SERVER['DOCUMENT_ROOT'] . ENV
+);
+
+/**
+ * Loading a ini-file. Probably not a bottleneck doing this on every pageload,
+ * but it is easier than doing when needed. For example, what happens if ini-file location/name changes?
+ * //TODO: INI_SCANNER_TYPED untested. See how it works. --jj190328
+ */
+/**
+ * Named constant for INI-settings.
+ * <code>
+ * Array(
+ *  ['Database'],
+ *  ['Admin'],
+ *  ['Misc'],
+ *  ['Testing']
+ * )
+ * </code>
+ */
+define(
+	'INI',
+	parse_ini_file(
+		DOC_ROOT . "/cfg/config.ini.php",
+		true,
+		INI_SCANNER_TYPED
+	)
+);
+
 /*
  * Automatic class loading
+ * //TODO: look if possible to namespace classes or something. I dunno, like new /class/DBConnection ? --jj190328
  */
-set_include_path(get_include_path() . PATH_SEPARATOR . './class/');
+set_include_path(get_include_path() . PATH_SEPARATOR . DOC_ROOT . '/class/');
 spl_autoload_extensions('.class.php');
 spl_autoload_register();
 
@@ -50,4 +94,4 @@ session_start();
 /*
  * Creating necessary objects
  */
-//$db = new DBConnection();
+$db = new DBConnection();

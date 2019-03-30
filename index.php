@@ -9,11 +9,11 @@ $feedback = check_feedback_POST();
 <!DOCTYPE html>
 <html lang="fi">
 
-<?php require './components/html-head.php'; ?>
+<?php require DOC_ROOT . '/components/html-head.php'; ?>
 
 <body>
 
-<?php require './components/html-header.php'; ?>
+<?php require DOC_ROOT . '/components/html-header.php'; ?>
 
 <main class="main_body_container">
 
@@ -39,7 +39,7 @@ $feedback = check_feedback_POST();
 	</form>
 </main>
 
-<?php require './components/html-footer.php'; ?>
+<?php require DOC_ROOT . '/components/html-footer.php'; ?>
 
 <script>
 </script>
