@@ -45,15 +45,7 @@ function check_feedback_POST() {
  */
 define(
 	'ENV',
-	($_SERVER['SERVER_NAME'] == 'localhost') ? '/mymopsi/' : '/mopsi_dev/mymopsi/'
-);
-
-/**
- * For easier access. This way any includes/requires and such can be written shorter, and not be dependant on location.
- */
-define(
-	'DOC_ROOT',
-	$_SERVER['DOCUMENT_ROOT'] . ENV
+	(($_SERVER['SERVER_NAME'] == 'localhost') ? '/mymopsi/' : '/mopsi_dev/mymopsi/')
 );
 
 /**
@@ -75,10 +67,18 @@ define(
 define(
 	'INI',
 	parse_ini_file(
-		DOC_ROOT . "/cfg/config.ini.php",
+		$_SERVER['DOCUMENT_ROOT'] . ENV . "/cfg/config.ini.php",
 		true,
 		INI_SCANNER_TYPED
 	)
+);
+
+/**
+ * For easier access. This way any includes/requires and such can be written shorter, and not be dependant on location.
+ */
+define(
+	'DOC_ROOT',
+	$_SERVER['DOCUMENT_ROOT'] . INI['Misc']['web_root_path']
 );
 
 /*
