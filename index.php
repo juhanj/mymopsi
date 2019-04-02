@@ -11,34 +11,37 @@ $feedback = check_feedback_POST();
 
 <?php require DOC_ROOT . '/components/html-head.php'; ?>
 
+<head>
+	<style> 
+		a{ text-decoration:none} 
+	</style>
+</head>
+
 <body>
 
 <?php require DOC_ROOT . '/components/html-header.php'; ?>
 
 <main class="main_body_container">
 
-    <div class="feedback" id="feedback"><?= $feedback ?></div>
+	<div class="title">Mymopsi</div>
 
-	<div class="form">
-		<form>
-			<input type="text" placeholder="ID of collection">
-			<input type="submit" value="Show collection">		
-		</form>
+	<div class="menu-head">
+		<input type="text" placeholder="ID of collection" class="text">
+		<input type="submit" value="Show collection" class="submit">
 	</div>
 
-	<!--// similar behavior as clicking on a link
-		window.location.href = "http://stackoverflow.com";-->
-	<hr>
+	<div class="upload">
+		<a href="upload.php">
+			<div class="upload-button">Upload new collection</div>
+		</a>
+	</div>
 
-	<a href="upload.php">Upload new collection</a>
-
-	<hr>
-
-	<form>
+	<form class="menu-body">
         <input type="text" placeholder="admin" value="admin" autocomplete="username" hidden aria-hidden="true">
-		<input type="password" placeholder="Password" autocomplete="current-password">
-		<input type="submit" value="For Admin">
+		<input type="password" placeholder="Password" autocomplete="current-password" class="text">
+		<input type="submit" value="For Admin" class="submit">
 	</form>
+	
 </main>
 
 <?php require DOC_ROOT . '/components/html-footer.php'; ?>
