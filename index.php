@@ -20,9 +20,9 @@ $feedback = check_feedback_POST();
     <div class="feedback" id="feedback"><?= $feedback ?></div>
 
 	<div class="form">
-		<form>
-			<input type="text" placeholder="ID of collection">
-			<input type="submit" value="Show collection">		
+		<form action="collection.php" method="get">
+			<input type="text" name="id" placeholder="ID of collection">
+			<input type="submit" value="Show collection">
 		</form>
 	</div>
 
