@@ -1,54 +1,53 @@
 <?php declare(strict_types=1);
 
-class collection {
+class Collection {
 
-	public $result = null;
+	/**
+	 * @var string
+	 */
+	public $id = null;
+	/**
+	 * @var array Images in collection, and their info.
+	 */
+	public $imgs = array();
+	/**
+	 * @var bool Is there a collection with given ID?
+	 */
+	public $exists = false;
 
-	function __construct ( DBConnection $db, $parameters ) {
-		if ( !$db or !$parameters ) {
+	function __construct ( DBConnection $db, string $id ) {
+		if ( !$db or !$id ) {
 			return;
 		}
 
-		$this->{$parameters['req']}( $parameters );
+		$this->id = $id;
+
+		$this->getCollection();
 	}
 
-	function getCollection () {}
+	function getCollection () {
+		$path = INI['Misc']['path_to_collections'] . '/' . $this->id . '/exifdata.csv';
 
-	function editName () {}
+		$file = fopen( $path, 'r' );
+		if ( !$file ) {
+			return;
+		}
 
-	function editDescription () {}
+		$this->exists = true;
 
-	function deleteCollection () {}
+		fgetcsv($file, 1000, ",");
 
-	function addNewCollection () {}
+		while ( ($data = fgetcsv($file, 1000, ",")) !== FALSE ) {
+			$this->imgs[] = [
+				'filename' => $data[ 0 ],
+				'lat' => $data[ 1 ], // Latitude
+				'long' => $data[ 3 ], // Longitude
+				'lat_ref' => $data[ 2 ], // North | South
+				'long_ref' => $data[ 4 ], // East | West
+				'resolution' => $data[ 6 ] // Image resolution, e.g. 1960x1080
+			];
+		}
 
-	/**
-	 * Run exiftool for a given collection and save output to .csv-file.
-	 * @param array $uid <code>['id']</code>Four char UID of a collection
-	 */
-	function runExiftool ( array $uid ) {
-
-		$perl = INI['Misc']['perl'];
-
-		$exift = './exiftool/exiftool';
-
-		// -a : allow duplicates (needed for gps coordinates)
-		// -gps:all : all gps exif data
-		// -ImageSize : self-explanatory
-		// -c %.6f : format for gps coordinates output
-		// -csv : print to csv
-		$command = "-a -gps:all -ImageSize -c %.6f -csv"; // -csv -v5
-
-		// Reads all images in the given directory
-		$target = INI['Misc']['path_to_collections'] . "/{$uid['id']}/";
-
-		// Where we want to save the .CSV-file. (Same dir as images)
-		$csv = $target . '/exifdata.csv';
-
-		exec(
-			"{$perl} {$exift} {$command} {$target} > {$csv}"
-		);
-
-		$this->result = true;
+		fclose($file);
 	}
 }

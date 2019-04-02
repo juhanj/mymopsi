@@ -14,7 +14,7 @@ require './components/_start.php';
  * @var $db DBConnection
  */
 
-$collection = new Collection( $db, $req );
+$collection = new CollectionController( $db, $req );
 
 $result = [
 	'request' => $req,
