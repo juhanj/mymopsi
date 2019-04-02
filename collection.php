@@ -4,30 +4,42 @@ require './components/_start.php';
  * @var $db DBConnection
  */
 
-if ( !empty($_GET['id'])
-    and sizeof($_GET['id']) == 4
-    and ctype_alnum($_GET['id']) ) {
-    $_SESSION['feedback'] = "<p class='error'>Please stop accessing pages you don't have access to.<br>Correct ID required.</p>";
+if ( empty($_GET['id']) ) {
+	$_SESSION['feedback'] = "<p class='error'>No ID given.<br>
+        Please enter ID of collection into the box below.</p>";
+	header( "Location:index.php" );
+	exit();
+}
+elseif ( strlen($_GET['id']) != 4 ) {
+	$_SESSION['feedback'] = "<p class='error'>ID must the four (4) characters long.</p>";
+	header( "Location:index.php" );
+	exit();
+}
+elseif ( !ctype_alnum($_GET['id']) ) {
+    $_SESSION['feedback'] = "<p class='error'>Only aplhanumeric characters.</p>";
 	header( "Location:index.php" );
 	exit();
 }
 
 $feedback = check_feedback_POST();
 
-$id = $_GET['id'];
+$collection = new Collection( $db, $_GET['id'] );
 
-
-
+if ( !$collection->exists ) {
+	$_SESSION['feedback'] = "<p class='error'>No collection found with given ID.</p>";
+	header( "Location:index.php" );
+	exit();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="fi">
 
-<?php require './components/html-head.php'; ?>
+<?php require DOC_ROOT . '/components/html-head.php'; ?>
 
 <body>
 
-<?php require './components/html-header.php'; ?>
+<?php require DOC_ROOT . '/components/html-header.php'; ?>
 
 <main class="main_body_container">
 
@@ -35,16 +47,35 @@ $id = $_GET['id'];
 
     <table>
         <thead>
-        <tr><th></th></tr>
+            <tr>
+                <th>#</th>
+                <th>IMG</th> <!-- //TODO: Use material icon here? --jj190331 -->
+                <th>Filename</th>
+                <th>Location</th>
+                <th>Location on map (link)</th> <!-- //TODO: Use material icon here? --jj190331 -->
+            </tr>
         </thead>
         <tbody>
-        <tr><td></td></tr>
+        <?php foreach( $collection->imgs as $img ) : ?>
+
+            <tr id="">
+                <td>000
+                <td>
+                    <i class="material-icons">broken_image</i>
+                </td>
+                <td><?= $img['filename'] ?></td>
+                <td><?= $img['lat']?>
+                    <br><?= $img['long'] ?>
+                </td>
+                <td><?= "link to map" ?></td>
+            </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
 
 </main>
 
-<?php require './components/html-footer.php'; ?>
+<?php require DOC_ROOT . '/components/html-footer.php'; ?>
 
 <script>
 </script>
