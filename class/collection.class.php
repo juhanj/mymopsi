@@ -37,8 +37,11 @@ class Collection {
 
 		fgetcsv($file, 1000, ",");
 
+		$counter = 0;
+
 		while ( ($data = fgetcsv($file, 1000, ",")) !== FALSE ) {
 			$this->imgs[] = [
+				'id' => $counter++,
 				'filename' => $data[ 0 ],
 				'lat' => $data[ 1 ], // Latitude
 				'long' => $data[ 3 ], // Longitude

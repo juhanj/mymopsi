@@ -67,7 +67,11 @@ if ( !$collection->exists ) {
                 <td><?= $img['lat']?>
                     <br><?= $img['long'] ?>
                 </td>
-                <td><?= "link to map" ?></td>
+                <td>
+                    <a href="<?= ENV ?>/img/img.php?cid=<?= $collection->id ?>&iid=<?= $img['id'] ?>">
+                        <?= "link to img" ?>
+                    </a>
+                </td>
             </tr>
         <?php endforeach; ?>
         </tbody>

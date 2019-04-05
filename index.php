@@ -12,8 +12,8 @@ $feedback = check_feedback_POST();
 <?php require DOC_ROOT . '/components/html-head.php'; ?>
 
 <head>
-	<style> 
-		a{ text-decoration:none} 
+	<style>
+		a{ text-decoration:none}
 	</style>
 </head>
 
@@ -30,6 +30,7 @@ $feedback = check_feedback_POST();
 			<input type="text" name="id" placeholder="ID of collection" class="text">
 			<input type="submit" value="Show collection" class="submit">
 		</form>
+    </div>
 
 	<div class="upload">
 		<a href="upload.php">
@@ -42,7 +43,7 @@ $feedback = check_feedback_POST();
 		<input type="password" placeholder="Password" autocomplete="current-password" class="text">
 		<input type="submit" value="For Admin" class="submit">
 	</form>
-	
+
 </main>
 
 <?php require DOC_ROOT . '/components/html-footer.php'; ?>
