@@ -190,7 +190,7 @@ $feedback = check_feedback_POST();
     <?php if ( !empty($_SESSION['new_coll_id']) ) : ?>
     <div class="" id="success-redirect">
         <p>Collection ID: <span id="new-collection-id"><?= $_SESSION['new_coll_id'] ?></span></p>
-        <a href="./collection.php?id=<?= $_SESSION['new_coll_id'] ?>" class="button">
+        <a href="./view.php?id=<?= $_SESSION['new_coll_id'] ?>" class="button">
 
             <span class="loading-icon" id="collection-loading"></span>
             Link to newly created collection

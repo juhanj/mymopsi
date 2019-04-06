@@ -26,7 +26,7 @@ $feedback = check_feedback_POST();
 	<div class="title">Mymopsi</div>
 
 	<div class="menu-head">
-		<form action="collection.php" method="get">
+		<form action="./view.php" method="get">
 			<input type="text" name="id" placeholder="ID of collection" class="text">
 			<input type="submit" value="Show collection" class="submit">
 		</form>

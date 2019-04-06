@@ -1,8 +1,29 @@
 <?php declare(strict_types=1);
-require './components/_start.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var $db DBConnection
  */
+
+function check_id ( string $id ) : string {
+	if ( empty($_GET['id']) ) {
+		return "<p class='error'>No ID given.<br>
+            Please enter ID of collection into the box below.</p>";
+	}
+	elseif ( strlen($_GET['id']) != 4 ) {
+		return "<p class='error'>ID must the four (4) characters long.</p>";
+	}
+	elseif ( !ctype_alnum($_GET['id']) ) {
+		return "<p class='error'>Only aplhanumeric characters.</p>";
+	}
+	return '';
+}
+
+if ( $_SESSION['feedback'] = check_id($_GET['id']) ) {
+	$_SESSION['feedback'] = "<p class='error'>No ID given.<br>
+        Please enter ID of collection into the box below.</p>";
+	header( "Location:index.php" );
+	exit();
+}
 
 if ( empty($_GET['id']) ) {
 	$_SESSION['feedback'] = "<p class='error'>No ID given.<br>
@@ -35,11 +56,11 @@ if ( !$collection->exists ) {
 <!DOCTYPE html>
 <html lang="fi">
 
-<?php require DOC_ROOT . '/components/html-head.php'; ?>
+<?php require 'html-head.php'; ?>
 
 <body>
 
-<?php require DOC_ROOT . '/components/html-header.php'; ?>
+<?php require 'html-header.php'; ?>
 
 <main class="main_body_container">
 
@@ -79,7 +100,7 @@ if ( !$collection->exists ) {
 
 </main>
 
-<?php require DOC_ROOT . '/components/html-footer.php'; ?>
+<?php require 'html-footer.php'; ?>
 
 <script>
 </script>
