@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-require './components/_start.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var $db DBConnection
  */
@@ -177,11 +177,11 @@ $feedback = check_feedback_POST();
 <!DOCTYPE html>
 <html lang="fi">
 
-<?php require DOC_ROOT . '/components/html-head.php'; ?>
+<?php require 'html-head.php'; ?>
 
 <body>
 
-<?php require DOC_ROOT . '/components/html-header.php'; ?>
+<?php require 'html-header.php'; ?>
 
 <main class="main_body_container">
 
@@ -215,7 +215,7 @@ $feedback = check_feedback_POST();
     </p>
 </main>
 
-<?php require DOC_ROOT . '/components/html-footer.php'; ?>
+<?php require 'html-footer.php'; ?>
 
 <script>
     "use strict";

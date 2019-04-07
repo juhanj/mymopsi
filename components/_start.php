@@ -39,18 +39,34 @@ function check_feedback_POST() {
 }
 
 /**
- * This is me being too smart/clever for my own good.
- * Two days wasted because I wanted absolute paths so that if I move files
- * I don't have to change few dozen links with IDE search & replace.
+ * For easier access. This way any includes/requires and such can be written shorter,
+ * and not be dependant on location.
  */
 define(
-	'ENV',
-	(($_SERVER['SERVER_NAME'] == 'localhost') ? '/mymopsi/' : '/mopsi_dev/mymopsi/')
+	'DOC_ROOT',
+	$_SERVER['DOCUMENT_ROOT']
 );
+define(
+	'WEB_PATH',
+	'/mopsi_dev/mymopsi/'
+);
+
+/*
+ * Automatic class loading
+ * Set folders for all possible folders where includes/requires might happen.
+ */
+set_include_path(
+	get_include_path() . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . '/class/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . '/components/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . '/cfg/' . PATH_SEPARATOR );
+spl_autoload_extensions( '.class.php' );
+spl_autoload_register();
 
 /**
  * Loading a ini-file. Probably not a bottleneck doing this on every pageload,
  * but it is easier than doing when needed. For example, what happens if ini-file location/name changes?
+ * Double loading ini-files, because actual important info outside webroot.
  * //TODO: INI_SCANNER_TYPED untested. See how it works. --jj190328
  */
 /**
@@ -65,29 +81,13 @@ define(
  * </code>
  */
 define(
-	'INI',
+	'INI' ,
 	parse_ini_file(
-		$_SERVER['DOCUMENT_ROOT'] . ENV . "/cfg/config.ini.php",
-		true,
+		(parse_ini_file( 'config.ini.php' )[ 'config' ]),
+		true ,
 		INI_SCANNER_TYPED
 	)
 );
-
-/**
- * For easier access. This way any includes/requires and such can be written shorter, and not be dependant on location.
- */
-define(
-	'DOC_ROOT',
-	$_SERVER['DOCUMENT_ROOT'] . INI['Misc']['web_root_path']
-);
-
-/*
- * Automatic class loading
- * //TODO: look if possible to namespace classes or something. I dunno, like new /class/DBConnection ? --jj190328
- */
-set_include_path(get_include_path() . PATH_SEPARATOR . DOC_ROOT . '/class/');
-spl_autoload_extensions('.class.php');
-spl_autoload_register();
 
 session_start();
 
