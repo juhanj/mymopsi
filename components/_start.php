@@ -50,6 +50,10 @@ define(
 	'WEB_PATH',
 	'/mopsi_dev/mymopsi/'
 );
+define(
+	'CURRENT_PAGE',
+	basename( $_SERVER[ 'SCRIPT_NAME' ] , '.php' )
+);
 
 /*
  * Automatic class loading
