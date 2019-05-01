@@ -2,21 +2,23 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>MyMopsi</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title><?= $lang->HTML_TITLE ?></title>
 
 	<!-- Material icons CSS -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-  <!-- Modern-Normalize CSS -->
-  <link rel="stylesheet" href="<?= WEB_PATH ?>/css/modern-normalize.css">
+	<!-- Modern-Normalize CSS -->
+	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/modern-normalize.css">
 
 	<!-- Main CSS file -->
 	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/main.css">
 	<!-- Page specific CSS file -->
-  <link rel="stylesheet" href="<?= WEB_PATH ?>/css/<?= CURRENT_PAGE ?>.css">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/<?= CURRENT_PAGE ?>.css">
 
-  <!-- Main javascript file -->
+	<!-- Main javascript file -->
 	<script defer src="<?= WEB_PATH ?>/js/main.js"></script>
 	<!-- Page specific javascript file -->
-  <script src="<?= WEB_PATH ?>/js/<?= CURRENT_PAGE ?>.js"></script>
+	<script src="<?= WEB_PATH ?>/js/<?= CURRENT_PAGE ?>.js"></script>
 </head>
