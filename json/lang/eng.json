@@ -19,6 +19,10 @@
 		{
 			"page" : "upload",
 			"strings": {
+				"COLL_ID" : "Collection ID",
+				"NEW_COLL_LINK" : "Link to newly created collection",
+				"FILE_INPUT" : "New collection of images",
+				"DRAG_DROP" : "Drag & Drop works too."
 			}
 		},
 		{
