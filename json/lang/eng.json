@@ -1,0 +1,30 @@
+{
+	"pages": [
+		{
+			"page" : "_common",
+			"strings": {
+				"HTML_TITLE" : "MyMopsi"
+			}
+		},
+		{
+			"page" : "index",
+			"strings": {
+				"COLL_PLACEHOLDER" : "ID of collection",
+				"COLL_SUBMIT" : "Show collection",
+				"UPLOAD_NEW" : "Upload new collection",
+				"ADMIN_PW_PLACEHOLDER" : "Admin password",
+				"ADMIN_SUBMIT" : "To admin control"
+			}
+		},
+		{
+			"page" : "upload",
+			"strings": {
+			}
+		},
+		{
+			"page" : "view",
+			"strings": {
+			}
+		}
+	]
+}
