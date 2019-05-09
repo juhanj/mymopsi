@@ -60,4 +60,3 @@ function getCookie( name ) {
 function deleteCookie(name) {
 	document.cookie = name + '=; Max-Age=-1;';
 }
-}
