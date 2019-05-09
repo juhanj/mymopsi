@@ -29,6 +29,11 @@
 			"page" : "view",
 			"strings": {
 			}
+		},
+		{
+			"page" : "ajax-handler",
+			"strings": {
+			}
 		}
 	]
 }
