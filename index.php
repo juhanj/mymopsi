@@ -27,21 +27,22 @@ $feedback = check_feedback_POST();
 
 	<div class="menu-head">
 		<form action="./view.php" method="get">
-			<input type="text" name="id" placeholder="ID of collection" class="text">
-			<input type="submit" value="Show collection" class="submit">
+			<input type="text" name="id" placeholder="<?= $lang->COLL_PLACEHOLDER ?>" class="text">
+			<input type="submit" value="<?= $lang->COLL_SUBMIT ?>" class="submit">
 		</form>
     </div>
 
 	<div class="upload">
 		<a href="upload.php">
-			<div class="upload-button">Upload new collection</div>
+			<div class="upload-button"><?= $lang->UPLOAD_NEW ?></div>
 		</a>
 	</div>
 
 	<form class="menu-body">
+		<!-- Hidden field for admin username because Chrome wants one. Something about accessiblity. -->
         <input type="text" placeholder="admin" value="admin" autocomplete="username" hidden aria-hidden="true">
-		<input type="password" placeholder="Password" autocomplete="current-password" class="text">
-		<input type="submit" value="For Admin" class="submit">
+		<input type="password" placeholder="<?= $lang->ADMIN_PW_PLACEHOLDER ?>" autocomplete="current-password" class="text">
+		<input type="submit" value="<?= $lang->ADMIN_SUBMIT ?>" class="submit">
 	</form>
 
 </main>
