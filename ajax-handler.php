@@ -12,6 +12,7 @@ if ( empty($req) ) {
 require './components/_start.php';
 /**
  * @var $db DBConnection
+ * @var $lang Language
  */
 
 $collection = new CollectionController( $db, $req );
