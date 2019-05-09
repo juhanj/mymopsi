@@ -2,12 +2,17 @@
 
 class CollectionController {
 
+	public $db = null;
+	public $lang = null;
 	public $result = null;
 
-	function __construct ( DBConnection $db, $parameters ) {
+	function __construct ( DBConnection $db, Language $lang, array $parameters ) {
 		if ( !$db or !$parameters ) {
 			return;
 		}
+
+		$this->lang = $lang;
+		$this->db = $db;
 
 		$this->{$parameters['req']}( $parameters );
 	}
@@ -50,5 +55,14 @@ class CollectionController {
 		);
 
 		$this->result = true;
+	}
+
+	/**
+	 * Returns all public collections from the database.
+	 */
+	public function getPublicCollections () {
+		//TODO: get all collections set public from database --jj190509
+		// database call, get id, name, descr, size of collection (join)
+		// return results
 	}
 }
