@@ -175,7 +175,7 @@ $feedback = check_feedback_POST();
 ?>
 
 <!DOCTYPE html>
-<html lang="fi">
+<html lang="<?= $lang->lang ?>">
 
 <?php require 'html-head.php'; ?>
 
