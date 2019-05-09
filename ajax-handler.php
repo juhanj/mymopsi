@@ -15,7 +15,7 @@ require './components/_start.php';
  * @var $lang Language
  */
 
-$collection = new CollectionController( $db, $req );
+$collection = new CollectionController( $db, $lang, $req );
 
 $result = [
 	'request' => $req,
