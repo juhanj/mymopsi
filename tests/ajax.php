@@ -1,5 +1,5 @@
 <?php declare( strict_types=1 );
-require './components/_start.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 $req = $_GET
 	?: $_POST
@@ -14,11 +14,16 @@ if ( !empty($req) ) {
 ?>
 
 <!DOCTYPE html>
-<html lang="fi">
-<?php require './components/html-head.php'; ?>
+<html lang="en">
+
+<?php require 'html-head.php'; ?>
+
 <body>
-<?php require './components/html-header.php'; ?>
+
+<?php require 'html-header.php'; ?>
+
 <main class="main_body_container">
+
 	<button>TEST ME!</button>
 	<p id="test">
 		<!-- For info on files to be uploaded. -->
@@ -26,7 +31,8 @@ if ( !empty($req) ) {
 	</p>
 
 </main>
-<?php require './components/html-footer.php'; ?>
+
+<?php require 'html-footer.php'; ?>
 
 <script>
 
