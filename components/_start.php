@@ -63,7 +63,8 @@ set_include_path(
 	get_include_path() . PATH_SEPARATOR
 	. DOC_ROOT . WEB_PATH . '/class/' . PATH_SEPARATOR
 	. DOC_ROOT . WEB_PATH . '/components/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/cfg/' . PATH_SEPARATOR );
+	. DOC_ROOT . WEB_PATH . '/cfg/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . '/json/' . PATH_SEPARATOR );
 spl_autoload_extensions( '.class.php' );
 spl_autoload_register();
 
