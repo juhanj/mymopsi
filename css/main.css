@@ -1,9 +1,20 @@
+@CHARSET "UTF-8";
 /**
  * Set margin top on all elements, except first child
  * See: https://alistapart.com/article/axiomatic-css-and-lobotomized-owls
  */
+* {
+    margin: 0;
+    padding: 0;
+}
 * + * {
     margin-top: 1.5em;
+}
+/**
+ * Needed for third-party elements, e.g. Google Maps, which do not like the setup above
+ */
+.margins-initial * {
+    margin-top: initial;
 }
 
 html, body
