@@ -33,7 +33,7 @@ class Language extends stdClass {
 			}
 		}
 		else {
-			$this->lang = $lang;
+			$this->lang = $lang ?? 'eng';
 		}
 
 		$this->page = $page;
