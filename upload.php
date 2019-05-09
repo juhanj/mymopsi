@@ -189,11 +189,11 @@ $feedback = check_feedback_POST();
 
     <?php if ( !empty($_SESSION['new_coll_id']) ) : ?>
     <div class="" id="success-redirect">
-        <p>Collection ID: <span id="new-collection-id"><?= $_SESSION['new_coll_id'] ?></span></p>
+        <p><?= $lang->COLL_ID ?>: <span id="new-collection-id"><?= $_SESSION['new_coll_id'] ?></span></p>
         <a href="./view.php?id=<?= $_SESSION['new_coll_id'] ?>" class="button">
 
             <span class="loading-icon" id="collection-loading"></span>
-            Link to newly created collection
+	        <?= $lang->NEW_COLL_LINK ?>
 
         </a>
     </div>
@@ -201,18 +201,18 @@ $feedback = check_feedback_POST();
 
     <form method="post" enctype='multipart/form-data'>
         <label>
-            New collection of images:
+	        <?= $lang->FILE_INPUT ?>:
             <input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple">
         </label>
 
         <input type="submit" name="submit" value="Submit images" class="button" id="submitButton" disabled>
 
-        <p class="side-note">Drag & Drop works too.</p>
+        <p class="side-note"><?= $lang->DRAG_DROP ?></p>
     </form>
 
-    <p id="filesInfo">
+    <div id="filesInfo">
         <!-- For info on files to be uploaded. -->
-    </p>
+    </div>
 </main>
 
 <?php require 'html-footer.php'; ?>
