@@ -8,7 +8,7 @@
 class Language extends stdClass {
 
 	/**
-	 * @var string $lang Three character language code ISO 639-2/T
+	 * @var string $lang Two character language code ISO 639-1
 	 */
 	public $lang;
 	public $page;
@@ -22,18 +22,18 @@ class Language extends stdClass {
 
 		if ( $lang === null and !empty($_COOKIE[ 'lang' ]) ) {
 			switch ( json_decode($_COOKIE[ 'lang' ]) ) {
-				case 'eng' :
-					$this->lang = 'eng';
+				case 'eng' || 'en' :
+					$this->lang = 'en';
 					break;
-				case 'fin' :
-					$this->lang = 'fin';
+				case 'fin' or 'fi' :
+					$this->lang = 'fi';
 					break;
 				default :
-					$this->lang = 'eng';
+					$this->lang = 'en';
 			}
 		}
 		else {
-			$this->lang = $lang ?? 'eng';
+			$this->lang = $lang ?? 'en';
 		}
 
 		$this->page = $page;
