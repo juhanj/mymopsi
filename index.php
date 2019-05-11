@@ -11,12 +11,6 @@ $feedback = check_feedback_POST();
 
 <?php require 'html-head.php'; ?>
 
-<head>
-	<style>
-		a{ text-decoration:none}
-	</style>
-</head>
-
 <body>
 
 <?php require 'html-header.php'; ?>
