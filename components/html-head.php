@@ -14,6 +14,8 @@
 
 	<!-- Main CSS file -->
 	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/main.css">
+	<!-- Header/footer CSS file -->
+	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/header-footer.css">
 	<!-- Page specific CSS file -->
 	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/<?= CURRENT_PAGE ?>.css">
 

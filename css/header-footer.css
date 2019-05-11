@@ -1,0 +1,63 @@
+@CHARSET "UTF-8";
+/************************************************************
+	HEADER STYLINGS (ALL PAGES)
+*************************************************************/
+/*
+	Main element
+	Display: flex for centering elements
+ */
+header.page {
+	background: var(--primary);
+	color: var(--primary-color-text);
+	display: flex;
+	height: 3em;
+}
+
+/*
+	Set all direct children elements inside header to flex and center.
+ */
+header.page > * {
+	display: flex;
+	flex: 1; /* Fill space available for each evenly, regardless of content */
+	align-items: center; /* Vertical center */
+	overflow: auto;
+}
+
+/*
+	Set left and right side of header to sides, out of the way
+ */
+header.page .left { justify-content: flex-start; }
+header.page .right { justify-content: flex-end; }
+
+header.page .left,
+header.page .right {
+	overflow: hidden;
+}
+
+header.page .center {
+	min-width: min-content;
+}
+
+/*
+	Default font here a bit heavy, drop font-weight a bit
+ */
+header.page h1.page-title {
+	font-weight: lighter;
+	margin: auto;
+}
+
+/************************************************************
+	FOOTER STYLINGS (ALL PAGES)
+*************************************************************/
+footer.page {
+	display: flex;
+	flex-shrink: 0;
+	width: 100%;
+	height: 2em;
+
+	background: var(--primary);
+	color: var(--primary-color-text);
+
+	justify-content: space-between;
+	align-items: center;
+}
