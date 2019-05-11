@@ -4,100 +4,146 @@
  * See: https://alistapart.com/article/axiomatic-css-and-lobotomized-owls
  */
 * {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 * + * {
-    margin-top: 1.5em;
+	margin-top: 1.5em;
+}
+.compact * + * {
+	margin-top: 0.65rem;
+}
+.margins-off > * {
+	margin-top: 0;
 }
 /**
  * Needed for third-party elements, e.g. Google Maps, which do not like the setup above
  */
 .margins-initial * {
-    margin-top: initial;
+	margin-top: initial;
 }
 
-html, body
-{
- /*width:100%;*/
- margin:0px;
- height: 100%;
- font-family:helvetica;
- /*line-height: 300%;*/
- padding-top: 6px;
- background-color:#E8EEF3;
- /*background-color:#FCDDBD;*/
- overflow: hidden;
+/**
+ * Colors, and other variables used on the site;
+ * Colors taken from Google's material design
+ */
+:root {
+	--primary-dark  : #303F9F; /* Indigo 700 */
+	--primary  : #3F51B5; /* Indigo 500 */
+	--primary-light : #C5CAE9; /* Indigo 100 */
+	--primary-color-text : #FFFFFF;
+	--accent-dark : #c51162; /* Pink A700 */
+	--accent : #FF4081; /* Pink A200 */
+	--accent-light : #ff80ab; /* Pink A100 */
+	--primary-text    : #212121;
+	--secondary-text  : #757575;
+	--divider         : #BDBDBD;
+
+	--error : #B00020;
+
+	--site-bg-white: white;
+	--site-bg-dark: #171717;
 }
 
-.title{
-  margin: 100px auto 0px;
-  font-size: 60px;
-  text-align: center;
-  color: #4d93fd;
+html {
+	height: 100vh;
 }
 
-.menu-head{
-  width: 280px;
-  margin: 20px auto 0;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #D8E2E9;
-  border-radius: 4px;
-  background-color: #ffffff;
+body {
+	background-color: var(--site-bg-white);
+	color: var(--primary-text);
+	min-height: 100%; /* 100% of html's 100vh */
 }
 
-.text{
-  margin: 20px auto;
-  display: block;
-  line-height: 32px;
-  box-sizing: border-box;
-  border: 1px solid transparent;
-  border-color: rgb(210, 219, 224);
-  border-radius: 3px;
-  height: 32px;
-  padding: 0 5px;
+/**
+ * Centering material icons a bit, they look a bit off without.
+*/
+.material-icons {
+	vertical-align: middle;
 }
 
-.submit{
-  display: block;
-  color: #4d93fd;
-  background: #fff;
-  margin: 10px auto 15px;
-  border-radius: 2px;
-  border: 1px solid transparent;
-  border-color: rgb(210, 219, 224);
-  padding: 5px;
-  outline: none;
-  cursor: pointer;
+/* A better looking default horizontal rule */
+hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid var(--primary);
+	margin: 1rem 0;
+	padding: 0;
 }
 
-.upload{
-  margin: 0 auto;
-  width: 200px;
-  height: 20px;
-  display: block;
+::-moz-selection {
+	background: var(--primary-light);
+	text-shadow: none;
+}
+::selection {
+	background: var(--primary-light);
+	text-shadow: none;
 }
 
-.upload-button{
-  text-align: center;
-  text-decoration: none;
-  display: block;
-  color: #4d93fd;
-  margin: 10px auto 15px;
-  border-radius: 2px;
-  border: 1px solid transparent;
-  padding: 5px;
-  outline: none;
-  cursor: pointer;
+/*
+	Fixes problem with possible PHP debug printing going beyond HTML-width,
+	which just looks ugly. Mostly for mobile devices.
+ */
+pre {
+	white-space: pre-wrap; /* Wraps at spaces if line too long. */
+	word-wrap: break-word; /* Should break when one word too long. */
+	overflow: auto; /* Should add a scroll bar, doesn't seem to do anything. */
 }
 
-.menu-body{
-  width: 280px;
-  margin: 20px auto;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #D8E2E9;
-  border-radius: 4px;
-  background-color: #ffffff;
+.dev-borders * {
+	border: 1px dashed var(--error);
+}
+
+/************************************************************
+	USEFUL ELEMENTS
+	SEEMS TO BE MOSTLY BUTTONS FOR NOW...
+*************************************************************/
+input[type=submit],
+button,
+.button {
+	display: inline-block;
+	padding: 1rem;
+	margin: .1rem;
+
+	justify-content: center; /* Horizontal align */
+	align-items: center; /* Vertical align */
+
+	border-radius: 5px;
+	transition-duration: 0.2s; /* Animation on button press */
+	border: solid 1px;
+	text-decoration: none;
+}
+
+/* Normal button */
+input[type=submit], button, .button{
+	color: var(--primary-color-text); background-color: var(--accent); border-color:var(--accent);
+}
+/* Normal button :hover */
+input[type=submit]:hover, button:hover, .button:hover {
+	color: var(--primary-color-text); background-color: var(--accent-dark); border-color:var(--accent-dark);
+}
+/* Normal button :focus (mousedown event basically) */
+input[type=submit]:active, button:active, .button:active {
+	color: var(--primary-text); background-color: var(--accent-light); border-color:var(--accent-light);
+}
+
+/* Normal button :disabled */
+input[type=submit]:disabled, button:disabled, .button:disabled {
+	color:dimgrey; background-color: darkgrey; border-color:#212121;
+}
+
+/************************************************************
+	ACTUAL STYLINGS (ALL PAGES) AND NOT JUST RANDOM STUFF
+*************************************************************/
+body.grid {
+	display: flex;
+	flex-direction: column;
+}
+
+.main-body-container {
+	flex: 1 0 auto;
+	max-width: 50rem;
+	min-width: 20rem;
+	margin: 1em auto;
 }
