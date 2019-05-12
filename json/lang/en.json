@@ -3,7 +3,8 @@
 		{
 			"page" : "_common",
 			"strings": {
-				"HTML_TITLE" : "MyMopsi"
+				"HTML_TITLE" : "MyMopsi",
+				"HEADER_TITLE" : "MyMopsi"
 			}
 		},
 		{

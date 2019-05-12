@@ -1,17 +1,5 @@
 @CHARSET "UTF-8";
 
-html, body
-{
-	/*width:100%;*/
-	margin:0px;
-	height: 100%;
-	font-family:helvetica;
-	/*line-height: 300%;*/
-	padding-top: 6px;
-	background-color:#E8EEF3;
-	/*background-color:#FCDDBD;*/
-	overflow: hidden;
-}
 
 .title{
 	margin: 100px auto 0px;

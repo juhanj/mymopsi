@@ -11,13 +11,13 @@ $feedback = check_feedback_POST();
 
 <?php require 'html-head.php'; ?>
 
-<body>
+<body class="grid">
 
 <?php require 'html-header.php'; ?>
 
-<main class="main_body_container">
+<main class="main-body-container">
 
-	<div class="title">Mymopsi</div>
+	<h1 class="title">Mymopsi</h1>
 
 	<div class="menu-head">
 		<form action="./view.php" method="get">

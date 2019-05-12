@@ -6,9 +6,9 @@
 	Main element
 	Display: flex for centering elements
  */
-header.page {
+header.site-header {
 	background: var(--primary);
-	color: var(--primary-color-text);
+	color: var(--text-in-color);
 	display: flex;
 	height: 3em;
 }
@@ -16,7 +16,7 @@ header.page {
 /*
 	Set all direct children elements inside header to flex and center.
  */
-header.page > * {
+header.site-header > * {
 	display: flex;
 	flex: 1; /* Fill space available for each evenly, regardless of content */
 	align-items: center; /* Vertical center */
@@ -26,22 +26,22 @@ header.page > * {
 /*
 	Set left and right side of header to sides, out of the way
  */
-header.page .left { justify-content: flex-start; }
-header.page .right { justify-content: flex-end; }
+header.site-header .left { justify-content: flex-start; }
+header.site-header .right { justify-content: flex-end; }
 
-header.page .left,
-header.page .right {
+header.site-header .left,
+header.site-header .right {
 	overflow: hidden;
 }
 
-header.page .center {
+header.site-header .center {
 	min-width: min-content;
 }
 
 /*
 	Default font here a bit heavy, drop font-weight a bit
  */
-header.page h1.page-title {
+header.site-header h1.page-title {
 	font-weight: lighter;
 	margin: auto;
 }
@@ -49,14 +49,14 @@ header.page h1.page-title {
 /************************************************************
 	FOOTER STYLINGS (ALL PAGES)
 *************************************************************/
-footer.page {
+footer.site-footer {
 	display: flex;
 	flex-shrink: 0;
 	width: 100%;
 	height: 2em;
 
 	background: var(--primary);
-	color: var(--primary-color-text);
+	color: var(--text-in-color);
 
 	justify-content: space-between;
 	align-items: center;

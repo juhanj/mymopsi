@@ -183,7 +183,7 @@ $feedback = check_feedback_POST();
 
 <?php require 'html-header.php'; ?>
 
-<main class="main_body_container">
+<main class="main-body-container">
 
     <div class="feedback" id="feedback"><?= $feedback ?></div>
 
