@@ -10,7 +10,7 @@ pass = ""
 
 [Admin]
 ; Used for admin access to all collections
-; Hashed/salted password here
+; Hashed/salted password here (it's not supposed to be super secure)
 password = ""
 
 [Misc]
@@ -20,6 +20,8 @@ perl = "./path/to/perl"
 path_to_collections = "./collections/"
 ; Where the code is after the web-root
 web_root_path = "/mopsi_dev/mymopsi/"
+; Google maps API key
+gmaps_api_key = ""
 
 [Config]
 ; The config-file on server is not located on web-root
