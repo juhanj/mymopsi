@@ -5,6 +5,11 @@
  */
 function removeCollectionFromCookies ( id ) {}
 
+let modalNewCollection = document.getElementById( 'modal-new-collection' );
+let openModalNewCollection = document.getElementById( 'open-modal-new-collection' );
+let closeModalNewCollection = document.getElementById('close-modal-new-collection');
+let newCollectionForm = document.getElementById('new-collection-form');
+
 let localCollectionsDiv = document.getElementById('local-collections');
 let publicCollectionsDiv = document.getElementById('public-collections');
 
@@ -22,3 +27,28 @@ let publicCollectionsDiv = document.getElementById('public-collections');
 // Fetch public collections from the server
 // sendJSON ( getPublicCollections )
 // print to publicCollectionsDiv
+
+openModalNewCollection.onclick = () => {
+	modalNewCollection.showModal();
+};
+closeModalNewCollection.onclick = () => {
+	modalNewCollection.close();
+};
+newCollectionForm.onsubmit = (event) => {
+	// Prevent default browser behaviour, in this case submitting a form normally (causing page-load)
+	event.preventDefault();
+
+	let formData = new FormData( newCollectionForm );
+
+	sendForm( formData )
+		.then((response) => {
+			console.log(response);
+			if ( response.result.success ) {
+				newCollectionForm.insertAdjacentHTML(
+					'afterend',
+					`<a href="view.php?id=${response.result.id}">Link to collection.</a>`
+				);
+				// window.location.href = './upload.php';
+			}
+		});
+};
