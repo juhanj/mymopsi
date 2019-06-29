@@ -4,12 +4,19 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var $db DBConnection
  */
 
+/**
+ * @param string $id
+ * @return string
+ */
 function check_id ( string $id ) : string {
 	if ( empty($_GET['id']) ) {
 		return "<p class='error'>No ID given.<br>
             Please enter ID of collection into the box below.</p>";
 	}
-	elseif ( strlen($_GET['id']) != 4 ) {
+
+	return '';
+
+	if ( strlen($_GET['id']) != 4 ) {
 		return "<p class='error'>ID must the four (4) characters long.</p>";
 	}
 	elseif ( !ctype_alnum($_GET['id']) ) {
@@ -19,25 +26,6 @@ function check_id ( string $id ) : string {
 }
 
 if ( $_SESSION['feedback'] = check_id($_GET['id']) ) {
-	$_SESSION['feedback'] = "<p class='error'>No ID given.<br>
-        Please enter ID of collection into the box below.</p>";
-	header( "Location:index.php" );
-	exit();
-}
-
-if ( empty($_GET['id']) ) {
-	$_SESSION['feedback'] = "<p class='error'>No ID given.<br>
-        Please enter ID of collection into the box below.</p>";
-	header( "Location:index.php" );
-	exit();
-}
-elseif ( strlen($_GET['id']) != 4 ) {
-	$_SESSION['feedback'] = "<p class='error'>ID must the four (4) characters long.</p>";
-	header( "Location:index.php" );
-	exit();
-}
-elseif ( !ctype_alnum($_GET['id']) ) {
-    $_SESSION['feedback'] = "<p class='error'>Only aplhanumeric characters.</p>";
 	header( "Location:index.php" );
 	exit();
 }
@@ -46,11 +34,12 @@ $feedback = check_feedback_POST();
 
 $collection = new Collection( $db, $_GET['id'] );
 
-if ( !$collection->exists ) {
+if ( !$collection->id ) {
 	$_SESSION['feedback'] = "<p class='error'>No collection found with given ID.</p>";
 	header( "Location:index.php" );
 	exit();
 }
+//debug( $collection );
 ?>
 
 <!DOCTYPE html>
@@ -62,9 +51,11 @@ if ( !$collection->exists ) {
 
 <?php require 'html-header.php'; ?>
 
-<main class="main_body_container">
+<main class="main-body-container">
 
     <div class="feedback" id="feedback"><?= $feedback ?></div>
+
+	<a href="upload.php?id=<?= $collection->id ?>" class="button"><?= $lang->ADD_NEW_IMG ?></a>
 
     <table>
         <thead>
@@ -80,16 +71,17 @@ if ( !$collection->exists ) {
         <?php foreach( $collection->imgs as $img ) : ?>
 
             <tr id="">
-                <td>000
+	            <td><?= $img->id ?></td>
                 <td>
-                    <i class="material-icons">broken_image</i>
+<!--                    <i class="material-icons">broken_image</i>-->
+		            <img src="<?= WEB_PATH ?>/img/img.php?cid=<?= $collection->id ?>&iid=<?= $img->id ?>" height="25px">
                 </td>
-                <td><?= $img['filename'] ?></td>
-                <td><?= $img['lat']?>
-                    <br><?= $img['long'] ?>
+                <td><?= $img->name ?></td>
+                <td><?= $img->latitude?>
+                    <br><?= $img->longitude ?>
                 </td>
                 <td>
-                    <a href="<?= ENV ?>/img/img.php?cid=<?= $collection->id ?>&iid=<?= $img['id'] ?>">
+                    <a href="<?= WEB_PATH ?>/img/img.php?cid=<?= $collection->id ?>&iid=<?= $img->id ?>">
                         <?= "link to img" ?>
                     </a>
                 </td>
