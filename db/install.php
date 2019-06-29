@@ -5,10 +5,15 @@ ini_set('display_errors', "1");
 print("<pre>");
 
 // Has necessary database information
-$config = parse_ini_file( "../config/config.ini.php", true);
+$config =
+	parse_ini_file(
+		"../cfg/config.ini",
+		true ,
+		INI_SCANNER_TYPED
+	);
 
 require '../class/dbconnection.class.php';
-$db = new DBConnection( $config['Tietokanta'] );
+$db = new DBConnection( $config['Database'] );
 
 $f = file('./database.sql', FILE_IGNORE_NEW_LINES); // Fetch tables from file
 
