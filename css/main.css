@@ -44,7 +44,7 @@
 	--error : #B00020;
 
 	--site-bg-white: white;
-	--site-bg: #171717;
+	--site-bg: #4e4e4e;
 }
 
 html {
@@ -141,4 +141,26 @@ body.grid {
 	max-width: 50rem;
 	min-width: 20rem;
 	margin: 1em auto;
+	background-color: var(--site-bg-white);
 }
+
+.feedback {
+	background-color: var(--primary);
+	color: var(--text-in-color);
+}
+
+/************************************************************
+	BASIC MODAL
+*************************************************************/
+dialog {
+	margin: auto;
+	padding: 1rem;
+	border: 0;
+	box-shadow: 0 0 1em black;
+}
+
+dialog::backdrop {
+	/* make the backdrop a semi-transparent black */
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
