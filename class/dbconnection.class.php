@@ -47,9 +47,9 @@ class DBConnection {
 
 	/**
 	 * Reads necessary information directly from config.ini -file.
-	 * @param array $config       [optional] <p> Order of fields: <br>
-	 *                            - If enum: host, name, user, pass (same as in config.ini)<br>
-	 *                            - If assoc: Doesn't matter, but field names must be the same as in config.ini -file.
+	 * @param array $config [optional] <p> Order of fields: <br>
+	 *                      - If enum: host, name, user, pass (same as in config.ini)<br>
+	 *                      - If assoc: Doesn't matter, but field names must be the same as in config.ini -file.
 	 */
 	public function __construct( array $config = [] ) {
 		define( 'FETCH_ALL', true );
