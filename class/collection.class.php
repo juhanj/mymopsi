@@ -2,55 +2,63 @@
 
 class Collection {
 
-	/**
-	 * @var string
-	 */
-	public $id = null;
-	/**
-	 * @var array Images in collection, and their info.
-	 */
-	public $imgs = array();
-	/**
-	 * @var bool Is there a collection with given ID?
-	 */
-	public $exists = false;
+	/** @var string */
+	public $id;
+	/** @var string $random_uid */
+	public $random_uid;
+	/** @var string $owner_id */
+	public $owner_id;
 
-	function __construct ( DBConnection $db, string $id ) {
-		if ( !$db or !$id ) {
-			return;
+	/** @var Image[] Images in collection, and their info. */
+	public $imgs;
+
+	public $name;
+	public $description;
+
+	public $public;
+	public $editable;
+
+	public $added;
+	public $last_edited;
+
+	public $number_of_images;
+
+	function __construct () {}
+
+	function populateVariables ( DBConnection $db, int $id ) {
+		$sql = "select id, owner_id, random_uid, name, description, public, editable, date_added, last_edited
+				from mymopsi_collection c
+				where c.id = ?";
+
+		$row = $db->query( $sql, [ $id ] );
+
+		if ( !$row ) { return; }
+
+		foreach ( $row as $property => $propertyValue ) {
+			$this->{$property} = $propertyValue;
 		}
-
-		$this->id = $id;
-
-		$this->getCollection();
 	}
 
-	function getCollection () {
-		$path = INI['Misc']['path_to_collections'] . '/' . $this->id . '/exifdata.csv';
+	function getCollectionImgs ( DBConnection $db ) {
+		$sql = "select id, collection_id, random_uid, hash, name, original_name, extension, latitude, longitude, date_created, date_added, size
+				from mymopsi_img i
+				where collection_id = ?";
 
-		$file = fopen( $path, 'r' );
-		if ( !$file ) {
-			return;
-		}
+		$this->imgs = $db->query( $sql, [ $this->id ], true, 'Image' );
+	}
 
-		$this->exists = true;
+	/**
+	 * @param \DBConnection $db
+	 * @param int           $id
+	 * @return \Collection
+	 */
+	static function fetchCollection ( DBConnection $db, int $id ) : ?Collection {
+		$sql = 'select * from mymopsi_collection where id = ? limit 1';
+		$values = [ $id ];
 
-		fgetcsv($file, 1000, ",");
+		/** @var Collection $row */
+		$row = $db->query( $sql, $values, false, 'Collection' );
 
-		$counter = 0;
-
-		while ( ($data = fgetcsv($file, 1000, ",")) !== FALSE ) {
-			$this->imgs[] = [
-				'id' => $counter++,
-				'filename' => $data[ 0 ],
-				'lat' => $data[ 1 ], // Latitude
-				'long' => $data[ 3 ], // Longitude
-				'lat_ref' => $data[ 2 ], // North | South
-				'long_ref' => $data[ 4 ], // East | West
-				'resolution' => $data[ 6 ] // Image resolution, e.g. 1960x1080
-			];
-		}
-
-		fclose($file);
+		return $row ?: null;
 	}
 }
