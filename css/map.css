@@ -1,0 +1,12 @@
+
+/************************************************************
+	Mopsi clustering API CSS (formerly thumb.css)
+*************************************************************/
+.dot {
+	height: 25px;
+	width: 25px;
+	background-color: #FFFF00;
+	align: center;
+	border-radius: 50%;
+	display: inline-block;
+}
