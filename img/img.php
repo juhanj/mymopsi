@@ -1,13 +1,25 @@
-<?php declare( strict_types=1 );
-
-require '../components/_start.php';
+<?php declare(strict_types=1);
+require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php';
 
 $path = INI['Misc']['path_to_collections'];
-$collection = $_GET['cid'];
-$image = sprintf('%04d', $_GET[ 'iid' ] );
+$image_ruuid = $_GET['img'];
 
+/**
+ * @var \Image $image
+ */
+$image = $db->query(
+	'select id, collection_id, mediatype from mymopsi_img where random_uid = ? limit 1',
+	[ $image_ruuid ],
+	false,
+	'Image'
+);
 
-$filename = $path . '/' . $collection . '/' . $image . '.png';
+$filepath = $path . '/' . $image->collection_id . '/' . $image->id;
 
-header( 'Content-Type: image/png' );
-readfile( $filename );
+if ( !$image or !file_exists( $filepath ) ) {
+	header('HTTP/1.0 404 Not Found');
+	exit();
+}
+
+header( 'Content-Type: ' . $image->mediatype );
+readfile( $filepath );
