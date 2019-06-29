@@ -1,10 +1,11 @@
 "use strict";
 
 /**
- * Send a JSON request
+ * Send a JSON request to server, receive JSON back.
+ * Usage: sendJSON(params).then((jsonResponse) => {});
  * @param data Changed to JSON before sending
  * @param {string} url optional, default == ./ajax-handler.php
- * @returns {Promise<object>}
+ * @returns {Promise<object>} JSON
  */
 async function sendJSON ( data, url = './ajax-handler.php' ) {
 	let response = await fetch( url, {
@@ -14,6 +15,23 @@ async function sendJSON ( data, url = './ajax-handler.php' ) {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify( data )
+	});
+	return await response.json();
+}
+
+/**
+ * Send a POST request to server, receive JSON back.
+ * Usage: sendForm(formdata).then((jsonResponse) => {});
+ * @param {FormData} data Form-element, must be an FormData object
+ * @param {string} url optional, default == ./ajax-handler.php
+ * @returns {Promise<object>} JSON
+ */
+async function sendForm ( data, url = './ajax-handler.php' ) {
+	let response = await fetch( url, {
+		method: 'post',
+		credentials: 'same-origin',
+		// explicitly no Content-Type with FormData
+		body: data
 	});
 	return await response.json();
 }
@@ -60,3 +78,7 @@ function getCookie( name ) {
 function deleteCookie(name) {
 	document.cookie = name + '=; Max-Age=-1;';
 }
+
+const KB = 1024;
+const MB = 1048576;
+const GB = 1073741824;
