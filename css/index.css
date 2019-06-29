@@ -72,3 +72,7 @@
 	border-radius: 4px;
 	background-color: #ffffff;
 }
+
+.main-body-container {
+	background-color: var(--site-bg);
+}
