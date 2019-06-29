@@ -10,11 +10,10 @@ require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php'
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+	<title>MAP TEST</title>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/modern-normalize.css">
 	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/main.css">
-	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/thumb.css">
 	<script defer src="<?= WEB_PATH ?>/js/main.js"></script>
 
 	<script src="https://code.jquery.com/jquery-3.4.0.slim.min.js"
@@ -22,8 +21,7 @@ require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php'
 			crossorigin="anonymous"></script>
 
 	<script defer
-	        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQyXJKLhKIYX0XeSZ8TvNJWxr_vOuZf8s&callback=initGoogleMap">
-		// <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQyXJKLhKIYX0XeSZ8TvNJWxr_vOuZf8s">
+	        src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key']?>&callback=initGoogleMap">
 	</script>
 
 	<script defer src="../clusteringAPI/clusteringInterface.js" type="text/javascript"></script>
@@ -38,11 +36,19 @@ require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php'
 		height: 50rem;
 		width: 100%;
 	}
+	.dot {
+		height: 25px;
+		width: 25px;
+		background-color: #FFFF00;
+		align: center;
+		border-radius: 50%;
+		display: inline-block;
+	}
 </style>
 
 <body class="grid">
 
-<main class="main_body_container">
+<main class="main-body-container">
 
 	<div id="googleMap" class="map margins-initial">
 		<!-- Google Map goes here. `margins-initial`-class necessary to not break Google's own styling -->

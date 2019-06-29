@@ -7,7 +7,7 @@ function debug($var,$var_dump=false){
 }
 
 
-$ini = parse_ini_file( "./cfg/config.ini.php", true )['Testing'];
+$ini = parse_ini_file( "../cfg/config.ini", true )['Testing'];
 
 $perl = $ini['perl'];
 $exift = $ini['exiftool'];
