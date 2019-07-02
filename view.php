@@ -4,42 +4,17 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var $db DBConnection
  */
 
-/**
- * @param string $id
- * @return string
- */
-function check_id ( string $id ) : string {
-	if ( empty($_GET['id']) ) {
-		return "<p class='error'>No ID given.<br>
-            Please enter ID of collection into the box below.</p>";
-	}
-
-	return '';
-
-	if ( strlen($_GET['id']) != 4 ) {
-		return "<p class='error'>ID must the four (4) characters long.</p>";
-	}
-	elseif ( !ctype_alnum($_GET['id']) ) {
-		return "<p class='error'>Only aplhanumeric characters.</p>";
-	}
-	return '';
-}
-
-if ( $_SESSION['feedback'] = check_id($_GET['id']) ) {
-	header( "Location:index.php" );
-	exit();
-}
-
 $feedback = check_feedback_POST();
 
-$collection = new Collection( $db, $_GET['id'] );
+$collection = Collection::fetchCollection( $db, $_GET['id'] );
 
-if ( !$collection->id ) {
+if ( !$collection ) {
 	$_SESSION['feedback'] = "<p class='error'>No collection found with given ID.</p>";
 	header( "Location:index.php" );
 	exit();
 }
-//debug( $collection );
+
+$collection->getCollectionImgs( $db );
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +22,7 @@ if ( !$collection->id ) {
 
 <?php require 'html-head.php'; ?>
 
-<body>
+<body class="grid">
 
 <?php require 'html-header.php'; ?>
 
@@ -55,34 +30,49 @@ if ( !$collection->id ) {
 
     <div class="feedback" id="feedback"><?= $feedback ?></div>
 
-	<a href="upload.php?id=<?= $collection->id ?>" class="button"><?= $lang->ADD_NEW_IMG ?></a>
+	<a href="index.php" class="button">
+		<?= $lang->FRONTPAGE ?>
+	</a>
+
+	<a href="upload.php?id=<?= $collection->random_uid ?>" class="button"><?= $lang->ADD_NEW_IMG ?></a>
+
+	<a href="map.php?cid=<?= $collection->random_uid ?>" class="button">
+		<i class="material-icons">map</i><?= $lang->TO_MAP ?>
+	</a>
 
     <table>
         <thead>
             <tr>
-                <th>#</th>
-                <th>IMG</th> <!-- //TODO: Use material icon here? --jj190331 -->
-                <th>Filename</th>
-                <th>Location</th>
-                <th>Location on map (link)</th> <!-- //TODO: Use material icon here? --jj190331 -->
+                <th class="number">#</th>
+                <th>
+	                <i class="material-icons">image</i>
+                </th>
+                <th><?= $lang->IMG_NAME ?></th>
+                <th>
+	                <i class="material-icons">map</i>
+                </th>
+                <th>
+	                <i class="material-icons">location_on</i>
+                </th>
             </tr>
         </thead>
         <tbody>
-        <?php foreach( $collection->imgs as $img ) : ?>
+        <?php foreach( $collection->imgs as $index => $img ) : ?>
 
             <tr id="">
-	            <td><?= $img->id ?></td>
+	            <td class="number"><?= $index+1 ?></td>
                 <td>
-<!--                    <i class="material-icons">broken_image</i>-->
-		            <img src="<?= WEB_PATH ?>/img/img.php?cid=<?= $collection->id ?>&iid=<?= $img->id ?>" height="25px">
+	                <a href="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>">
+		                <img src="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>&thumb" height="25px">
+	                </a>
                 </td>
                 <td><?= $img->name ?></td>
                 <td><?= $img->latitude?>
                     <br><?= $img->longitude ?>
                 </td>
                 <td>
-                    <a href="<?= WEB_PATH ?>/img/img.php?cid=<?= $collection->id ?>&iid=<?= $img->id ?>">
-                        <?= "link to img" ?>
+                    <a href="<?= WEB_PATH ?>/map.php?cid=<?= $collection->random_uid ?>&iid=<?= $img->random_uid ?>">
+	                    <i class="material-icons">link</i>
                     </a>
                 </td>
             </tr>

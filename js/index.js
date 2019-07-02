@@ -1,9 +1,24 @@
 "use strict";
 
-/**
- * @param {int} id
- */
-function removeCollectionFromCookies ( id ) {}
+function buildHTMLListLocalCollections ( collections ) {
+	let ul = document.createElement( 'ul' );
+	collections.forEach( (coll) => {
+		let li = document.createElement( 'li' );
+		li.innerHTML = `<a href="view.php?id=${coll.uid}">Link to ${coll.name}</a>`
+		ul.appendChild( li );
+	});
+
+	return ul;
+}
+
+function printLocalCollections () {
+	let collections = JSON.parse( getCookie( 'collections' ) );
+	if ( !collections ) {
+		return null;
+	}
+
+	localCollectionsDiv.appendChild( buildHTMLListLocalCollections( collections ) );
+}
 
 let modalNewCollection = document.getElementById( 'modal-new-collection' );
 let openModalNewCollection = document.getElementById( 'open-modal-new-collection' );
@@ -34,6 +49,7 @@ openModalNewCollection.onclick = () => {
 closeModalNewCollection.onclick = () => {
 	modalNewCollection.close();
 };
+
 newCollectionForm.onsubmit = (event) => {
 	// Prevent default browser behaviour, in this case submitting a form normally (causing page-load)
 	event.preventDefault();
@@ -46,9 +62,12 @@ newCollectionForm.onsubmit = (event) => {
 			if ( response.result.success ) {
 				newCollectionForm.insertAdjacentHTML(
 					'afterend',
-					`<a href="view.php?id=${response.result.id}">Link to collection.</a>`
+					`<a href="view.php?id=${response.result.uid}" class="button">Link to collection.</a>`
 				);
 				// window.location.href = './upload.php';
+				addCollectionToCookies( response.result.name, response.result.uid );
 			}
 		});
 };
+
+printLocalCollections();

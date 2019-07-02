@@ -11,14 +11,14 @@ function checkFileForProblems ( file ) {
 	let tempHTML = '';
 
 	if ( file.size > maxFileSizeLimit ) {
-		tempHTML += `<span title="Image too large">❌</span>`;
+		tempHTML += `<span title="Image too large"><i class="material-icons error">clear</i></span>`;
 	}
 	else if ( file.size > largeImgSizeWarningLimit ) {
-		tempHTML += `<span title="Large image">⚠</span>`;
+		tempHTML += `<span title="Large image"><i class="material-icons warning">warning</i></span>`;
 	}
 
 	if ( file.name.length > maxFileNameLengthLimit ) {
-		tempHTML += `<span title="Name too long">⚠</span>`;
+		tempHTML += `<span title="Name too long"><i class="material-icons warning">warning</i></span>`;
 	}
 
 	return tempHTML;
@@ -46,11 +46,12 @@ function createHTMLTableOfFiles () {
 	let tempHTMLTable =
 		`<table>
 			<thead>
+				<tr><th colspan="4">Files to be uploaded</th></tr>
 				<tr>
-					<th>✔/⚠/❌</th>
+					<th><i class="material-icons">info_outline</i></th>
 					<th>Name</th>
-					<th>Size</th>
-					<th>Date</th>
+					<th class="number">Size</th>
+					<th>Last modified</th>
 				</tr>
 			</thead>
 			<tbody>`;
@@ -60,8 +61,8 @@ function createHTMLTableOfFiles () {
 			`<tr id="${i}">
 				<th>${checkFileForProblems(file)}</th>
 				<td>${file.name}</td>
-				<td>${printFileSize(file)}</td>
-				<td>${new Date(file.lastModifiedDate).toLocaleString()}</td>
+				<td class="number">${printFileSize(file)}</td>
+				<td>${dayjs(file.lastModifiedDate).format( 'DD.MM.YY HH:mm' )}</td>
 			</tr>`;
 	});
 
@@ -85,21 +86,21 @@ function handleRequestResponse ( response ) {
 
 	response.result.errors.forEach( ( file, i ) => {
 		let row = document.createElement( 'tr' );
-		row.innerHTML = `<td>❌</td>
+		row.innerHTML = `<td><i class="material-icons warning">warning</i></td>
 			<td>${file.name}</td>
-			<td>${printFileSize(file)}</td>
-			<td>${file.date}</td>
-			<td>❌</td>`;
+			<td class="number">${printFileSize(file)}</td>
+			<td>${dayjs(file.date).format( 'DD.MM.YY HH:mm' )}</td>
+			<td><i class="material-icons error">clear</i></td>`;
 		finishedUploadsTableBody.appendChild( row );
 	});
 
 	response.result.success.forEach( ( file, i ) => {
 		let row = document.createElement( 'tr' );
-		row.innerHTML = `<td>✔</td>
+		row.innerHTML = `<td><i class="material-icons success">done</i></td>
 			<td>${file.name}</td>
-			<td>${printFileSize(file)}</td>
-			<td>${file.date}</td>
-			<td>✔</td>`;
+			<td class="number">${printFileSize(file)}</td>
+			<td>${dayjs(file.date).format( 'DD.MM.YY HH:mm' )}</td>
+			<td><i class="material-icons success">done</i></td>`;
 		finishedUploadsTableBody.appendChild( row );
 	});
 }
@@ -201,11 +202,11 @@ uploadForm.onsubmit = (event) => {
 			progressBarBytes.max += filesArray[indx].size;
 
 			let row = document.createElement( 'tr' );
-			row.innerHTML = `<td>❌</td>
+			row.innerHTML = `<td><i class="material-icons error">clear</i></td>
 				<td>${filesArray[indx].name}</td>
-				<td>${printFileSize(filesArray[indx])}</td>
-				<td>${filesArray[indx].date}</td>
-				<td>❌</td>`;
+				<td class="number">${printFileSize(filesArray[indx])}</td>
+				<td>${dayjs(filesArray[indx].date).format( 'DD.MM.YY HH:mm' )}</td>
+				<td><i class="material-icons error">clear</i></td>`;
 			finishedUploadsTableBody.appendChild( row );
 		}
 	}

@@ -13,7 +13,13 @@ if ( empty($_GET['id']) ) {
 
 $feedback = check_feedback_POST();
 
-$collection = new Collection( $db, $_GET['id'] );
+$collection = Collection::fetchCollection( $db, $_GET['id']);
+
+if ( !$collection ) {
+	$_SESSION['feedback'] = "<p class='error'>{$lang->COLL_ID_REQ}</p>";
+	header( 'location: index.php' );
+	exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +27,7 @@ $collection = new Collection( $db, $_GET['id'] );
 
 <?php require 'html-head.php'; ?>
 
-<body>
+<body class="grid">
 
 <?php require 'html-header.php'; ?>
 
@@ -31,7 +37,8 @@ $collection = new Collection( $db, $_GET['id'] );
     <div class="feedback" id="feedback"><?= $feedback ?></div>
 
 	<!-- Link back to collection we're adding images to -->
-	<a href="./view.php?id=<?= $collection->id ?>" class="button">
+	<a href="./view.php?id=<?= $collection->random_uid ?>" class="button">
+		<i class="material-icons">arrow_back</i>
 		<?= $lang->BACK_TO_COLL ?>
 	</a>
 
@@ -48,7 +55,7 @@ $collection = new Collection( $db, $_GET['id'] );
         </label>
 
         <input type="hidden" name="request" value="addImagesToCollection">
-	    <input type="hidden" name="collection-id" value="<?= $collection->id ?>">
+	    <input type="hidden" name="collection-uid" value="<?= $collection->random_uid ?>">
         <input type="submit" value="Submit images" class="button" id="submitButton">
 
         <p class="side-note"><?= $lang->DRAG_DROP ?></p>

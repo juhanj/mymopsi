@@ -4,20 +4,21 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var $db DBConnection
  */
 
-$coll = new Collection( $db, $_GET['id'] );
+$coll = Collection::fetchCollection( $db, $_GET['cid'] );
+
+if ( !$coll ) {
+	$_SESSION['feedback'] = "<p class='error'>{$lang->NO_COLLECTION_FOUND}</p>";
+	header('location: index.php' );
+	exit;
+}
+
+$coll->getCollectionImgs($db);
 ?>
 
 <!DOCTYPE html>
 <html lang="fi">
 
 <?php require 'html-head.php'; ?>
-
-<style>
-	#googleMap {
-		height: 50rem;
-		width: 100%;
-	}
-</style>
 
 <body class="grid">
 
@@ -33,6 +34,23 @@ $coll = new Collection( $db, $_GET['id'] );
 
 <?php require 'html-footer.php'; ?>
 
+<script>
+	let collectionSize = <?= count($coll->imgs) ?>;
+	let points = [
+	<?php foreach ( $coll->imgs as $i => $img ) : ?>
+		<?php if ( !$img->latitude ) { continue; } ?>
+		{
+			id: <?= $i ?>,
+			Lat: '<?= $img->latitude ?>',
+			Lng: '<?= $img->longitude ?>',
+			src: './img/img.php?id=<?= $img->random_uid ?>',
+			name: '<?= $img->name ?>',
+		},
+	<?php endforeach; ?>
+	];
+	let validImages = points.length;
+</script>
+
 <script defer
         src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>&callback=initGoogleMap">
 </script>
@@ -41,22 +59,6 @@ $coll = new Collection( $db, $_GET['id'] );
 <script defer src="./clusteringAPI/clusteringLogic.js" type="text/javascript"></script>
 <script defer src="./clusteringAPI/mapFunctions.js" type="text/javascript"></script>
 <script defer src="./clusteringAPI/markerFunctions.js" type="text/javascript"></script>
-
-<script>
-	let collectionSize = <?= $coll->number_of_images ?>;
-	let points = [
-	<?php foreach ( $coll->imgs as $i => $img ) : ?>
-		{
-			id: <?= $i ?>,
-			Lat: <?= $img->latitude ?>,
-			Lng: <?= $img->longitude ?>,
-			src: './img/img.php?cid=<?= $coll->uid ?>&iid=<?= $img->uid ?>',
-			name: <?= $img->name ?>,
-		},
-	<?php endforeach; ?>
-	];
-</script>
-
 
 </body>
 </html>

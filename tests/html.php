@@ -8,22 +8,19 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 <?php require 'html-head.php'; ?>
 
 <style>
-	.main_body_container {
-		background-color: white;
-		width: max-content;
-		margin: auto;
-	}
+	/*.main-body-container {*/
+	/*	background-color: var(--site-bg-white);*/
+	/*	width: max-content;*/
+	/*	margin: auto;*/
+	/*	padding: .5rem;*/
+	/*}*/
 </style>
 
-<body>
+<body class="grid">
 
 <?php require 'html-header.php'; ?>
 
-<main class="main_body_container">
-
-	<div id="test-div">
-		This is a test <code>&lt;div&gt;</code>.
-	</div>
+<main class="main-body-container">
 
 	<hr>
 
@@ -32,10 +29,37 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 			New collection of images:
 			<input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple" required>
 		</label>
-
-		<input type="submit" value="Submit images" class="button" id="submitButton">
-
 		<p class="side-note">Drag & Drop works too.</p>
+		<input type="submit" value="Submit images" class="button" id="submitButton">
+	</form>
+	<form>
+		<label class="required">
+			Text
+			<input type="text" name="text" required>
+		</label>
+
+		<label for="numberInput" class="required">Number</label>
+		<input type="number" name="number" id="numberInput" required>
+
+		<label for="dateInput">Date</label>
+		<input type="date" id="dateInput">
+
+		<label for="datetimeInput">Date</label>
+		<input type="datetime-local" id="datetimeInput">
+
+		<label>
+			<span class="required">Colours!</span>
+			<input type="color">
+		</label>
+
+		<label>
+			Check out this box!
+			<input type="checkbox">
+		</label>
+		<label>
+			<input type="checkbox">
+			<span class="required">This box is required</span>
+		</label>
 	</form>
 
 	<hr>
@@ -88,6 +112,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 	<hr>
 
 	<p class="loading"></p>
+	<p class="loading small"></p>
 	<label>Testing the march of progress:
 		<progress id="test-progress"></progress>
 	</label>
@@ -118,20 +143,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 		let modal = document.getElementById('modal-test');
 		let modalOpen = document.getElementById('open-test-modal');
 		let modalClose = document.getElementById('close-test-modal');
+
 		modalOpen.onclick = () => {
 			modal.showModal();
 		};
 		modalClose.onclick = () => {
 			modal.close();
 		};
-
-		let foo = document.createElement("p");
-		foo.innerHTML = "some random <strong>content</span.";
-		document.getElementById( 'test-div' ).appendChild( foo );
-
-		let progress = document.getElementById( 'test-progress' );
-		progress.max = 9999;
-		progress.value = 6666;
 	});
 </script>
 

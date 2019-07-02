@@ -1,30 +1,6 @@
 'use strict';
 let map;
 let mapDiv = document.getElementById("googleMap");
-let center = {lat: 62.60393, lng: 29.74413};
-let testPoints = [
-	{
-		id: 1,
-		Lat: '62.606',
-		Lng: '29.749',
-		src: './tests/img/map-test/test1.png',
-		name: 'Test',
-	},
-	{
-		id: 2,
-		Lat: '62.604',
-		Lng: '29.750',
-		src: './tests/img/map-test/test2.png',
-		name: 'Test',
-	},
-	{
-		id: 3,
-		Lat: '62.602',
-		Lng: '29.73',
-		src: './tests/img/map-test/test3.png',
-		name: 'Test',
-	}
-];
 
 function initMopsiClustering() {
 	let options = {
@@ -46,10 +22,10 @@ function initMopsiClustering() {
 	let clusteringObj = new mopsiMarkerClustering(map, options, mapDiv);
 
 	// location points with the strict format {id, Lat, Lng}
-	clusteringObj.addLocations(testPoints);
+	clusteringObj.addLocations( points );
 
 	// path of the image/icon that is to be displayed at each data point
-	clusteringObj.addSingleMarkerIcons(testPoints);
+	clusteringObj.addSingleMarkerIcons( points );
 
 	clusteringObj.cluster();
 }
@@ -57,7 +33,7 @@ function initMopsiClustering() {
 function initGoogleMap() {
 	map = new google.maps.Map(document.getElementById('googleMap'), {
 		zoom: 15,
-		center: center,
+		// center: center,
 		minZoom: 7,
 		maxZoom: 19,
 	});
