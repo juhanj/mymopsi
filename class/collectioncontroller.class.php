@@ -28,10 +28,10 @@ class CollectionController {
 				$this->createNewCollection( $db , $parameters[ 'name' ] , $parameters[ 'email' ] );
 				break;
 			case 'addImagesToCollection':
-				$this->addImagesToCollection( $db , $parameters[ 'collection-id' ] );
+				$this->addImagesToCollection( $db, $parameters[ 'collection-uid' ], $_FILES );
 				break;
 			case 'getPublicCollections':
-				$this->getPublicCollections( $db );
+				$this->getPublicCollections( $db, $parameters[ 'collection-uid' ] );
 				break;
 			default:
 				$this->result = [ 'success' => false ];
@@ -44,7 +44,7 @@ class CollectionController {
 	 */
 	function createRandomUID () {
 		try {
-			return bin2hex( random_bytes( 20 ) );
+			return bin2hex( random_bytes( 10 ) );
 		} catch ( Exception $e ) {
 			return substr( str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ) , 0 , 20 );
 		}
@@ -82,17 +82,24 @@ class CollectionController {
 	 * @param string        $owner
 	 */
 	function createNewCollection ( DBConnection $db , string $name , string $owner ) {
-		$sql = "insert into mymopsi_collection ( name ) values (?)";
+		$sql = "insert into mymopsi_collection ( name, random_uid ) values (?,?)";
 
 		$values = [ $name , $ruuid = $this->createRandomUID() ];
 		$result = $db->query( $sql , $values );
 		$id = $db->getConnection()->lastInsertId();
 
-		mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$id}/" , 0755 );
+		if ( $id and !file_exists( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$id}/" ) ) {
+			mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$id}/" , 0755 );
+		}
+		else {
+			$this->result = false;
+			return;
+		}
 
 		$this->result = [
-			'success' => $result ,
-			'uid' => $ruuid
+			'success' => $result,
+			'uid' => $ruuid,
+			'name' => $name
 		];
 
 		if ( $owner ) {
@@ -141,6 +148,7 @@ class CollectionController {
 
 	/**
 	 * Run exiftool for a given collection and output to console in JSON format.
+	 * Note! ExifTool will not read .tmp files. They need to be given correct file extension first.
 	 * @param string $dir Directory under path_to_collections
 	 * @return array Image metadata from all images in given directory
 	 */
@@ -148,7 +156,7 @@ class CollectionController {
 
 		$perl = INI[ 'Misc' ][ 'perl' ];
 
-		$exift = './exiftool/exiftool';
+		$exift = DOC_ROOT . WEB_PATH . '/exiftool/exiftool';
 
 		// -j : print JSON console output
 		// -g3 : I DON'T KNOW, but it's important!
@@ -199,7 +207,7 @@ class CollectionController {
 			finfo_open( FILEINFO_MIME_TYPE ) ,
 			$file[ 'tmp_name' ]
 		);
-		$file['mimetype'] = $file_mimetype;
+		$file[ 'mimetype' ] = $file_mimetype;
 		$regex_result = preg_match(
 			'/(image\/)(\w+)/' ,
 			$file_mimetype
@@ -224,7 +232,7 @@ class CollectionController {
 	function addImageToDatabase ( DBConnection $db , int $id , array $file ) {
 		$hash = sha1_file( $file[ 'current_path' ] );
 
-		$sql = "insert into mymopsi_img 
+		$sql = "insert ignore into mymopsi_img 
 	                ( collection_id, random_uid, name, original_name, extension, 
 	                 latitude, longitude, date_created, hash, size, mediatype ) 
 				values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
@@ -237,9 +245,9 @@ class CollectionController {
 			$file[ 'metadata' ]->GPSLatitude ?? null ,
 			$file[ 'metadata' ]->GPSLongitude ?? null ,
 			$file[ 'metadata' ]->Datecreate ?? null ,
-			$hash,
-			$file['size'],
-			$file['mimetype']
+			$hash ,
+			$file[ 'size' ] ,
+			$file[ 'mimetype' ]
 		];
 
 		$result = $db->query( $sql , $values );
@@ -253,16 +261,20 @@ class CollectionController {
 	 * Add new images to an existing collection.
 	 * Also runs exiftool at the same time.
 	 * @param \DBConnection $db
-	 * @param string        $id
+	 * @param string        $uid
+	 * @param array         $_files
 	 */
-	function addImagesToCollection ( DBConnection $db , int $id ) {
+	function addImagesToCollection ( DBConnection $db , string $uid, array $_files ) {
 		// Organising _FILES global variable. The default structure is dumb and hard to use.
-		$files = $this->reorganizeUploadFilesArray( $_FILES );
+		$files = $this->reorganizeUploadFilesArray( $_files );
 
 		// Let's make sure that no accidents happen because a variable is empty for some reason.
 		if ( !$files or (strlen( INI[ 'Misc' ][ 'path_to_collections' ] ) < 20) ) {
 			return;
 		}
+
+		$collection = Collection::fetchCollection( $db, $uid );
+		$id = $collection->id;
 
 		/*
 		 * Create a temporary folder for running exiftool specific for this upload batch
@@ -273,24 +285,32 @@ class CollectionController {
 		// For keeping track of failed uploads, and sending them back too.
 		$errors = array();
 
+
 		/*
 		 * Moving files to temporary directory, while also dropping any uploaded files with errors.
 		 * Not moving straight to final destination so that I won't run exiftool on already uploaded files.
 		 */
-		foreach ( $files as $index => $file ) {
+		foreach ( $files as $index => &$file ) {
 			if ( !$this->checkUploadedFile( $file ) ) {
 				$errors[] = $file;
 				unset( $files[ $index ] );
 				continue;
 			}
 
+			$file[ 'current_path' ]	=
+				sprintf( "%s/%s/%s.%s" ,
+			         INI[ 'Misc' ][ 'path_to_collections' ] ,
+			         $new_temp_folder ,
+			         basename( $file[ 'tmp_name' ] ) ,
+			         pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION  ) );
+
 			move_uploaded_file(
 				$file[ 'tmp_name' ] ,
-				$file[ 'current_path' ] =
-					INI[ 'Misc' ][ 'path_to_collections' ] . "/{$new_temp_folder}/" . basename( $file[ 'tmp_name' ] )
+				$file[ 'current_path' ]
 			);
-
 		}
+
+		unset( $file );
 
 		/*
 		 * Running exiftool for the directory made above.
@@ -313,26 +333,26 @@ class CollectionController {
 		 * Finally add images to database, and move to final storage location.
 		 * Only valid, accepted images get moved.
 		 */
-		foreach ( $files as $key => $file ) {
-			$file[ 'metadata' ] = $img_metadata[ $key ]->Main;
+		foreach ( $files as $key => &$file ) {
+			$file[ 'metadata' ] = $img_metadata[ $key ]->Main ?? null;
 
 			$image_id = $this->addImageToDatabase( $db , $id , $file );
 
 			// If there is a duplicate, this is where it stops
 			if ( !$image_id ) {
 				$errors[] = $file;
-				unlink( $file['current_path'] );
+				unlink( $file[ 'current_path' ] );
 				unset( $files[ $key ] );
 				continue;
 			}
 
 			rename(
 				$file[ 'current_path' ] ,
-				sprintf("%s/%s/%s.%s" ,
-				        INI[ 'Misc' ][ 'path_to_collections' ] ,
-				        $id ,
-				        $image_id ,
-				        pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION ) )
+				sprintf( "%s/%s/%s.%s" ,
+				         INI[ 'Misc' ][ 'path_to_collections' ] ,
+				         $id ,
+				         $image_id ,
+				         pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION ) )
 			);
 		}
 
