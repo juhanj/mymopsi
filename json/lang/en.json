@@ -10,17 +10,29 @@
 		{
 			"page" : "index",
 			"strings": {
-				"COLL_PLACEHOLDER" : "ID of collection",
-				"COLL_SUBMIT" : "Show collection",
+				"SEARCH_COLL" : "Search for a collection",
+				"COLL_PLACEHOLDER" : "Name, UID, or owner",
+				"COLL_SUBMIT" : "Search",
+				"NEW_COLLECTION" : "Create a new collection",
 				"UPLOAD_NEW" : "Upload new collection",
+				"ADMIN_LOGIN" : "Admin login",
 				"ADMIN_PW_PLACEHOLDER" : "Admin password",
-				"ADMIN_SUBMIT" : "To admin control"
+				"ADMIN_SUBMIT" : "To admin control",
+				"NEW_COLL_MODAL" : "New collection",
+				"MODAL_HEADER" : "Add new collection",
+				"GIVE_NAME" : "Name of the collection",
+				"GIVE_NAME_PLACEHOLDER" : "New name",
+				"GIVE_EMAIL" : "Email you want to use",
+				"GIVE_EMAIL_PLACEHOLDER" : "Email of the owner",
+				"CREATE_NEW" : "Create new collection",
+				"MODAL_FOOTER" : "Name and email can be changed later."
 			}
 		},
 		{
 			"page" : "upload",
 			"strings": {
-				"COLL_ID" : "Collection ID",
+				"HEADER_TITLE" : "Upload new images",
+				"BACK_TO_COLL" : "Return to collection",
 				"NEW_COLL_LINK" : "Link to newly created collection",
 				"FILE_INPUT" : "New collection of images",
 				"DRAG_DROP" : "Drag & Drop works too."
@@ -28,6 +40,20 @@
 		},
 		{
 			"page" : "view",
+			"strings": {
+				"HEADER_TITLE" : "Collection view",
+				"IMG_NAME" : "Name",
+				"ADD_NEW_IMG" : "Add new images to collection",
+				"TO_MAP" : "View on map"
+			}
+		},
+		{
+			"page" : "map",
+			"strings": {
+			}
+		},
+		{
+			"page" : "settings",
 			"strings": {
 			}
 		},

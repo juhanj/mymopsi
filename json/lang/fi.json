@@ -1,0 +1,41 @@
+{
+	"pages": [
+		{
+			"page" : "_common",
+			"strings": {
+				"HTML_TITLE" : "MyMopsi",
+				"HEADER_TITLE" : "MyMopsi"
+			}
+		},
+		{
+			"page" : "index",
+			"strings": {
+			}
+		},
+		{
+			"page" : "upload",
+			"strings": {
+			}
+		},
+		{
+			"page" : "view",
+			"strings": {
+			}
+		},
+		{
+			"page" : "map",
+			"strings": {
+			}
+		},
+		{
+			"page" : "settings",
+			"strings": {
+			}
+		},
+		{
+			"page" : "ajax-handler",
+			"strings": {
+			}
+		}
+	]
+}
