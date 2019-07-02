@@ -20,12 +20,12 @@ class Language extends stdClass {
 	 */
 	function __construct( string $lang = null, string $page = CURRENT_PAGE ) {
 
-		if ( $lang === null and !empty($_COOKIE[ 'lang' ]) ) {
-			switch ( json_decode($_COOKIE[ 'lang' ]) ) {
-				case 'eng' || 'en' :
+		if ( $lang === null and !empty($_COOKIE[ 'mymopsi_lang' ]) ) {
+			switch ( $_COOKIE[ 'mymopsi_lang' ] ) {
+				case 'en' :
 					$this->lang = 'en';
 					break;
-				case 'fin' or 'fi' :
+				case 'fi' :
 					$this->lang = 'fi';
 					break;
 				default :
@@ -34,6 +34,7 @@ class Language extends stdClass {
 		}
 		else {
 			$this->lang = $lang ?? 'en';
+			setcookie( 'mymopsi_lang', 'en', strtotime( '+30 days' ) );
 		}
 
 		$this->page = $page;
