@@ -2,11 +2,11 @@
 
 class Collection {
 
-	/** @var string */
+	/** @var int */
 	public $id;
 	/** @var string $random_uid */
 	public $random_uid;
-	/** @var string $owner_id */
+	/** @var int $owner_id */
 	public $owner_id;
 
 	/** @var Image[] Images in collection, and their info. */
@@ -49,12 +49,12 @@ class Collection {
 
 	/**
 	 * @param \DBConnection $db
-	 * @param int           $id
+	 * @param string        $uid
 	 * @return \Collection
 	 */
-	static function fetchCollection ( DBConnection $db, int $id ) : ?Collection {
-		$sql = 'select * from mymopsi_collection where id = ? limit 1';
-		$values = [ $id ];
+	static function fetchCollection ( DBConnection $db, string $uid ) : ?Collection {
+		$sql = 'select * from mymopsi_collection where random_uid = ? limit 1';
+		$values = [ $uid ];
 
 		/** @var Collection $row */
 		$row = $db->query( $sql, $values, false, 'Collection' );
