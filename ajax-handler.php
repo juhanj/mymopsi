@@ -9,7 +9,7 @@ if ( empty($req) ) {
 	exit;
 }
 
-require './components/_start.php';
+require	$_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var $db DBConnection
  * @var $lang Language
