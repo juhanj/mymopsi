@@ -1,9 +1,5 @@
 @CHARSET "UTF-8";
 
-.main-body-container {
-	background-color: var(--site-bg);
-}
-
 .title{
 	font-size: 4rem;
 	color: var(--accent);
@@ -17,3 +13,6 @@
 	border-radius: .2rem;
 }
 
+footer.site-footer .settings-link {
+	display: flex;
+}
