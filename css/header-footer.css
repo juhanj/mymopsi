@@ -8,34 +8,10 @@
  */
 header.site-header {
 	background: var(--primary);
-	color: var(--text-in-color);
+	color: var(--text-light);
 	display: flex;
-	height: 3em;
-}
-
-/*
-	Set all direct children elements inside header to flex and center.
- */
-header.site-header > * {
-	display: flex;
-	flex: 1; /* Fill space available for each evenly, regardless of content */
-	align-items: center; /* Vertical center */
-	overflow: auto;
-}
-
-/*
-	Set left and right side of header to sides, out of the way
- */
-header.site-header .left { justify-content: flex-start; }
-header.site-header .right { justify-content: flex-end; }
-
-header.site-header .left,
-header.site-header .right {
-	overflow: hidden;
-}
-
-header.site-header .center {
-	min-width: min-content;
+	justify-content: center;
+	padding: .3rem;
 }
 
 /*
@@ -43,7 +19,6 @@ header.site-header .center {
  */
 header.site-header h1.page-title {
 	font-weight: lighter;
-	margin: auto;
 }
 
 /************************************************************
