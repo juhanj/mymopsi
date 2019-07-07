@@ -33,9 +33,9 @@ function initMopsiClustering() {
 function initGoogleMap() {
 	map = new google.maps.Map(document.getElementById('googleMap'), {
 		zoom: 15,
-		// center: center,
+		center: {lat: 62.60393, lng: 29.74413},
 		minZoom: 7,
-		maxZoom: 19,
+		maxZoom: 50,
 	});
 
 	google.maps.event.addListenerOnce(map, 'tilesloaded', function () {
