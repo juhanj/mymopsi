@@ -13,11 +13,11 @@
 	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/modern-normalize.css">
 
 	<!-- Main CSS file -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/main.css">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/main.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . '/css/main.css' ) ?>">
 	<!-- Header/footer CSS file -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/header-footer.css">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/header-footer.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . '/css/header-footer.css' ) ?>">
 	<!-- Page specific CSS file -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/<?= CURRENT_PAGE ?>.css">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>/css/<?= CURRENT_PAGE ?>.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . '/css/'.CURRENT_PAGE.'.css' ) ?>">
 
 	<!-- Polyfill for <dialog> -element -->
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.0/dialog-polyfill.min.js"></script>
