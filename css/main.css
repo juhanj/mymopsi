@@ -28,32 +28,41 @@
  * Colors taken from Google's material design
  */
 :root {
-	--primary-dark  : #303F9F; /* Indigo 700 */
-	--primary  : #3F51B5; /* Indigo 500 */
-	--primary-light : #C5CAE9; /* Indigo 100 */
+	--primary-dark: #303F9F; /* Indigo 700 */
+	--primary: #3F51B5; /* Indigo 500 */
+	--primary-light: #C5CAE9; /* Indigo 100 */
 
-	--accent-dark : #c51162; /* Pink A700 */
-	--accent : #FF4081; /* Pink A200 */
-	--accent-light : #ff80ab; /* Pink A100 */
+	--accent-dark: #c51162; /* Pink A700 */
+	--accent: #FF4081; /* Pink A200 */
+	--accent-light: #ff80ab; /* Pink A100 */
 
-	--primary-text    : #212121;
-	--text-in-color : #FFFFFF;
-	--secondary-text  : #757575;
-	--divider         : #BDBDBD;
+	--text-dark: #212121;
+	--text-light: #FFFFFF;
+	--secondary-text: #757575;
 
-	--error : #B00020;
+	--divider: #BDBDBD;
+
 
 	--site-bg-white: white;
-	--site-bg: #4e4e4e;
+	--site-bg-dark: #4e4e4e;
+
+	--success: #5ccc5c;
+	--error: #B00020;
+	--info: var(--primary-light);
+	--warning: #f79b19;
 }
+
+.info { background-color: var(--info); color: var(--text-dark); }
+.success { background-color: var(--success); color: var(--text-dark); }
+.error { background-color: var(--error); color: var(--text-light); }
+.warning { background-color: var(--warning); color: var(--text-dark) }
 
 html {
 	height: 100vh;
 }
 
 body {
-	background-color: var(--site-bg);
-	color: var(--primary-text); /* //TODO: Doesn't apply for some reason */
+	background-color: var(--site-bg-dark);
 	min-height: 100%; /* 100% of html's 100vh */
 }
 
@@ -87,7 +96,7 @@ hr {
 	Only used for debugging.
 */
 .dev-borders * {
-	border: 1px dashed var(--error);
+	outline: 1px dashed var(--error);
 }
 
 /************************************************************
@@ -110,59 +119,21 @@ button,
 
 /* Normal button */
 input[type=submit], button, .button{
-	color: var(--text-in-color); background-color: var(--accent); border-color:var(--accent);
+	color: var(--text-light); background-color: var(--accent); border-color:var(--accent);
 }
 /* Normal button :hover */
 input[type=submit]:hover, button:hover, .button:hover {
-	color: var(--text-in-color); background-color: var(--accent-dark); border-color:var(--accent-dark);
+	color: var(--text-light); background-color: var(--accent-dark); border-color:var(--accent-dark);
 }
 /* Normal button :focus (mousedown event basically) */
 input[type=submit]:active, button:active, .button:active {
-	color: var(--primary-text); background-color: var(--accent-light); border-color:var(--accent-light);
+	color: var(--text-dark); background-color: var(--accent-light); border-color:var(--accent-light);
 }
 
 /* Normal button :disabled */
 input[type=submit]:disabled, button:disabled, .button:disabled {
 	color:dimgrey; background-color: darkgrey; border-color:#212121;
 }
-
-/************************************************************
-	Main content container
-*************************************************************/
-body.grid {
-	display: flex;
-	flex-direction: column;
-}
-
-.main-body-container {
-	flex: 1 0 auto;
-	max-width: 50rem;
-	min-width: 30rem;
-	margin: 1em auto;
-	background-color: var(--site-bg-white);
-}
-
-/************************************************************
-	Feedback box
-*************************************************************/
-.feedback {
-}
-
-.success,
-.error,
-.info,
-.warning {
-	position: relative;
-	display: block;
-	padding: 1rem;
-	width: auto;
-	font-weight: bold;
-}
-
-.success { background-color: #DFF2BF; }
-.error { background-color: #FFBABA; }
-.info { background-color: lightsteelblue; }
-.warning { background-color: lightgoldenrodyellow; }
 
 /************************************************************
 	Basic modal
@@ -244,4 +215,55 @@ form label {
 
 table {
 	width: 100%;
+}
+
+.feedback {
+	width: 100%;
+	font-weight: bold;
+}
+.feedback:empty {
+	display: none;
+}
+.feedback > p {
+	padding: 1rem 5rem;
+}
+
+[hidden],
+.hidden {
+	display: none;
+}
+
+
+/************************************************************
+	Most basic layout
+	Basically every page will overwrite this
+*************************************************************/
+body.grid {
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows:	auto
+						auto
+						1fr
+						auto;
+	grid-template-areas:
+			"header"
+			"feedback"
+			"content"
+			"footer";
+}
+
+.site-header {
+	grid-area: header;
+}
+.feedback {
+	grid-area: feedback;
+}
+.main-body-container {
+	grid-area: content;
+	width: 100%;
+	max-width: 50rem;
+	justify-self: center;
+}
+.site-footer {
+	grid-area: footer;
 }
