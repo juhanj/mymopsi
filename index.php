@@ -16,17 +16,19 @@ $feedback = check_feedback_POST();
 
 <?php require 'html-header.php'; ?>
 
-<main class="main-body-container">
+<!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
+<div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
-	<!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
-	<div class="feedback" id="feedback"><?= $feedback ?></div>
+<main class="main-body-container">
 
 	<h1 class="title">MyMopsi</h1>
 
 	<div class="box">
 		<h2><?= $lang->SEARCH_COLL ?></h2>
 		<form action="./view.php" method="get">
-			<input type="text" name="id" placeholder="<?= $lang->COLL_PLACEHOLDER ?>" class="text">
+			<label>
+				<input type="text" name="id" placeholder="<?= $lang->COLL_PLACEHOLDER ?>" class="text">
+			</label>
 			<input type="submit" value="<?= $lang->COLL_SUBMIT ?>" class="submit">
 		</form>
     </div>
