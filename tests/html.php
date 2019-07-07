@@ -20,6 +20,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 <?php require 'html-header.php'; ?>
 
+<article class="feedback compact">
+	<p class="error">This is an error. ❌✖</p>
+	<p class="warning">This is a warning. ⚠❕🏮🚨</p>
+	<p class="success">This is: HUGE SUCCESS.<br>(It's hard to overstate my satisfaction.)</p>
+	<p class="info">This is just info.</p>
+</article>
+
 <main class="main-body-container">
 
 	<hr>
@@ -89,14 +96,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 		</tbody>
 	</table>
 
-	<hr>
-
-	<div class="feedback">
-		<p class="error">This is an error. ❌✖</p>
-		<p class="warning">This is a warning. ⚠❕🏮🚨</p>
-		<p class="success">This is: HUGE SUCCESS.<br>(It's hard to overstate my satisfaction.)</p>
-		<p class="info">This is just info.</p>
-	</div>
 
 	<hr>
 
