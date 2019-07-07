@@ -26,19 +26,23 @@ header.site-header h1.page-title {
 *************************************************************/
 footer.site-footer {
 	display: flex;
-	flex-shrink: 0;
-	width: 100%;
-	height: 2em;
+	flex: 1 0;
 
 	background: var(--primary);
-	color: var(--text-in-color);
+	color: var(--text-light);
 
 	justify-content: space-between;
 	align-items: center;
+
+	min-height: 1.5rem;
 }
 
-footer.site-footer h1.footer-title {
-	font-weight: lighter;
-	margin: auto;
-	font-size: smaller;
+footer.site-footer .settings-link {
+	padding: 0 2.5rem;
+	display: none;
+}
+
+
+footer.site-footer .right .material-icons {
+	font-size: 2rem;
 }
