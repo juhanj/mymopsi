@@ -10,6 +10,8 @@
 		{
 			"page" : "index",
 			"strings": {
+				"HTML_TITLE" : "MyMopsi | Front page",
+				"HEADER_TITLE" : "Front page",
 				"SEARCH_COLL" : "Search for a collection",
 				"COLL_PLACEHOLDER" : "Name, UID, or owner",
 				"COLL_SUBMIT" : "Search",
@@ -31,6 +33,7 @@
 		{
 			"page" : "upload",
 			"strings": {
+				"HTML_TITLE" : "MyMopsi | Upload",
 				"HEADER_TITLE" : "Upload new images",
 				"BACK_TO_COLL" : "Return to collection",
 				"NEW_COLL_LINK" : "Link to newly created collection",
@@ -41,7 +44,9 @@
 		{
 			"page" : "view",
 			"strings": {
+				"HTML_TITLE" : "MyMopsi | Collection",
 				"HEADER_TITLE" : "Collection view",
+				"FRONTPAGE" : "Return to front page",
 				"IMG_NAME" : "Name",
 				"ADD_NEW_IMG" : "Add new images to collection",
 				"TO_MAP" : "View on map"
@@ -50,16 +55,17 @@
 		{
 			"page" : "map",
 			"strings": {
+				"HTML_TITLE" : "MyMopsi | Map",
+				"HEADER_TITLE" : "Map"
 			}
 		},
 		{
 			"page" : "settings",
 			"strings": {
-			}
-		},
-		{
-			"page" : "ajax-handler",
-			"strings": {
+				"HTML_TITLE" : "MyMopsi | Settings",
+				"HEADER_TITLE" : "Settings",
+				"SETT_LANG_HEAD": "Select language",
+				"SETT_LANG_INFO": "Refresh page to see selected language change."
 			}
 		}
 	]
