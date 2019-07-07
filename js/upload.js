@@ -129,6 +129,9 @@ let largeImgSizeWarningLimit = 5 * MB;
 let maxFileNameLengthLimit = 200;
 let maxBatchSize = 19 * MB;
 
+let dialog = document.querySelector('dialog');
+dialogPolyfill.registerDialog(dialog);
+
 fileInput.onchange = () => {
 	filesArray = Array.from(fileInput.files);
 	totalUploadSize = filesArray.reduce((total, file) => total += file.size, 0);
@@ -219,3 +222,4 @@ uploadForm.onsubmit = (event) => {
 modalClose.onclick = () => {
 	modal.close();
 };
+

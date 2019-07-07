@@ -71,3 +71,6 @@ newCollectionForm.onsubmit = (event) => {
 };
 
 printLocalCollections();
+
+let dialog = document.querySelector('dialog');
+dialogPolyfill.registerDialog(dialog);

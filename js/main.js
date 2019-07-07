@@ -110,6 +110,3 @@ const MB = 1048576;
  * @type {number} 1 073 741 824
  */
 const GB = 1073741824;
-
-let dialog = document.querySelector('dialog');
-dialogPolyfill.registerDialog(dialog);
