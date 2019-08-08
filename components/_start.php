@@ -101,3 +101,8 @@ session_start();
  */
 $db = new DBConnection();
 $lang = new Language();
+
+
+$user = !empty($_SESSION['user_uid'])
+	? User::fetchUser( $db, $_SESSION['user_uid'] )
+	: null;

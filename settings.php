@@ -28,13 +28,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 		<label for="english">
 			<input type="radio" id="english" name="lang" value="en"
 				<?= $lang->lang == 'en' ? 'checked' : '' ?>>
-			<?= $lang->SETT_LANG_ENG ?>
+			<span class="label"><?= $lang->SETT_LANG_ENG ?></span>
 		</label>
 
 		<label for="finnish">
 			<input type="radio" id="finnish" name="lang" value="fi"
 				<?= $lang->lang == 'fi' ? 'checked' : '' ?>>
-			<?= $lang->SETT_LANG_FIN ?>
+			<span class="label"><?= $lang->SETT_LANG_FIN ?></span>
 		</label>
 	</article>
 

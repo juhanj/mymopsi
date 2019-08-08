@@ -2,8 +2,6 @@
 
 class CollectionController {
 
-	public $lang = null;
-
 	public $result = null;
 
 	public const KB = 1024;
@@ -13,15 +11,12 @@ class CollectionController {
 	/**
 	 * CollectionController constructor.
 	 * @param \DBConnection $db
-	 * @param \Language     $lang       User's selected language for returning any feedback to the user
 	 * @param array         $parameters For example, from a form POST data.
 	 */
-	function __construct ( DBConnection $db , Language $lang , array $parameters ) {
+	function __construct ( DBConnection $db , array $parameters ) {
 		if ( !$db or !$parameters ) {
 			return;
 		}
-
-		$this->lang = $lang;
 
 		switch ( $parameters[ 'request' ] ) {
 			case 'createNewCollection':
@@ -229,11 +224,18 @@ class CollectionController {
 	 * @param array         $file
 	 * @return int
 	 */
-	function addImageToDatabase ( DBConnection $db , int $id , array $file ) {
+	function addImageToDatabase ( DBConnection $db , int $id , array &$file ) {
 		$hash = sha1_file( $file[ 'current_path' ] );
+		$random_uid = $this->createRandomUID();
+		$file['new_path'] = sprintf( "%s/%s/%s.%s" ,
+             INI[ 'Misc' ][ 'path_to_collections' ] ,
+             $id ,
+             $random_uid ,
+             pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION )
+		);
 
 		$sql = "insert ignore into mymopsi_img 
-	                ( collection_id, random_uid, name, original_name, extension, 
+	                ( collection_id, random_uid, name, original_name, filepath, 
 	                 latitude, longitude, date_created, hash, size, mediatype ) 
 				values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 		$values = [
@@ -241,7 +243,7 @@ class CollectionController {
 			$this->createRandomUID() ,
 			pathinfo( $file[ 'name' ] , PATHINFO_FILENAME ) ,
 			pathinfo( $file[ 'name' ] , PATHINFO_FILENAME ) ,
-			pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION ) ,
+			$file[ 'new_path' ] ,
 			$file[ 'metadata' ]->GPSLatitude ?? null ,
 			$file[ 'metadata' ]->GPSLongitude ?? null ,
 			$file[ 'metadata' ]->Datecreate ?? null ,
@@ -348,11 +350,7 @@ class CollectionController {
 
 			rename(
 				$file[ 'current_path' ] ,
-				sprintf( "%s/%s/%s.%s" ,
-				         INI[ 'Misc' ][ 'path_to_collections' ] ,
-				         $id ,
-				         $image_id ,
-				         pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION ) )
+				$file[ 'new_path' ]
 			);
 		}
 

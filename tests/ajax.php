@@ -21,11 +21,11 @@ if ( !empty( $get ) or !empty( $post ) or !empty( $file ) or !empty( $input ) ) 
 
 <?php require 'html-head.php'; ?>
 
-<body>
+<body class="grid">
 
 <?php require 'html-header.php'; ?>
 
-<main class="main_body_container">
+<main class="main-body-container">
 
 	<button>TEST ME!</button>
 	<p id="test">

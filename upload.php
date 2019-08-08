@@ -49,7 +49,7 @@ if ( !$collection ) {
     <form method="post" enctype='multipart/form-data' id="uploadForm">
 	    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
         <label>
-	        <?= $lang->FILE_INPUT ?>:
+	        <span class="label"><?= $lang->FILE_INPUT ?></span>:
             <input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple" required>
 	        <!-- The input also has some english text which cannot be styles or changed. -->
         </label>
@@ -76,10 +76,12 @@ if ( !$collection ) {
 	</header>
 
 	<div id="upload-modal-content">
-		<label>Number of files uploaded
+		<label>
+			<span class="label">Number of files uploaded TRANSLATION</span>
 			<progress id="upload-progress-bar-files"></progress>
 		</label>
-		<label>... bytes uploaded
+		<label>
+			<span class="label">... bytes uploaded TRANSLATION</span>
 			<progress id="upload-progress-bar-bytes"></progress>
 		</label>
 		<table>

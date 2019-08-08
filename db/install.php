@@ -30,4 +30,6 @@ foreach ( $db_file as $sql ) {
     }
 }
 
-echo '<p>Tietokannan asennus on nyt suoritettu.</p>';
+echo '<p>Database installed successfully.</p>';
+
+echo '<a href="../">Link to front page.</a>';

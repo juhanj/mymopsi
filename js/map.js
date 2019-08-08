@@ -16,7 +16,7 @@ function initMopsiClustering() {
 		markerClusterHeight: 39,
 		markerClusterWidth: 48,
 		// [top|center|bottom] - [right|center|left]
-		thumbPosition: 'top-right'
+		thumbPosition: 'center'
 	};
 
 	let clusteringObj = new mopsiMarkerClustering(map, options, mapDiv);
@@ -32,10 +32,10 @@ function initMopsiClustering() {
 
 function initGoogleMap() {
 	map = new google.maps.Map(document.getElementById('googleMap'), {
-		zoom: 15,
-		center: {lat: 62.60393, lng: 29.74413},
-		minZoom: 7,
-		maxZoom: 50,
+		center: mapCentre,
+		zoom: initialZoom,
+		minZoom: 3,
+		maxZoom: 20,
 	});
 
 	google.maps.event.addListenerOnce(map, 'tilesloaded', function () {
@@ -59,9 +59,20 @@ function initGoogleMap() {
 	 *      .clusterSize
 	 *      .id - the ID of the single data point object
 	 */
-	document.addEventListener("click_single", function (event) {});
-	document.addEventListener("rightclick_single", function (event) {});
+	document.addEventListener("click_single", function (event) {
+		alert("You clicked a single image.");
+		console.log(event);
+	});
+	document.addEventListener("rightclick_single", function (event) {
+		alert("A right click has happened!");
+		console.log(event);
+	});
 
-	document.addEventListener("click_cluster", function (event) {});
-	document.addEventListener("rightclick_cluster", function (event) {});
+	document.addEventListener("click_cluster", function (event) {
+		alert("A CLUSTER!");
+		console.log(event);
+	});
+	document.addEventListener("rightclick_cluster", function (event) {
+		console.log(event);
+	});
 }

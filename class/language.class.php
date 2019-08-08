@@ -54,11 +54,9 @@ class Language extends stdClass {
 		 */
 		foreach ( $json->pages as $jsonPage ) {
 			if ( $jsonPage->page === '_common' or $jsonPage->page === $this->page ) {
-
 				foreach ( $jsonPage->strings as $type => $str ) {
 					$this->{$type} = $str;
 				}
-
 			}
 		}
 	}

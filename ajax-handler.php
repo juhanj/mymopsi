@@ -15,7 +15,7 @@ require	$_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var $lang Language
  */
 
-$collection = new CollectionController( $db, $lang, $req );
+$collection = new CollectionController( $db, $req );
 
 $result = [
 	'request' => $req,

@@ -13,6 +13,14 @@ if ( !$coll ) {
 }
 
 $coll->getCollectionImgs($db);
+
+if ( !empty($_GET['iid']) ) {
+	foreach ( $coll->imgs as $img ) {
+		if ( $img->random_uid === $_GET['iid'] ) {
+			$focus = [(float)$img->latitude, (float)$img->longitude];
+		}
+	}
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +28,7 @@ $coll->getCollectionImgs($db);
 
 <?php require 'html-head.php'; ?>
 
-<body class="grid">
+<body class="grid margins-off">
 
 <?php require 'html-header.php'; ?>
 
@@ -49,7 +57,21 @@ $coll->getCollectionImgs($db);
 	<?php endforeach; ?>
 	];
 	let validImages = points.length;
+
+	let mapCentre = {lat: 62.25, lng: 26.39};
+	let initialZoom = 5;
+
+	<?php if ( !empty($_GET['iid']) ) : ?>
+		mapCentre.lat = <?= $focus[0] ?>;
+		mapCentre.lng = <?= $focus[1] ?>;
+		initialZoom = 13;
+	<?php endif; ?>
 </script>
+
+<script
+	src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+	integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+	crossorigin="anonymous"></script>
 
 <script defer
         src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>&callback=initGoogleMap">

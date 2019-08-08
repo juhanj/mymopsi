@@ -28,7 +28,8 @@ class Collection {
 	function populateVariables ( DBConnection $db, int $id ) {
 		$sql = "select id, owner_id, random_uid, name, description, public, editable, date_added, last_edited
 				from mymopsi_collection c
-				where c.id = ?";
+				where c.id = ?
+				limit 1";
 
 		$row = $db->query( $sql, [ $id ] );
 
@@ -40,9 +41,10 @@ class Collection {
 	}
 
 	function getCollectionImgs ( DBConnection $db ) {
-		$sql = "select id, collection_id, random_uid, hash, name, original_name, extension, latitude, longitude, date_created, date_added, size
+		$sql = "select id, collection_id, random_uid, hash, name, original_name, filepath, latitude, longitude, date_created, date_added, size
 				from mymopsi_img i
-				where collection_id = ?";
+				where collection_id = ?
+				order by name asc";
 
 		$this->imgs = $db->query( $sql, [ $this->id ], true, 'Image' );
 	}
@@ -53,7 +55,8 @@ class Collection {
 	 * @return \Collection
 	 */
 	static function fetchCollection ( DBConnection $db, string $uid ) : ?Collection {
-		$sql = 'select * from mymopsi_collection where random_uid = ? limit 1';
+		$sql = 'select id, owner_id, random_uid, name, description, public, editable, date_added, last_edited
+				from mymopsi_collection where random_uid = ? limit 1';
 		$values = [ $uid ];
 
 		/** @var Collection $row */

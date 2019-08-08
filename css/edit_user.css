@@ -1,0 +1,9 @@
+form div.buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
+form div.buttons * {
+	flex-grow: 1;
+	max-width: 40%;
+}

@@ -2,9 +2,31 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var $db DBConnection
+ * @var $lang
+ * @var $user
  */
 
+/**
+ * Get public collections from the database, with name, UID, and number of images.
+ * @param \DBConnection $db
+ * @return Collection[]
+ */
+function get_public_collections ( DBConnection $db ) {
+	$sql = "select c.name, c.random_uid, count(i.id) as number_of_images
+			from mymopsi_collection c
+			left join mymopsi_img i on c.id = i.collection_id
+			where public = true
+			group by c.name";
+	return $db->query( $sql, [], FETCH_ALL, 'Collection' );
+}
+
 $feedback = check_feedback_POST();
+
+$public_colls = get_public_collections( $db );
+
+if ( $user ) {
+	$user->getCollections( $db );
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,75 +45,72 @@ $feedback = check_feedback_POST();
 
 	<h1 class="title">MyMopsi</h1>
 
+	<?php if ( !$user ) : ?>
 	<div class="box">
-		<h2><?= $lang->SEARCH_COLL ?></h2>
-		<form action="./view.php" method="get">
+		<h2><?= $lang->USER_LOGIN ?></h2>
+		<form action="./login_check.php" method="post">
 			<label>
-				<input type="text" name="id" placeholder="<?= $lang->COLL_PLACEHOLDER ?>" class="text">
+				<span class="label"><?= $lang->LOGIN_NAME ?></span>
+				<input type="text" name="user">
 			</label>
-			<input type="submit" value="<?= $lang->COLL_SUBMIT ?>" class="submit">
+			<label>
+				<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
+				<input type="password" name="password">
+			</label>
+			<input type="submit" value="<?= $lang->USER_SUBMIT ?>">
 		</form>
+		<hr>
+		<h2><?= $lang->CREATE_USER_HEADER ?></h2>
+		<a href="./edit_user.php?new" class="button"><?= $lang->CREATE_NEW_USER_LINK ?></a>
     </div>
 
+	<?php else : ?>
+
 	<div class="box">
-		<h2><?= $lang->NEW_COLLECTION ?></h2>
-		<button id="open-modal-new-collection"><?= $lang->NEW_COLL_MODAL ?></button>
-
-		<dialog id="modal-new-collection">
-			<header>
-				<h1><?= $lang->MODAL_HEADER ?></h1>
-				<button id="close-modal-new-collection">❌</button>
-			</header>
-
-			<form id="new-collection-form" method="post">
-				<label>
-					<?= $lang->GIVE_NAME ?><span class="required"></span>
-					<input type="text" name="name" value="" placeholder="<?= $lang->GIVE_NAME_PLACEHOLDER ?>" required>
-				</label>
-
-				<label>
-					<?= $lang->GIVE_EMAIL ?>
-					<input type="email" name="email" value="" placeholder="<?= $lang->GIVE_EMAIL_PLACEHOLDER ?>">
-				</label>
-
-				<span class="small_note"><span class="required"></span> = required field</span>
-				<input type="hidden" name="request" value="createNewCollection">
-				<input type="submit" value="<?= $lang->CREATE_NEW ?>">
-			</form>
-
-			<footer>
-				<?= $lang->MODAL_FOOTER ?>
-			</footer>
-		</dialog>
+		<a href="./edit_collection.php?new"><?= $lang->NEW_COLLECTION ?></a>
 	</div>
+	<?php endif; ?>
 
 	<div class="box">
-		<h2><?= $lang->ADMIN_LOGIN ?></h2>
-		<form>
-			<!-- Hidden field for admin username because Chrome wants one. Something about accessiblity. -->
-	        <input type="text" placeholder="admin" value="admin" autocomplete="username" hidden aria-hidden="true">
-			<input type="password" placeholder="<?= $lang->ADMIN_PW_PLACEHOLDER ?>" autocomplete="current-password" class="text">
-			<input type="submit" value="<?= $lang->ADMIN_SUBMIT ?>" class="submit">
-		</form>
-	</div>
 
-	<div class="box">
-		<div class="" id="my-collections">
-			<!-- List of user's own collections -->
-		</div>
+		<?php if ( $user ) : ?>
+			<div class="" id="my-collections">
+				<!-- List of user's own collections -->
+				<h2><?= $lang->USER_COLLECTIONS ?></h2>
+				<ul>
+					<?php foreach ( $user->collections as $collection ) : ?>
+						<li><a href="./view.php?id=<?= $collection->random_uid ?>"><?= $collection->name ?></a></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+			<hr>
+		<?php endif; ?>
 
 		<div class="" id="local-collections">
+			<h2><?= $lang->LOCAL_COLLECTIONS ?></h2>
 			<!-- List of local collections -->
 		</div>
+		<hr>
 
 		<div class="" id="public-collections">
-			<!-- List of public collections -->
+			<h2><?= $lang->PUBLIC_COLLECTIONS ?></h2>
+			<ul>
+				<?php foreach ( $public_colls as $collection ) : ?>
+					<li><a href="./view.php?id=<?= $collection->random_uid ?>"><?= $collection->name ?></a></li>
+				<?php endforeach; ?>
+			</ul>
 		</div>
 	</div>
 
-	<div class="box">
-		<a href="https://github.com/juhanj/mymopsi">Github page</a>
-		<a href="./tests/">Tests</a>
+	<div class="box links">
+		<ul>
+			<li>
+				<a href="https://github.com/juhanj/mymopsi">Github page</a>
+			</li>
+			<li>
+				<a href="./tests/">Tests</a>
+			</li>
+		</ul>
 	</div>
 </main>
 

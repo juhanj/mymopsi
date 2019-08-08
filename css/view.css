@@ -1,0 +1,38 @@
+.buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
+.box {
+	background-color: var(--site-bg-white);
+	border-radius: .4rem;
+	padding: 0.5rem;
+}
+
+.image-link {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+thead .collection-name {
+	font-size: larger;
+	font-style: italic;
+}
+
+colgroup col.number {
+	width: 2rem;
+}
+colgroup col.img {
+	width: 4rem;
+}
+colgroup col.coordinates {
+	width: 9rem;
+}
+
+table .center {
+	text-align: center;
+}
+table .number {
+	text-align: right;
+}

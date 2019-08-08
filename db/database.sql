@@ -9,12 +9,15 @@ MEDIUMINT   |   8388607 / 16777215
 */
 
 create table if not exists mymopsi_user (
-	id         int          not null auto_increment, -- PK
+	id         int          not null auto_increment,                                   -- PK
 	random_uid varchar(20)  not null comment 'public facing string for URLs and such', -- UK
-	email      varchar(180) not null,                -- UK
+	username   varchar(190) not null comment 'Username for logging in',                -- UK
+	password   varchar(190) not null comment 'Hashed & salted',
+	email      varchar(190) not null,                                                  -- UK
 	primary key ( id ),
-	unique ( email ),
-	unique random_uid ( random_uid )
+	unique email( email ),
+	unique username( username ),
+	unique random_uid( random_uid )
 )
 	default charset = utf8mb4
 	collate = utf8mb4_unicode_ci
@@ -22,16 +25,16 @@ create table if not exists mymopsi_user (
 
 create table if not exists mymopsi_collection (
 	id          int                         not null auto_increment,                                   -- PK
-	owner_id    int          default null,                                                             -- FK
+	owner_id    int                         not null,                                                  -- PK FK
 	random_uid  varchar(20)                 not null comment 'public facing string for URLs and such', -- UK
 	name        varchar(50)                 not null,
-	description varchar(255) default null,
+	description varchar(190) default null,
 	public      boolean      default false comment 'Is the collection public, i.e. shown on front page',
 	editable    boolean      default false comment 'Can anyone edit this, owner/admin can always edit',
 	date_added  timestamp    default now( ) not null,
 	last_edited timestamp,
-	primary key ( id ),
-	unique random_uid ( random_uid ),
+	primary key ( id, owner_id ),
+	unique random_uid( random_uid ),
 	constraint fk_collection_user foreign key ( owner_id ) references mymopsi_user( id )
 )
 	default charset = utf8mb4
@@ -39,22 +42,23 @@ create table if not exists mymopsi_collection (
 	auto_increment = 1;
 
 create table if not exists mymopsi_img (
-	id            int            not null auto_increment, -- PK
-	collection_id int            not null, -- FK UK no_duplicates
-	random_uid    varchar(20)    not null comment 'public facing string for URLs and such', -- UK random_uid
-	hash          char(40)       not null comment 'SHA1 hash for comparing files (prevent duplicates)', -- UK no_dupl
-	name          varchar(180)   not null comment 'user editable',
-	original_name varchar(180)   not null comment 'for posterity',
-	extension     varchar(5)     not null comment 'file extension',
-	mediatype     varchar(50)    not null comment 'File media (or MIME) type',
-	size          int            not null comment 'in bytes (bits?)', -- UK no_duplicates
-	latitude      decimal(10, 7) null default null comment 'in degrees',
-	longitude     decimal(10, 7) null default null comment 'in degrees',
-	date_created  timestamp      null default null comment 'file creation time (i.e. when was time taken)',
-	date_added    timestamp           default now( ) not null comment 'when added to database',
+	id            int          not null auto_increment,                                               -- PK
+	collection_id int          not null,                                                              -- FK UK no_duplicates
+	random_uid    varchar(20)  not null comment 'public facing string for URLs and such',             -- UK random_uid
+	hash          char(40)     not null comment 'SHA1 hash for comparing files (prevent duplicates)', -- UK no_dupl
+	name          varchar(190) not null comment 'user editable',
+	original_name varchar(190) not null comment 'for posterity',
+	filepath      varchar(190) comment 'full real path with file extension', -- UK
+	mediatype     varchar(50)  not null comment 'File media (or MIME) type',
+	size          int          not null comment 'in bytes (bits?)',                                   -- UK no_duplicates
+	latitude      float(10, 6) null default null comment 'in degrees',
+	longitude     float(10, 6) null default null comment 'in degrees',
+	date_created  timestamp    null default null comment 'file creation time (i.e. when was time taken)',
+	date_added    timestamp         default now( ) not null comment 'when added to database',
 	primary key ( id ),
-	unique random_uid ( random_uid ),
-	unique no_duplicates ( collection_id, hash, size ),
+	unique random_uid( random_uid ),
+	unique no_duplicates( collection_id, hash, size ),
+	unique filepath( filepath ),
 	constraint fk_img_collection foreign key ( collection_id ) references mymopsi_collection( id )
 )
 	default charset = utf8mb4

@@ -33,7 +33,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 	<form>
 		<label>
-			New collection of images:
+			<span class="label">New collection of images:</span>
 			<input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple" required>
 		</label>
 		<p class="side-note">Drag & Drop works too.</p>
@@ -41,7 +41,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 	</form>
 	<form>
 		<label class="required">
-			Text
+			<span class="label">Text</span>
 			<input type="text" name="text" required>
 		</label>
 
@@ -55,17 +55,17 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 		<input type="datetime-local" id="datetimeInput">
 
 		<label>
-			<span class="required">Colours!</span>
+			<span class="label required">Colours!</span>
 			<input type="color">
 		</label>
 
 		<label>
-			Check out this box!
+			<span class="label">Check out this box!</span>
 			<input type="checkbox">
 		</label>
 		<label>
 			<input type="checkbox">
-			<span class="required">This box is required</span>
+			<span class="label required">This box is required</span>
 		</label>
 	</form>
 
@@ -112,7 +112,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 	<p class="loading"></p>
 	<p class="loading small"></p>
-	<label>Testing the march of progress:
+	<label>
+		<span class="label">Testing the march of progress:</span>
 		<progress id="test-progress"></progress>
 	</label>
 

@@ -8,19 +8,17 @@ $image_ruuid = $_GET['id'];
  * @var \Image $image
  */
 $image = $db->query(
-	'select id, collection_id, mediatype, extension from mymopsi_img where random_uid = ? limit 1',
+	'select id, collection_id, mediatype, filepath from mymopsi_img where random_uid = ? limit 1',
 	[ $image_ruuid ],
 	false,
 	'Image'
 );
 
-$filepath = $path . '/' . $image->collection_id . '/' . $image->id . '.' . $image->extension;
-
-if ( !$image or !file_exists( $filepath ) ) {
+if ( !$image or !file_exists( $image->filepath ) ) {
 	header('HTTP/1.0 404 Not Found');
 	header( "location: {$_SERVER['HTTP_REFERER']}");
 	exit();
 }
 
 header( 'Content-Type: ' . $image->mediatype );
-readfile( $filepath );
+readfile( $image->filepath );

@@ -8,9 +8,10 @@ class Image {
 
 	public $name;
 	public $original_name;
-	public $extension;
 	public $mediatype;
 
+	public $filepath;
+	
 	public $latitude;
 	public $longitude;
 

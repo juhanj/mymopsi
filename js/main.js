@@ -80,6 +80,7 @@ function deleteCookie(name) {
 
 /**
  * Add a collection to the local list of collection kept in the cookies.
+ * Doesn't allow duplicates (does not add a collection if it already found in the array)
  * @param {string} name
  * @param {string} uid
  */
@@ -90,9 +91,18 @@ function addCollectionToCookies(name, uid) {
 		collections = [];
 	}
 
-	collections.push({name, uid});
+	let duplicateFound = false;
+	collections.forEach( (item) => {
+		duplicateFound = ( item.name === name && item.uid === uid )
+			? true
+			: duplicateFound;
+	});
 
-	setCookie('collections', JSON.stringify(collections));
+	if ( !duplicateFound ) {
+		collections.push({name, uid});
+
+		setCookie('collections', JSON.stringify(collections));
+	}
 }
 
 /**

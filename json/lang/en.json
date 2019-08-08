@@ -4,7 +4,8 @@
 			"page" : "_common",
 			"strings": {
 				"HTML_TITLE" : "MyMopsi",
-				"HEADER_TITLE" : "MyMopsi"
+				"HEADER_TITLE" : "MyMopsi",
+				"REQUIRED_INPUT" : "Required"
 			}
 		},
 		{
@@ -12,21 +13,15 @@
 			"strings": {
 				"HTML_TITLE" : "MyMopsi | Front page",
 				"HEADER_TITLE" : "Front page",
-				"SEARCH_COLL" : "Search for a collection",
-				"COLL_PLACEHOLDER" : "Name, UID, or owner",
-				"COLL_SUBMIT" : "Search",
+				"USER_LOGIN" : "Login to create new collection",
+				"LOGIN_NAME" : "User",
+				"LOGIN_PASSWORD" : "Password",
+				"USER_SUBMIT" : "Login",
+				"CREATE_USER_HEADER" : "Create new user",
+				"CREATE_NEW_USER_LINK" : "Click to create a new user",
 				"NEW_COLLECTION" : "Create a new collection",
-				"UPLOAD_NEW" : "Upload new collection",
-				"ADMIN_LOGIN" : "Admin login",
-				"ADMIN_PW_PLACEHOLDER" : "Admin password",
-				"ADMIN_SUBMIT" : "To admin control",
-				"NEW_COLL_MODAL" : "New collection",
-				"MODAL_HEADER" : "Add new collection",
-				"GIVE_NAME" : "Name of the collection",
-				"GIVE_NAME_PLACEHOLDER" : "New name",
-				"GIVE_EMAIL" : "Email you want to use",
-				"GIVE_EMAIL_PLACEHOLDER" : "Email of the owner",
-				"CREATE_NEW" : "Create new collection",
+				"LOCAL_COLLECTIONS" : "Local collections",
+				"PUBLIC_COLLECTIONS" : "Public collections",
 				"MODAL_FOOTER" : "Name and email can be changed later."
 			}
 		},
@@ -47,6 +42,7 @@
 				"HTML_TITLE" : "MyMopsi | Collection",
 				"HEADER_TITLE" : "Collection view",
 				"FRONTPAGE" : "Return to front page",
+				"TABLE_HEADER" : "Images in",
 				"IMG_NAME" : "Name",
 				"ADD_NEW_IMG" : "Add new images to collection",
 				"TO_MAP" : "View on map"
@@ -66,6 +62,20 @@
 				"HEADER_TITLE" : "Settings",
 				"SETT_LANG_HEAD": "Select language",
 				"SETT_LANG_INFO": "Refresh page to see selected language change."
+			}
+		},
+		{
+			"page": "edit_user",
+			"strings": {
+				"HTML_TITLE": "MyMopsi | Edit user",
+				"HEADER_TITLE": "User settings",
+				"NEW_USER_HEADER" : "Create new User",
+				"EDIT_USER_HEADER" : "Edit user information",
+				"USERNAME" : "Username",
+				"PASSWORD" : "Password",
+				"EMAIL" : "Email",
+				"CANCEL" : "Cancel and return back",
+				"SAVE" : "Save changes"
 			}
 		}
 	]
