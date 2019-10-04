@@ -1,28 +1,15 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
- * @var $lang
- * @var $user
+ * @var DBConnection $db
+ * @var Language $lang
+ * @var User $user
  */
-
-/**
- * Get public collections from the database, with name, UID, and number of images.
- * @param \DBConnection $db
- * @return Collection[]
- */
-function get_public_collections ( DBConnection $db ) {
-	$sql = "select c.name, c.random_uid, count(i.id) as number_of_images
-			from mymopsi_collection c
-			left join mymopsi_img i on c.id = i.collection_id
-			where public = true
-			group by c.name";
-	return $db->query( $sql, [], FETCH_ALL, 'Collection' );
-}
 
 $feedback = check_feedback_POST();
 
-$public_colls = get_public_collections( $db );
+// For now, we only care if there are any public collections.
+$are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection where public = true limit 1" );
 
 if ( $user ) {
 	$user->getCollections( $db );
@@ -43,64 +30,113 @@ if ( $user ) {
 
 <main class="main-body-container">
 
-	<h1 class="title">MyMopsi</h1>
+	<h1 class="title">My Mopsi</h1>
 
 	<?php if ( !$user ) : ?>
-	<div class="box">
-		<h2><?= $lang->USER_LOGIN ?></h2>
-		<form action="./login_check.php" method="post">
-			<label>
-				<span class="label"><?= $lang->LOGIN_NAME ?></span>
-				<input type="text" name="user">
-			</label>
-			<label>
-				<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
-				<input type="password" name="password">
-			</label>
-			<input type="submit" value="<?= $lang->USER_SUBMIT ?>">
-		</form>
-		<hr>
-		<h2><?= $lang->CREATE_USER_HEADER ?></h2>
-		<a href="./edit_user.php?new" class="button"><?= $lang->CREATE_NEW_USER_LINK ?></a>
-    </div>
+		<!-- User-login form -->
+		<article class="box">
+			<section>
+				<h2 class="box-header"><?= $lang->USER_LOGIN ?></h2>
+
+				<form action="login-handler.php" method="post">
+					<label class="compact">
+						<span class="label"><?= $lang->LOGIN_NAME ?></span>
+						<input type="text" name="user" minlength="1" maxlength="190">
+					</label>
+
+					<label class="compact">
+						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
+						<input type="password" name="password" minlength="8" maxlength="300">
+					</label>
+
+					<input type="hidden" name="class" value="User">
+					<input type="hidden" name="method" value="login">
+
+					<input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button">
+				</form>
+			</section>
+
+			<hr>
+
+			<section>
+				<h2 class="box-header">Mopsi account</h2>
+
+				<form action="login-handler.php" method="post">
+					<label class="compact">
+						<span class="label"><?= $lang->LOGIN_NAME ?></span>
+						<input type="text" name="user" minlength="1" maxlength="190">
+					</label>
+
+					<label class="compact">
+						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
+						<input type="password" name="password" minlength="1" maxlength="300">
+					</label>
+
+					<input type="hidden" name="class" value="User">
+					<input type="hidden" name="method" value="mopsiLogin">
+
+					<input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button" id="mopsi-submit">
+				</form>
+			</section>
+
+			<hr>
+
+			<section>
+				<button class="button" id="google-login"><?= $lang->GOOGLE_LOGIN ?></button>
+			</section>
+
+		</article>
+
+		<article class="box">
+			<!-- Link to new user creation page -->
+			<section>
+				<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
+				<a href="./edit_user.php?new" class="button">
+					<?= $lang->CREATE_NEW_USER_LINK ?>
+				</a>
+			</section>
+		</article>
 
 	<?php else : ?>
 
-	<div class="box">
-		<a href="./edit_collection.php?new"><?= $lang->NEW_COLLECTION ?></a>
-	</div>
+		<!-- Create new collection -->
+		<article class="box">
+			<a href="./edit_collection.php?new"><?= $lang->NEW_COLLECTION ?></a>
+		</article>
+
 	<?php endif; ?>
 
-	<div class="box">
-
+	<!-- Lists of collections -->
+	<article class="box">
 		<?php if ( $user ) : ?>
-			<div class="" id="my-collections">
-				<!-- List of user's own collections -->
+			<!-- Link of user's own collections -->
+			<section class="" id="my-collections">
 				<h2><?= $lang->USER_COLLECTIONS ?></h2>
-				<ul>
-					<?php foreach ( $user->collections as $collection ) : ?>
-						<li><a href="./view.php?id=<?= $collection->random_uid ?>"><?= $collection->name ?></a></li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
+				<a href="./collections.php?user=<?= $user->random_uid ?>" class="button">
+					<?= $lang->VIEW_USER_COLLECTIONS ?>
+				</a>
+			</section>
 			<hr>
 		<?php endif; ?>
 
-		<div class="" id="local-collections">
-			<h2><?= $lang->LOCAL_COLLECTIONS ?></h2>
-			<!-- List of local collections -->
-		</div>
-		<hr>
-
-		<div class="" id="public-collections">
+		<!-- Link to public collections -->
+		<section class="" id="public-collections">
 			<h2><?= $lang->PUBLIC_COLLECTIONS ?></h2>
-			<ul>
-				<?php foreach ( $public_colls as $collection ) : ?>
-					<li><a href="./view.php?id=<?= $collection->random_uid ?>"><?= $collection->name ?></a></li>
-				<?php endforeach; ?>
-			</ul>
-		</div>
-	</div>
+			<?php if ( $are_there_any_public_colls ) : ?>
+				<a href="./collections.php?public" class="button"><?= $lang->VIEW_PUBLIC_COLLECTIONS ?></a>
+			<?php else : ?>
+				<!-- If no public collections found, print note, and if user logged in link to create new -->
+				<p><?= $lang->NO_PUBLIC_COLL_AVAILABLE ?>
+					<?php if ( $user ) : ?>
+						<?= $lang->NOTE_CREATE_PUBLIC_COLL ?>
+						<a href="./edit_collection.php?new">
+							<?= $lang->NOTE_CREATE_PUBLIC_COLL_LINK ?>
+						</a>
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
+		</section>
+	</article>
 
 </main>
 
