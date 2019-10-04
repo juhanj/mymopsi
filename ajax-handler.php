@@ -1,25 +1,32 @@
 <?php declare(strict_types=1);
 
-$req = $_GET
+$request = $_GET
 	?: $_POST
 	?: json_decode( file_get_contents('php://input'), true );
 
-if ( empty($req) ) {
+if ( empty($request) ) {
 	header('400 Bad Request', true, 400);
 	exit;
 }
 
 require	$_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
- * @var $lang Language
+ * @var DBConnection $db
+ * @var Language $lang
  */
 
-$collection = new CollectionController( $db, $req );
+
+$class_controller = $request['class'] . 'Controller';
+/**
+ * @var Controller $controller
+ */
+$controller = new $class_controller();
+
+$controller->handleRequest( $db, $request );
 
 $result = [
-	'request' => $req,
-	'result' => $collection->result
+	'request' => $request,
+	'result' => $controller->result
 ];
 
 header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
