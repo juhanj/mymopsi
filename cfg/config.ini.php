@@ -1,4 +1,4 @@
-﻿;<?php
+;<?php
 ;exit(); // For further security
 ;/*
 
@@ -7,11 +7,6 @@ host = "localhost"
 name = "database"
 user = "root"
 pass = ""
-
-[Admin]
-; Used for admin access to all collections
-; Hashed/salted password here (it's not supposed to be super secure)
-password = ""
 
 [Misc]
 ; Localhost / server difference on Perl setup
