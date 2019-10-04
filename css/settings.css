@@ -8,7 +8,7 @@
 }
 
 .box {
-	background-color: var(--site-bg-white);
+	background-color: var(--content-box-bg);
 	border: 1px var(--accent) solid;
 	border-radius: .2rem;
 	padding: 1rem;

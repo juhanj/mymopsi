@@ -2,15 +2,14 @@
 
 .title{
 	font-size: 4rem;
-	color: var(--accent);
-	margin: auto;
+	color: var(--text-light);
 	text-align: center;
 }
 
 .box {
-	background: var(--site-bg-white);
-	padding: 1rem;
-	border-radius: .2rem;
+	/*background: var(--content-box-bg);*/
+	/*padding: 1rem;*/
+	/*border-radius: .2rem;*/
 }
 
 footer.site-footer .settings-link {

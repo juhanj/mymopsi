@@ -4,7 +4,7 @@
 }
 
 .box {
-	background-color: var(--site-bg-white);
+	background-color: var(--content-box-bg);
 	border-radius: .4rem;
 	padding: 0.5rem;
 }

@@ -4,23 +4,27 @@
  * See: https://alistapart.com/article/axiomatic-css-and-lobotomized-owls
  */
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
+
 * + * {
-	margin-top: 1.5em;
+    margin-top: 1.5rem;
 }
+
 .compact * + * {
-	margin-top: 0.65rem;
+    margin-top: 0.65rem;
 }
+
 .margins-off > * {
-	margin-top: 0; /* Note: this is for all children. */
+    margin-top: 0; /* Note: this is for all children. */
 }
+
 /**
  * Needed for third-party elements, e.g. Google Maps, which do not like the setup above
  */
 .margins-initial * {
-	margin-top: initial;
+    margin-top: initial;
 }
 
 /**
@@ -29,297 +33,260 @@
  * https://www.materialpalette.com/
  */
 :root {
-	--primary-dark: #303F9F; /* Indigo 700 */
-	--primary: #3F51B5; /* Indigo 500 */
-	--primary-light: #C5CAE9; /* Indigo 100 */
-	--primary-lighter: #e8eaf6; /* Indigo 100 */
+    --primary: hsl(231, 45%, 55%);
+    --primary-darker: hsl(231, 45%, 40%);
+    --primary-dark: hsl(231, 45%, 25%);
+    --primary-lighter: hsl(231, 60%, 70%);
+    --primary-light: hsl(231, 70%, 90%);
 
-	--accent-dark: #c51162; /* Pink A700 */
-	--accent: #FF4081; /* Pink A200 */
-	--accent-light: #ff80ab; /* Pink A100 */
-	--accent-lighter: #fce4ec; /* Pink A100 */
+    --text-dark: hsl(0, 0%, 10%);
+    --text-light: hsl(0, 0%, 90%);
+    --secondary-text: hsl(0, 0%, 50%);
 
-	--text-dark: #212121;
-	--text-light: #FFFFFF;
-	--secondary-text: #757575;
+    --input-bg: hsla(0,0%,75%,.5);
 
-	--divider-dark: #616161;
-	--divider: #BDBDBD;
-	--divider-light: #f5f5f5;
+	--button-shadow: hsla(0, 0%, 10%, .5);
 
+    --content-box-bg: hsl(0, 0%, 100%);
 
-	--site-bg-white: white;
-	--site-bg-dark: #4e4e4e;
+    --site-bg: hsl(0, 0%, 30%);
 
-	--success: #5ccc5c;
-	--error: #B00020;
-	--info: var(--primary-light);
-	--warning: #f79b19;
+    --success: hsl(120, 50%, 60%);
+    --error: hsl(349, 80%, 40%);
+	--error-darker: hsl(349, 85%, 30%);
+    --info: var(--primary-light);
+    --warning: hsl(35, 100%, 50%);
 }
 
-.info { background-color: var(--info); color: var(--text-dark); }
-.success { background-color: var(--success); color: var(--text-dark); }
-.error { background-color: var(--error); color: var(--text-light); }
-.warning { background-color: var(--warning); color: var(--text-dark) }
+.info {
+    background-color: var(--info);
+    color: var(--text-dark);
+}
+
+.success {
+    background-color: var(--success);
+    color: var(--text-dark);
+}
+
+.error {
+    background-color: var(--error);
+    color: var(--text-light);
+}
+
+.warning {
+    background-color: var(--warning);
+    color: var(--text-dark)
+}
 
 html {
-	height: 100vh;
+    height: 100vh;
+    font-size: larger;
 }
 
 body {
-	background-color: var(--site-bg-dark);
-	min-height: 100%; /* 100% of html's 100vh */
+    background-color: var(--site-bg);
+    min-height: 100%; /* 100% of html's 100vh */
 }
 
-/**
- * Centering material icons a bit, they look a bit off without.
-*/
-.material-icons {
-	vertical-align: middle;
+/************************************************************
+	Most basic CSS Grid layout
+	Basically every page will overwrite this
+*************************************************************/
+body.grid {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: "header" "feedback" "content" "footer";
 }
 
-/* A better looking default horizontal rule */
-hr {
-	display: block;
-	height: 1px;
-	border: 0;
-	border-top: 1px solid var(--primary);
-	margin: 1rem 0;
-	padding: 0;
+.site-header {
+    grid-area: header;
 }
 
-::-moz-selection {
-	background: var(--primary-light);
-	text-shadow: none;
-}
-::selection {
-	background: var(--primary-light);
-	text-shadow: none;
+.feedback {
+    grid-area: feedback;
 }
 
-/**
-	Only used for debugging.
-*/
-.dev-borders * {
-	outline: 1px dashed var(--error);
+.main-body-container {
+    grid-area: content;
+}
+
+.site-footer {
+    grid-area: footer;
+}
+
+/************************************************************
+	More layout stuff
+	Content containers
+*************************************************************/
+.main-body-container {
+    width: 100%;
+    max-width: 50rem;
+    justify-self: center;
+
+    display: flex;
+    flex-direction: column;
+    align-content: space-evenly;
+    justify-content: space-evenly;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    align-content: space-evenly;
+    justify-content: space-evenly;
+
+    background: var(--content-box-bg);
+    padding: 1.5rem;
+    border-radius: .2rem;
 }
 
 /************************************************************
 	Button
 *************************************************************/
-input[type=submit],
-button,
+/* Display settings */
 .button {
-	display: inline-block;
-	padding: 1rem;
+    display: flex;
+    justify-content: center; /* Horizontal align */
+    align-items: center; /* Vertical align */
 
-	justify-content: center; /* Horizontal align */
-	align-items: center; /* Vertical align */
+    padding: 1rem;
+    width: 100%;
+    min-width: 25rem;
+    border: 0;
+	border-radius: .2rem;
 
-	border-radius: 5px;
-	transition-duration: 0.2s; /* Animation on button press */
-	border: solid 1px;
-	text-decoration: none;
-
-	width: 100%;
+    box-shadow: 0 .1rem 0 0 var(--button-shadow);
 }
 
-/* Normal button */
-input[type=submit], button, .button{
-	color: var(--text-light); background-color: var(--accent); border-color:var(--accent-dark);
-}
-/* Normal button :hover */
-input[type=submit]:hover, button:hover, .button:hover {
-	color: var(--text-light); background-color: var(--accent-dark); border-color:var(--accent-dark);
-}
-/* Normal button :focus (mousedown event basically) */
-input[type=submit]:active, button:active, .button:active {
-	color: var(--text-dark); background-color: var(--accent-light); border-color:var(--accent-light);
+/* Colours */
+.button {
+    background-color: var(--primary);
+    color: var(--text-light);
 }
 
-.button.light {
-	color: var(--text-dark); background-color: var(--primary-light); border-color:var(--primary);
-}
-.button.light:hover {
-	color: var(--text-dark); background-color: var(--primary-lighter); border-color:var(--primary-dark);
+.button:hover, .button.hover {
+    background-color: var(--primary-darker);
+    color: var(--text-light);
 }
 
-/* Normal button :disabled */
-input[type=submit]:disabled, button:disabled, .button:disabled {
-	color:dimgrey; background-color: darkgrey; border-color:#212121;
+.button:active, .button.active {
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0;
+}
+
+/* Colours */
+.button.red {
+	background-color: var(--error);
+	color: var(--text-light);
+}
+
+.button.red:hover, .button.red.hover {
+	background-color: var(--error-darker);
+	color: var(--text-light);
+}
+
+.button.red:active, .button.red.active {
+	background-color: var(--error-darker);
+	color: var(--text-light);
+}
+
+.button:disabled {
+    filter: grayscale(70%);
 }
 
 /************************************************************
-	Basic modal
+	Feedback
 *************************************************************/
-dialog {
-	margin: auto;
-	padding: 1rem;
-	border: 0;
-	box-shadow: 0 0 1em black;
+.feedback {
+    width: 100%;
+    font-weight: bold;
 }
 
-dialog::backdrop {
-	/* make the backdrop a semi-transparent black */
-	background-color: rgba(0, 0, 0, 0.4);
-}
-dialog + .backdrop { /* polyfill */
-	/* make the backdrop a semi-transparent black */
-	background-color: rgba(0, 0, 0, 0.4);
+.feedback:empty {
+    display: none;
 }
 
-/******************************
-Pieni spinning-icon
-******************************/
+.feedback > p {
+    padding: 1rem 5rem;
+}
+
+/************************************************************
+	Smaller stuff
+*************************************************************/
+.side-note {
+    font-size: 90%;
+    font-style: oblique;
+}
+
+[hidden],
+.hidden {
+    display: none;
+}
+
 .loading {
-	/*background-color: #6f6f6f;*/
 	border: .5rem solid;
-	border-color: transparent var(--accent);
+	border-color: transparent var(--primary-lighter);
 	border-radius: 100%;
 	width: 2rem;
 	height: 2rem;
-	animation: spin 4s linear infinite;
+	animation: spin 2s ease-in-out infinite;
 	margin: auto;
 }
-
-.loading.small {
-	width: 1rem;
-	height: 1rem;
-	border-width: .25rem;
-}
-
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
 }
 
 /************************************************************
-	Form
+	Form stuff
 *************************************************************/
-form [type=submit] {
-	display: block;
+form label {
+    display: block;
+    border-radius: .2rem;
 }
 
 form input {
-	display: block;
-	padding: .5rem;
-	width: 100%;
+    display: block;
+    padding: 1rem;
+    width: 100%;
 
-	/* Setting box-shadow (used for :required, set below) overrides deault border styling */
-	background:#f1f1f1;
-	border:1px solid #ccc;
-
-	/* submit-button didn't have word-wrap without this */
-	white-space: normal;
-	word-wrap: break-word;
+    background-color: var(--input-bg);
+    border: 0;
+    border-radius: .2rem;
 }
 
-form label {
-	display: block;
-	/*padding: 0 .5rem;*/
-}
-
-/* Required input label marked with red * */
 form span.required:after {
-	content:" *";
-	color: var(--error);
+    content: " *";
+    color: var(--error);
 }
-/* Required input marked with red left border */
+
 form input:required,
 form p.required-input {
-	box-shadow: -.2rem 0 0 0 var(--error);
+    box-shadow: -.2rem 0 0 0 var(--error);
 }
 
 /************************************************************
-	Table
+	Debug
 *************************************************************/
-table {
-	width: 100%;
-	border-collapse: collapse;
-	/*table-layout: fixed;*/ /* Didn't get to work */
+.debug * {
+	outline: 1px dashed hsla(0,50%,50%,1);
+    background-color: hsla(0,50%,50%,.1);
 }
-td, th {
-	border: 1px solid var(--divider);
-	padding: 0.5rem;
+.debug * * {
+	outline: 1px dashed  hsla(120,50%,50%,1);
+    background-color: hsla(120,50%,50%,.1);
 }
-thead {
-	background-color: var(--primary);
-	color: var(--text-light);
+.debug * * * {
+	outline: 1px dashed  hsla(230,50%,50%,1);
+    background-color: hsla(230,50%,50%,.1);
 }
-thead tr:first-child {
-	background-color: var(--accent-dark);
+.debug * * * * {
+	outline: 1px dashed hsla(40,50%,50%,1);
+    background-color: hsla(40,50%,50%,.1);
 }
-tbody tr:nth-child(odd) {
-	background-color: var(--primary-lighter);
-}
-tbody tr:nth-child(even) {
-	background-color: var(--divider-light);
-}
-tbody tr:hover {
-	background-color: var(--accent-lighter);
-}
-
-/************************************************************
-	Stuff
-*************************************************************/
-.side-note {
-	font-size: 90%;
-	font-style: oblique;
-}
-
-.feedback {
-	width: 100%;
-	font-weight: bold;
-}
-.feedback:empty {
-	display: none;
-}
-.feedback > p {
-	padding: 1rem 5rem;
-}
-
-[hidden],
-.hidden {
-	display: none;
-}
-
-.box {
-	background: var(--site-bg-white);
-	padding: 1rem;
-	border-radius: .2rem;
-}
-
-
-/************************************************************
-	Most basic layout
-	Basically every page will overwrite this
-*************************************************************/
-body.grid {
-	display: grid;
-	grid-template-columns: auto;
-	grid-template-rows:	auto
-						auto
-						1fr
-						auto;
-	grid-template-areas:
-			"header"
-			"feedback"
-			"content"
-			"footer";
-}
-
-.site-header {
-	grid-area: header;
-}
-.feedback {
-	grid-area: feedback;
-}
-.main-body-container {
-	grid-area: content;
-	width: 100%;
-	max-width: 50rem;
-	justify-self: center;
-}
-.site-footer {
-	grid-area: footer;
+.debug * * * * * {
+	outline: 1px dashed hsla(280,50%,50%,1);
+    background-color: hsla(280,50%,50%,.1);
 }
