@@ -10,7 +10,7 @@ class CollectionController {
 
 	/**
 	 * CollectionController constructor.
-	 * @param \DBConnection $db
+	 * @param DBConnection $db
 	 * @param array         $parameters For example, from a form POST data.
 	 */
 	function __construct ( DBConnection $db , array $parameters ) {
@@ -33,20 +33,34 @@ class CollectionController {
 		}
 	}
 
-	/**
-	 * @return string A 20-char long random string. Either random_byte() (cryptographically secure pseudo-random),
-	 * or just shuffled alpha-numeric characters (not secure, only used if random_bytes() not available)
-	 */
-	function createRandomUID () {
-		try {
-			return bin2hex( random_bytes( 10 ) );
-		} catch ( Exception $e ) {
-			return substr( str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ) , 0 , 20 );
-		}
+	function checkRandomUIDAvailable ( DBConnection $db, $ruid ) {
+		return !$db->query(
+			'select 1 from mymopsi_collection where random_uid = ?',
+			[ $ruid ]
+		);
 	}
 
 	/**
-	 * @param \DBConnection $db
+	 * @param DBConnection $db
+	 * @return string A 20-char long random string. Either random_byte() (cryptographically secure pseudo-random),
+	 * or just shuffled alpha-numeric characters (not secure, only used if random_bytes() not available).
+	 * Guaranteed unique (checked against database)
+	 */
+	function createRandomUID ( DBConnection $db ) {
+		$uid = null;
+		do {
+			try {
+				$uid = bin2hex( random_bytes( 10 ) );
+			} catch ( Exception $e ) {
+				$uid = substr( str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ), 0, 20 );
+			}
+		} while ( !$this->checkRandomUIDAvailable( $db, $uid ) );
+
+		return $uid;
+	}
+
+	/**
+	 * @param DBConnection $db
 	 * @param string        $email
 	 * @param string        $id
 	 */
@@ -61,7 +75,7 @@ class CollectionController {
 		if ( !$row ) {
 			$db->query(
 				'insert into mymopsi_user (email,random_uid) values (?,?)' ,
-				[ $email , $ruuid = $this->createRandomUID() ]
+				[ $email , $ruuid = $this->createRandomUID($db) ]
 			);
 		}
 		$user_id = $row->id ?? $db->getConnection()->lastInsertId();
@@ -72,14 +86,14 @@ class CollectionController {
 	}
 
 	/**
-	 * @param \DBConnection $db
+	 * @param DBConnection $db
 	 * @param string        $name
 	 * @param string        $owner
 	 */
 	function createNewCollection ( DBConnection $db , string $name , string $owner ) {
 		$sql = "insert into mymopsi_collection ( name, random_uid ) values (?,?)";
 
-		$values = [ $name , $ruuid = $this->createRandomUID() ];
+		$values = [ $name , $ruuid = $this->createRandomUID($db) ];
 		$result = $db->query( $sql , $values );
 		$id = $db->getConnection()->lastInsertId();
 
@@ -219,14 +233,14 @@ class CollectionController {
 	}
 
 	/**
-	 * @param \DBConnection $db
+	 * @param DBConnection $db
 	 * @param int           $id
 	 * @param array         $file
 	 * @return int
 	 */
 	function addImageToDatabase ( DBConnection $db , int $id , array &$file ) {
 		$hash = sha1_file( $file[ 'current_path' ] );
-		$random_uid = $this->createRandomUID();
+		$random_uid = $this->createRandomUID($db);
 		$file['new_path'] = sprintf( "%s/%s/%s.%s" ,
              INI[ 'Misc' ][ 'path_to_collections' ] ,
              $id ,
@@ -240,7 +254,7 @@ class CollectionController {
 				values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 		$values = [
 			$id ,
-			$this->createRandomUID() ,
+			$this->createRandomUID($db) ,
 			pathinfo( $file[ 'name' ] , PATHINFO_FILENAME ) ,
 			pathinfo( $file[ 'name' ] , PATHINFO_FILENAME ) ,
 			$file[ 'new_path' ] ,
@@ -262,7 +276,7 @@ class CollectionController {
 	/**
 	 * Add new images to an existing collection.
 	 * Also runs exiftool at the same time.
-	 * @param \DBConnection $db
+	 * @param DBConnection $db
 	 * @param string        $uid
 	 * @param array         $_files
 	 */

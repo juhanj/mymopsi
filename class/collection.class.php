@@ -44,7 +44,7 @@ class Collection {
 		$sql = "select id, collection_id, random_uid, hash, name, original_name, filepath, latitude, longitude, date_created, date_added, size
 				from mymopsi_img i
 				where collection_id = ?
-				order by name asc";
+				order by name";
 
 		$this->imgs = $db->query( $sql, [ $this->id ], true, 'Image' );
 	}
@@ -56,7 +56,9 @@ class Collection {
 	 */
 	static function fetchCollection ( DBConnection $db, string $uid ) : ?Collection {
 		$sql = 'select id, owner_id, random_uid, name, description, public, editable, date_added, last_edited
-				from mymopsi_collection where random_uid = ? limit 1';
+				from mymopsi_collection 
+				where random_uid = ? 
+				limit 1';
 		$values = [ $uid ];
 
 		/** @var Collection $row */
