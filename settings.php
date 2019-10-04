@@ -38,6 +38,17 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 		</label>
 	</article>
 
+    <article class="box links">
+        <h2>Links</h2>
+        <ul>
+            <li>
+                <a href="https://github.com/juhanj/mymopsi">Github page</a>
+            </li>
+            <li>
+                <a href="./tests/">Tests</a>
+            </li>
+        </ul>
+    </article>
 </main>
 
 <?php require 'html-footer.php'; ?>

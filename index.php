@@ -102,16 +102,6 @@ if ( $user ) {
 		</div>
 	</div>
 
-	<div class="box links">
-		<ul>
-			<li>
-				<a href="https://github.com/juhanj/mymopsi">Github page</a>
-			</li>
-			<li>
-				<a href="./tests/">Tests</a>
-			</li>
-		</ul>
-	</div>
 </main>
 
 <?php require 'html-footer.php'; ?>
