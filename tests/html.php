@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 ?>
 
@@ -8,19 +8,15 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 <?php require 'html-head.php'; ?>
 
 <style>
-	/*.main-body-container {*/
-	/*	background-color: var(--site-bg-white);*/
-	/*	width: max-content;*/
-	/*	margin: auto;*/
-	/*	padding: .5rem;*/
-	/*}*/
+	:root {
+	}
 </style>
 
 <body class="grid">
 
 <?php require 'html-header.php'; ?>
 
-<article class="feedback compact">
+<article class="feedback compact" hidden>
 	<p class="error">This is an error. ❌✖</p>
 	<p class="warning">This is a warning. ⚠❕🏮🚨</p>
 	<p class="success">This is: HUGE SUCCESS.<br>(It's hard to overstate my satisfaction.)</p>
@@ -29,128 +25,174 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 <main class="main-body-container">
 
-	<hr>
+	<article class="box" id="buttons-test">
+		<details>
+			<summary>Buttons</summary>
+			<section>
+				<button class="button">Normal button</button>
+				<button class="button hover">Normal button w/ hover</button>
+				<button class="button active">Normal button w/ active</button>
+				<button disabled class="button">Normal disabled</button>
+			</section>
+			<hr>
+			<section>
+				<button class="button red">Red button</button>
+				<button class="button red hover">Red button w/ hover</button>
+				<button class="button red active">Red button w/ active</button>
+				<button disabled class="button red">Red disabled</button>
+			</section>
+			<hr>
+			<section>
+				<button class="button">
+					<i class="material-icons">check</i>
+					✔ ❤Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+					labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+					nisi ut aliquip ex ea commodo.
+				</button>
+			</section>
 
-	<form>
-		<label>
-			<span class="label">New collection of images:</span>
-			<input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple" required>
-		</label>
-		<p class="side-note">Drag & Drop works too.</p>
-		<input type="submit" value="Submit images" class="button" id="submitButton">
-	</form>
-	<form>
-		<label class="required">
-			<span class="label">Text</span>
-			<input type="text" name="text" required>
-		</label>
+		</details>
+	</article>
 
-		<label for="numberInput" class="required">Number</label>
-		<input type="number" name="number" id="numberInput" required>
+	<article class="box" id="upload-test">
+		<details>
+			<summary>File upload form</summary>
+			<form>
+				<label>
+					<span class="label">New collection of images:</span>
+					<input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple" required>
+				</label>
+				<p class="side-note">Drag & Drop works too.</p>
+				<input type="submit" value="Submit images" class="button" id="submitButton">
+			</form>
+		</details>
+	</article>
 
-		<label for="dateInput">Date</label>
-		<input type="date" id="dateInput">
+	<article class="box" id="form-inputs-test">
+		<details>
+			<summary>All form inputs</summary>
+			<form>
+				<label>
+					<span class="label">Text</span>
+					<input type="text" placeholder="This is a placeholder">
+				</label>
 
-		<label for="datetimeInput">Date</label>
-		<input type="datetime-local" id="datetimeInput">
+				<label>
+					<span class="label required">Number</span>
+					<input type="number" required>
+				</label>
 
-		<label>
-			<span class="label required">Colours!</span>
-			<input type="color">
-		</label>
+				<label>
+					<span class="label">Date</span>
+					<input type="date">
+				</label>
 
-		<label>
-			<span class="label">Check out this box!</span>
-			<input type="checkbox">
-		</label>
-		<label>
-			<input type="checkbox">
-			<span class="label required">This box is required</span>
-		</label>
-	</form>
+				<label>
+					<span class="label">Datetime-local</span>
+					<input type="datetime-local">
+				</label>
 
-	<hr>
+				<label>
+					<span class="label">Month</span>
+					<input type="month">
+				</label>
 
-	<table>
-		<thead>
-			<tr>
-				<th>✔/⚠/❌</th>
-				<th>Name</th>
-				<th>Size</th>
-				<th>Date</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>1 ✔</td>
-				<td>Rnaomd image</td>
-				<td>1,5MB</td>
-				<td>15.05.2019 14:00:00</td>
-			</tr>
-			<tr>
-				<td>2 ❌</td>
-				<td>Longn ame-___blaah_blaah_blaah-tadaa</td>
-				<td>500KB</td>
-				<td>15.05.2019 14:00:00</td>
-			</tr>
-		</tbody>
-	</table>
+				<label>
+					<span class="label">Week</span>
+					<input type="week">
+				</label>
 
+				<label>
+					<span class="label">Time</span>
+					<input type="time">
+				</label>
 
-	<hr>
+				<label>
+					<span class="label">Colours</span>
+					<input type="color">
+				</label>
 
-	<button class="btn">Normal button</button>
-	<button class="btn red">Bad button</button>
-	<button class="btn disabled" disabled>Disabled w/ class</button>
-	<button class="btn" disabled>Disabled w/o class</button>
+				<label>
+					<span class="label">Checkbox</span>
+					<input type="checkbox">
+				</label>
+				<label>
+					<input type="checkbox">
+					<span class="label required">Checkbox</span>
+				</label>
 
-	<hr>
+				<label>
+					<span class="label">Radio 1</span>
+					<input type="radio" name="radio">
+				</label>
+				<label>
+					<input type="radio" name="radio">
+					<span class="label">Radio 2</span>
+				</label>
 
-	<button class="btn" id="open-test-modal">Open test modal</button>
+				<label>
+					<span class="label">File</span>
+					<input type="file">
+				</label>
 
-	<hr>
+				<label>
+					<span class="label">Range</span>
+					<input type="range">
+				</label>
 
-	<p class="loading"></p>
-	<p class="loading small"></p>
-	<label>
-		<span class="label">Testing the march of progress:</span>
-		<progress id="test-progress"></progress>
-	</label>
+				<p class="required-input side-note">
+					<span class="required"></span> = Required
+				</p>
+			</form>
+		</details>
+	</article>
 
-	<hr>
+	<article class="box">
+		<details>
+			<summary>Table</summary>
+			<table>
+				<thead>
+				<tr>
+					<th>✔/⚠/❌</th>
+					<th>Name</th>
+					<th>Size</th>
+					<th>Date</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>1 ✔</td>
+					<td>Rnaomd image</td>
+					<td>1,5MB</td>
+					<td>15.05.2019 14:00:00</td>
+				</tr>
+				<tr>
+					<td>2 ❌</td>
+					<td>Longn ame-___blaah_blaah_blaah-tadaa</td>
+					<td>500KB</td>
+					<td>15.05.2019 14:00:00</td>
+				</tr>
+				</tbody>
+			</table>
+		</details>
+	</article>
+
+	<article class="box">
+		<details>
+			<summary>Loading</summary>
+			<p class="loading"></p>
+			<label>
+				<span class="label">Testing the march of progress:</span>
+				<progress id="test-progress"></progress>
+			</label>
+		</details>
+	</article>
+
 </main>
 
 <?php require 'html-footer.php'; ?>
 
-<dialog id="modal-test">
-	<header>
-		<h1>Test modal title</h1>
-		<button id="close-test-modal">❌</button>
-	</header>
-
-	<div>
-		Content for the modal!
-	</div>
-
-	<footer>
-		Footer
-	</footer>
-</dialog>
-
 <script>
-	window.addEventListener("load", ()=>{
-
-		let modal = document.getElementById('modal-test');
-		let modalOpen = document.getElementById('open-test-modal');
-		let modalClose = document.getElementById('close-test-modal');
-
-		modalOpen.onclick = () => {
-			modal.showModal();
-		};
-		modalClose.onclick = () => {
-			modal.close();
-		};
-	});
 </script>
 
 </body>

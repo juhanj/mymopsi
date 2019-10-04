@@ -12,7 +12,7 @@ def differentFormats ( formats, resolutions ) :
             )
             output = process.communicate()
             print (output)
-    return;
+    return
 
 def differentResolutions ( resolutions ) :
     for reso in resolutions :
@@ -24,7 +24,7 @@ def differentResolutions ( resolutions ) :
         )
         output = process.communicate()
         print (output)
-    return;
+    return
 
 def bigImages ( numberOfImages ) :
     # magick convert -size 1920x1080 plasma:fractal -blur 0x2 -swirl 180 ./img/4-big-images/png_1920x1080.png
@@ -48,7 +48,7 @@ def bigImages ( numberOfImages ) :
         output = process.communicate()
         print ( "{0}->{1}".format(i,output) )
 
-    return;
+    return
 
 def manyImages ( numberOfImages ) :
     # magick convert -size 20x20 gradient:red-black ./img/5-many-images/jpeg-20x20-i.png
@@ -60,7 +60,7 @@ def manyImages ( numberOfImages ) :
         )
         output = process.communicate()
         print ( "{0}->{1}".format(i,output) )
-    return;
+    return
 
 commonFormats = [
     "png", "png8", "png00", "png24", "png32", "png48", "png64", "jpeg",
