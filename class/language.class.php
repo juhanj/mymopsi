@@ -70,6 +70,11 @@ class Language extends stdClass {
 		if ( !isset($this->{$name}) ) {
 			return "NULL {$name}";
 		}
+/*
+		$this->{$this->page}->{$name}->{$this->lang};
+
+		$this->{$this->page}->strings->{$name}->{$this->lang};
+*/
 
 		return $this->{$name};
 	}

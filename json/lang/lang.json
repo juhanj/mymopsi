@@ -1,0 +1,73 @@
+{
+	"_common": {
+		"HTML_TITLE": {
+			"en": "MyMopsi",
+			"fi": "MyMopsi"
+		},
+		"HEADER_TITLE": {
+			"en": "MyMopsi"
+		},
+		"REQUIRED_INPUT": {
+			"en": "Required",
+			"fi": "Pakollinen kenttä"
+		},
+		"CANCEL": {
+			"en": "Cancel"
+		},
+		"SUBMIT": {
+			"en": "Submit"
+		},
+		"LOGIN_REQUIRED": {
+			"en": "Login required to use this feature."
+		}
+	},
+	"index": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Front page",
+			"fi": "MyMopsi | Etusivu"
+		},
+		"HEADER_TITLE": {
+			"en": "Welcome",
+			"fi": "Tervetuloa"
+		},
+		"USER_LOGIN": {
+			"en": "Login to create new collection"
+		},
+		"LOGIN_NAME": {
+			"en": "User"
+		},
+		"LOGIN_PASSWORD": {
+			"en": "Password"
+		},
+		"USER_SUBMIT": {
+			"en": "Login"
+		},
+		"CREATE_USER_HEADER": {
+			"en": "Create new user"
+		},
+		"CREATE_NEW_USER_LINK": {
+			"en": "Click to create a new user"
+		},
+		"NEW_COLLECTION": {
+			"en": "Create a new collection"
+		},
+		"LOCAL_COLLECTIONS": {
+			"en": "Local collections"
+		},
+		"PUBLIC_COLLECTIONS": {
+			"en": "Public collections"
+		},
+		"NO_PUBLIC_COLL_AVAILABLE": {
+			"en": "No public collections available."
+		},
+		"NOTE_CREATE_PUBLIC_COLL": {
+			"en": "Maybe you'd like to"
+		},
+		"NOTE_CREATE_PUBLIC_COLL_LINK": {
+			"en": "create one?"
+		},
+		"MODAL_FOOTER": {
+			"en": "Name and email can be changed later."
+		}
+	}
+}

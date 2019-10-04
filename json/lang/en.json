@@ -12,7 +12,7 @@
 			"page" : "index",
 			"strings": {
 				"HTML_TITLE" : "MyMopsi | Front page",
-				"HEADER_TITLE" : "Front page",
+				"HEADER_TITLE" : "Welcome",
 				"USER_LOGIN" : "Login to create new collection",
 				"LOGIN_NAME" : "User",
 				"LOGIN_PASSWORD" : "Password",
@@ -22,6 +22,9 @@
 				"NEW_COLLECTION" : "Create a new collection",
 				"LOCAL_COLLECTIONS" : "Local collections",
 				"PUBLIC_COLLECTIONS" : "Public collections",
+				"NO_PUBLIC_COLL_AVAILABLE" : "No public collections available.",
+				"NOTE_CREATE_PUBLIC_COLL" : "Maybe you'd like to",
+				"NOTE_CREATE_PUBLIC_COLL_LINK" : "create one?",
 				"MODAL_FOOTER" : "Name and email can be changed later."
 			}
 		},
