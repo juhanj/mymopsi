@@ -6,6 +6,25 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var $user
  */
 
+if ( !$user ) {
+	header('location: index.php' );
+	$_SESSION['feedback'] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
+}
+
+if ( !empty( $_POST ) ) {
+
+	$controller = new CollectionControllerNEW();
+
+	if ( $_POST['type'] === 'new' ) {
+		$controller->createNewCollection(
+			$db, $user, $_POST['name'], $_POST['description'], $_POST['public'], $_POST['editable']
+		);
+	}
+}
+
+$collection = Collection::fetchCollection( $db, $_GET['uid'] ?? '' );
+
+$feedback = check_feedback_POST();
 ?>
 
 <!DOCTYPE html>
@@ -22,40 +41,14 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 <main class="main-body-container">
 
-	<!-- One single <form> -->
-	<form>
-		<!-- Name -->
-		<label>
-			<span class="label required"><?= $lang->NAME ?></span>
-			<input type="text" name="name" required>
-		</label>
+	<?php
+	if ( $collection ) {
+		require 'html-edit-collection.php';
+	} else {
+		require 'html-create-collection.php';
+	}
+	?>
 
-		<!-- Description -->
-		<label>
-			<span class="label required"><?= $lang->DESCRIPTION ?></span>
-			<input type="text" name="description" required>
-		</label>
-
-		<!-- Public -->
-		<label>
-			<input type="checkbox" name="public">
-			<span class="label"><?= $lang->PUBLIC ?></span>
-		</label>
-
-		<!-- Editable -->
-		<label>
-			<input type="checkbox" name="editable">
-			<span class="label"><?= $lang->EDITABLE ?></span>
-		</label>
-
-		<!-- Cancel & Save -->
-		<div>
-			<!-- Cancel -->
-			<button><?= $lang->CANCEL ?></button>
-			<!-- Save -->
-			<input type="submit" name="<?= $lang->CANCEL ?>">
-		</div>
-	</form>
 </main>
 
 <?php require 'html-footer.php'; ?>
