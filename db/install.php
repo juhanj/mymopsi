@@ -1,19 +1,7 @@
-<?php declare(strict_types=1);
-error_reporting( E_ERROR );
-ini_set( 'display_errors', "1" );
+<?php declare( strict_types=1 );
+require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
-print("<pre>");
-
-// Has necessary database information
-$config =
-	parse_ini_file(
-		"../cfg/config.ini",
-		true,
-		INI_SCANNER_TYPED
-	);
-
-require '../class/dbconnection.class.php';
-$db = new DBConnection( $config['Database'] );
+echo "<pre>";
 
 $f = file( './database.sql', FILE_IGNORE_NEW_LINES ); // Fetch tables from file
 
@@ -31,5 +19,17 @@ foreach ( $db_file as $sql ) {
 }
 
 echo '<p>Database installed successfully.</p>';
+
+/*
+ * Creating an admin user
+ */
+$controller = new UserController();
+
+$controller->addUserToDatabase( $db, 'admin' );
+$controller->updatePassword( $db, User::fetchUser( $db, 'admin' ), 'admin' );
+
+$admin = User::fetchUser( $db, 'admin' );
+
+debug( $admin );
 
 echo '<a href="../">Link to front page.</a>';
