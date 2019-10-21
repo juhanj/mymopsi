@@ -79,7 +79,7 @@ class UserController implements Controller {
 	 * @param string $username
 	 * @return User|null
 	 */
-	function createUser ( DBConnection $db, string $username ) {
+	function addUserToDatabase ( DBConnection $db, string $username ) {
 		$random_uid = $this->createRandomUID( $db );
 		$db->query(
 			'insert into mymopsi_user (random_uid, username) values (?,?)',
@@ -144,7 +144,7 @@ class UserController implements Controller {
 			return false;
 		}
 
-		$user = $this->createUser( $db, $username );
+		$user = $this->addUserToDatabase( $db, $username );
 
 		if ( $user ) {
 			$this->result = -3;
@@ -229,8 +229,9 @@ class UserController implements Controller {
 	 * @param DBConnection $db
 	 * @param string $username
 	 * @param string $password
+	 * @return bool
 	 */
-	function mopsiLogin ( DBConnection $db, string $username, string $password ) {
+	function mopsiLogin ( DBConnection $db, string $username, string $password ) : bool {
 		$username = trim( $username );
 		$usernameLength = strlen( $username );
 		$passwordLength = strlen( $password );
@@ -289,5 +290,6 @@ class UserController implements Controller {
 
 		$user = User::fetchUser( $db, $username );
 
+		return true;
 	}
 }
