@@ -105,7 +105,7 @@ code,
 kbd,
 samp,
 pre {
-	font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace; /* 1 */
+	font-family: 'Cascadia Code', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace; /* 1 */
 	font-size: 1em; /* 2 */
 }
 
