@@ -14,9 +14,9 @@ create table if not exists mymopsi_user (
 	username   varchar(190) not null comment 'Username for logging in',                -- UK
 	password   varchar(190) comment 'Hashed & salted. NULL if 3rd party login used.',
 	type       tinyint default null comment 'Password type. NULL:Not processed, 1:old, 2:new.',
-	email      varchar(190),                                                           -- UK
+	email      varchar(190),                                                                 -- UK
 	primary key (id),
-	unique email (email),                                                              -- NULL values ignored in MySQL for unique constraint
+	unique email (email),                                                                    -- NULL values ignored in MySQL for unique constraint
 	unique username (username),
 	unique random_uid (random_uid)
 )
@@ -25,10 +25,10 @@ create table if not exists mymopsi_user (
 	auto_increment = 1;
 
 create table if not exists mymopsi_user_third_party_link (
-    user_id int not null, -- PK
-    mopsi_id int,
-    google_id varchar(190),
-    primary key (user_id)
+	user_id   int not null, -- PK
+	mopsi_id  int,
+	google_id varchar(190),
+	primary key (user_id)
 )
 	default charset = utf8mb4
 	collate = utf8mb4_unicode_ci;
