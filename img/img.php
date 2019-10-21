@@ -5,7 +5,7 @@ $path = INI['Misc']['path_to_collections'];
 $image_ruuid = $_GET['id'];
 
 /**
- * @var \Image $image
+ * @var Image $image
  */
 $image = $db->query(
 	'select id, collection_id, mediatype, filepath from mymopsi_img where random_uid = ? limit 1',

@@ -11,7 +11,9 @@ $folders = scandir( INI['Misc']['path_to_collections'] );
 debug( $folders );
 
 foreach ( $folders as $folder ) {
-	if ( $folder=='.' or $folder=='..' ) continue;
+	if ( $folder=='.' or $folder=='..' ) {
+		continue;
+	}
 
 	$imgs = scandir( INI['Misc']['path_to_collections'] . '/' . $folder );
 
