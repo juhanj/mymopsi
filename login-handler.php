@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 $request = $_POST;
 
@@ -7,16 +8,16 @@ if ( empty( $request ) ) {
 	exit;
 }
 
-require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var DBConnection $db
  * @var Language $lang
  */
 
 $controller = new UserController();
-$controller->handleRequest( $db, $request );
+$controller->handleRequest( $db, $user, $request );
 
 if ( $controller->result['success'] ) {
+	$_SESSION['user_id'] = $controller->result['user_id'];
 	$_SESSION['feedback'] .= "<p class='success'>{$lang->LOGIN_SUCCESS}</p>";
 	header( "Location:./index.php" );
 	exit;

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
- * @var $lang
- * @var $user
+ * @var DBConnection $db
+ * @var Language $lang
+ * @var User $user
  */
 
 if ( !$user ) {
@@ -12,17 +12,11 @@ if ( !$user ) {
 }
 
 if ( !empty( $_POST ) ) {
-
-	$controller = new CollectionControllerNEW();
-
-	if ( $_POST['type'] === 'new' ) {
-		$controller->createNewCollection(
-			$db, $user, $_POST['name'], $_POST['description'], $_POST['public'], $_POST['editable']
-		);
-	}
+	$controller = new CollectionController();
+	$controller->handleRequest( $db, $_POST );
 }
 
-$collection = Collection::fetchCollection( $db, $_GET['uid'] ?? '' );
+$collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] ?? '' );
 
 $feedback = check_feedback_POST();
 ?>

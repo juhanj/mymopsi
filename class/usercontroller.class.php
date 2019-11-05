@@ -5,9 +5,11 @@
  */
 class UserController implements Controller {
 
-	const MAX_USERNAME_LENGTH = 190;
-	const MIN_PASSWORD_LENGTH = 8;
-	const MAX_PASSWORD_LENGTH = 300;
+	const MIN_USERNAME_LENGTH = INI['Settings']['username_min_len'];
+	const MAX_USERNAME_LENGTH = INI['Settings']['username_max_len'];
+
+	const MIN_PASSWORD_LENGTH = INI['Settings']['password_min_len'];
+	const MAX_PASSWORD_LENGTH = INI['Settings']['password_max_len'];
 
 	/**
 	 * @var null Used for returning results to Ajax-requests.
@@ -15,78 +17,53 @@ class UserController implements Controller {
 	public $result = null;
 
 	/**
-	 * @param $db
-	 * @param $req
+	 * @param DBConnection $db
+	 * @param User|null $user
+	 * @param array $req
 	 */
-	public function handleRequest ( $db, $req ) {
+	public function handleRequest ( DBConnection $db, $user, array $req ) {
 		switch ( $req['method'] ) {
 			case 'login':
-				$this->login( $db, $req['user'], $req['password'] );
+				$this->requestLogin( $db, $req['user'], $req['password'] );
 				break;
 			case 'mopsiLogin':
 				$this->mopsiLogin( $db, $req['user'], $req['password'] );
 				break;
 			default:
-				$this->result = [ 'success' => false ];
+				$this->setError( -99, 'Invalid Request' );
 		}
 	}
 
 	/**
-	 * @param DBConnection $db
-	 * @param $username
-	 * @return bool true if available
+	 * @param int $id
+	 * @param string $msg
 	 */
-	private function checkUsernameAvailable ( DBConnection $db, $username ) {
-		return !$db->query(
-			'select 1 from mymopsi_user where username = ? limit 1',
-			[ $username ]
-		);
+	public function setError ( int $id, string $msg ) {
+		$this->result = [
+			'success' => false,
+			'error' => true,
+			'err' => $id,
+			'errMsg' => $msg,
+		];
 	}
 
 	/**
+	 * Create an empty stub user in the database. Only has rows marked NOT NULL.
 	 * @param DBConnection $db
-	 * @param $ruid
-	 * @return bool true if available
-	 */
-	private function checkRandomUIDAvailable ( DBConnection $db, $ruid ) {
-		return !$db->query(
-			'select 1 from mymopsi_user where random_uid = ? limit 1',
-			[ $ruid ]
-		);
-	}
-
-	/**
-	 * Returns a unique, random 20 character string
-	 * @param DBConnection $db
-	 * @return string Random unique 20 character identifier
-	 */
-	private function createRandomUID ( DBConnection $db ) {
-		$uid = null;
-		do {
-			try {
-				$uid = bin2hex( random_bytes( 10 ) );
-			} catch ( Exception $e ) {
-				$uid = substr( str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ), 0, 20 );
-			}
-		} while ( !$this->checkRandomUIDAvailable( $db, $uid ) );
-
-		return $uid;
-	}
-
-	/**
-	 * Create a new user in the database. Returns said user.
-	 * @param DBConnection $db
-	 * @param string $username
+	 * @param string|null $ruid
 	 * @return User|null
 	 */
-	function addUserToDatabase ( DBConnection $db, string $username ) {
-		$random_uid = $this->createRandomUID( $db );
+	function createEmptyUserRowInDatabase ( DBConnection $db, string $ruid = null ): ?User {
+		if ( is_null( $ruid ) ) {
+			$ruid = Utils::createRandomUID( $db ); // compoments/helper-functions.php
+		}
+
 		$db->query(
-			'insert into mymopsi_user (random_uid, username) values (?,?)',
-			[ $random_uid, $username ]
+			'insert into mymopsi_user (random_uid) values (?)',
+			[ $ruid ]
 		);
 
-		$user = User::fetchUser( $db, $db->getConnection()->lastInsertId() );
+		$user = User::fetchUserByID( $db, (int)$db->getConnection()->lastInsertId() );
 
 		return $user;
 	}
@@ -94,144 +71,226 @@ class UserController implements Controller {
 	/**
 	 * @param DBConnection $db
 	 * @param User $user
-	 * @param $newName
-	 */
-	function updateUsername ( DBConnection $db, User $user, $newName ) {
-		$db->query(
-			'update mymopsi_user set username = ? where id = ? limit 1',
-			[ $newName, $user->id ]
-		);
-	}
-
-	/**
-	 * Updated password in the database. Also checks if password needs rehashing with password_needs_rehash,
-	 * so it works if $password argument is either unhashed or hashed.
-	 * @param DBConnection $db
-	 * @param User $user - Must have ID
-	 * @param string $password - Unhashed or hashed. Saved to database in hashed form.
-	 */
-	function updatePassword ( DBConnection $db, User $user, string $password ) {
-		if ( password_needs_rehash( $password, PASSWORD_DEFAULT ) ) {
-			$newHash = password_hash( $password, PASSWORD_DEFAULT );
-		} else {
-			$newHash = $password;
-		}
-		$db->query(
-			'update mymopsi_user set password = ? where id = ? limit 1',
-			[ $user->id, $newHash ]
-		);
-	}
-
-	/**
-	 * @param DBConnection $db
-	 * @param $username
-	 * @param $password
 	 * @return bool
 	 */
-	function createNewUser ( DBConnection $db, string $username, string $password ) {
-		$usernameLength = strlen( $username );
-		$passwordLength = strlen( $password );
-
-		if ( $usernameLength > self::MAX_USERNAME_LENGTH
-			or $passwordLength < self::MIN_PASSWORD_LENGTH
-			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
-			$this->result = -1;
-			return false;
+	function deleteUserRowFromDatabase ( DBConnection $db, User $user ): bool {
+		if ( is_null( $user->id ) ) {
+			throw new InvalidArgumentException( "User is not valid." );
 		}
-
-		if ( !$this->checkUsernameAvailable( $db, $username ) ) {
-			$this->result = -2;
-			return false;
-		}
-
-		$user = $this->addUserToDatabase( $db, $username );
-
-		if ( $user ) {
-			$this->result = -3;
-			return false;
-		}
-
-		$this->updatePassword( $db, $user, $password );
-
-		return true;
+		$rows_changed = $db->query(
+			'delete from mymopsi_user where id = ? limit 1',
+			[ $user->id ]
+		);
+		return boolval( $rows_changed );
 	}
 
 	/**
 	 * @param DBConnection $db
 	 * @param User $user
-	 * @param string $password
+	 * @param string|null $newName
+	 * @return boolean
+	 */
+	function setUsername ( DBConnection $db, User $user, $newName ): bool {
+		if ( is_null( $user->id ) ) {
+			throw new InvalidArgumentException( "User is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_user set username = ? where id = ? limit 1',
+			[ $newName, $user->id ]
+		);
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * Updated password in the database. Returns false if user not found or password not valid hash.
+	 * @param DBConnection $db
+	 * @param User $user - Must have ID
+	 * @param string $hashed_password Must be hashed by password_hash, and be up to date by password_needs_rehash.
+	 * @return bool Returns false if no rows changed (Either user not found, or password needs updating)
+	 */
+	function setPassword ( DBConnection $db, User $user, string $hashed_password ) {
+		if ( password_needs_rehash( $hashed_password, PASSWORD_DEFAULT ) ) {
+			throw new InvalidArgumentException( "Password not valid. Either not hashed or need rehashing." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_user set password = ? where id = ? limit 1',
+			[ $hashed_password, $user->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param string $newEmail
 	 * @return bool
 	 */
-	function checkPassword ( DBConnection $db, User $user, string $password ) {
+	function setEmail ( DBConnection $db, User $user, string $newEmail ): bool {
+		if ( is_null( $user->id ) ) {
+			throw new InvalidArgumentException( "User is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_user set email = ? where id = ? limit 1',
+			[ $newEmail, $user->id ]
+		);
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param $username
+	 * @return bool true if available
+	 */
+	function checkUsernameAvailable ( DBConnection $db, string $username ): bool {
+		$rows_changed = $db->query(
+			'select 1 from mymopsi_user where username = ? limit 1',
+			[ $username ]
+		);
+		return !boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user Must have type and hashed password
+	 * @param string $password Clear text password, from form POST
+	 * @return bool
+	 */
+	function checkPasswordOnLogin ( DBConnection $db, User $user, string $password ): bool {
+		if ( is_null( $user->password ) ) {
+			throw new InvalidArgumentException( "User is not valid. No password found." );
+		}
 		if ( $user->type === 1 ) {
 			// Here would happen updating the password hash in the database
 			// I don't have the mopsi login hashing function, nor do I really want to add it here.
 			// (The hashing function needed to check that the password is correct.)
 			// This code here just for presentation.
 
-//			if ( $this->verifyUnsecureOldPasswordHash( $password ) ) {
-//				 $this->updatePassword( $db, $row, $password );
-//			}
+			//if ( $this->verifyUnsecureOldPasswordHash( $password ) ) {
+			//	$this->updatePassword( $db, $row, $password );
+			//}
+			return false;
 
 		} elseif ( $user->type === 2 ) {
-			if ( password_verify( $password, $user->password ) ) {
-				if ( password_needs_rehash( $user->password, PASSWORD_DEFAULT ) ) {
-					$this->updatePassword( $db, $user, $password );
-				}
-			} else {
-				return false;
+			$password_correct = password_verify( $password, $user->password );
+
+			if ( $password_correct and password_needs_rehash( $user->password, PASSWORD_DEFAULT ) ) {
+				$hashed_password = password_hash( $password, PASSWORD_DEFAULT );
+				$this->setPassword( $db, $user, $hashed_password );
 			}
+		} else {
+			$password_correct = false;
 		}
+
+		return boolval( $password_correct );
+	}
+
+	/**
+	 * Add a link between mopsi and mymopsi accounts in the database. Will update on duplicate key.
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param int $mopsiID
+	 * @return bool
+	 */
+	function addMopsiLinkToUser ( DBConnection $db, User $user, int $mopsiID ): bool {
+		if ( is_null( $user->id ) ) {
+			throw new InvalidArgumentException( "User is not valid." );
+		}
+		$result = $db->query(
+			'insert into mymopsi_user_third_party_link (user_id, mopsi_id) 
+				values (?,?) 
+				on duplicate key update mopsi_id = value(mopsi_id)',
+			[ $user->id, $mopsiID ]
+		);
+		return boolval( $result );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param string $username From form POST
+	 * @param string $password Clear text password, from form POST
+	 * @return bool
+	 */
+	function requestCreateNewUser ( DBConnection $db, string $username, string $password ) {
+		$usernameLength = strlen( $username );
+		$passwordLength = strlen( $password );
+
+		if ( $usernameLength < self::MIN_USERNAME_LENGTH
+			or $usernameLength > self::MAX_USERNAME_LENGTH
+			or $passwordLength < self::MIN_PASSWORD_LENGTH
+			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
+			$this->setError( -1, 'Username or password length wrong' );
+			return false;
+		}
+
+		if ( !$this->checkUsernameAvailable( $db, $username ) ) {
+			$this->setError( -2, "Username '{$username}' not available" );
+			return false;
+		}
+
+		$user = $this->createEmptyUserRowInDatabase( $db );
+		$this->setUsername( $db, $user, $username );
+
+		if ( !$user ) {
+			$this->setError( -3, 'Could not add user to database' );
+			return false;
+		}
+
+		$hashed_password = password_hash( $password, PASSWORD_DEFAULT );
+		$this->setPassword( $db, $user, $hashed_password );
 
 		return true;
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param string $username
-	 * @param string $password
+	 * @param string $username From fornm POST
+	 * @param string $password Clear text password, from form POST
 	 * @return bool
 	 */
-	function login ( DBConnection $db, string $username, string $password ) {
+	function requestLogin ( DBConnection $db, string $username, string $password ) {
 		$username = trim( $username );
 		$usernameLength = strlen( $username );
 		$passwordLength = strlen( $password );
 
-		if ( $usernameLength > self::MAX_USERNAME_LENGTH
+		if ( $usernameLength < self::MIN_USERNAME_LENGTH
+			or $usernameLength > self::MAX_USERNAME_LENGTH
 			or $passwordLength < self::MIN_PASSWORD_LENGTH
 			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
-			$this->result = -1;
+			$this->setError( -1, 'Username or password length wrong' );
 			return false;
 		}
 
-		$user = User::fetchUser( $db, $username );
+		$user = User::fetchUserByUsernameOrEmail( $db, $username );
 
 		if ( !$user ) {
-			$this->result = -4;
+			$this->setError( -2, "Username '{$username}' not found" );
 			return false;
 		}
 
-		if ( $this->checkPassword( $db, $user, $password ) ) {
-			$_SESSION['user_id'] = $user->id;
-			$this->result = [
-				'success' => true,
-				'user_id' => $user->id
-			];
-		} else {
-			$this->result = -5;
+		$password_correct = $this->checkPasswordOnLogin( $db, $user, $password );
+
+		if ( !$password_correct ) {
+			$this->setError( -3, 'Password wrong' );
 			return false;
 		}
+
+		$this->result = [
+			'success' => true,
+			'user_id' => $user->id,
+		];
 
 		return true;
 	}
 
 	/**
-	 * @param DBConnection $db
-	 * @param string $username
-	 * @param string $password
-	 * @return bool
+	 * //TODO
+	 * @param DBConnection $db [description]
+	 * @param string $username [description]
+	 * @param string $password [description]
+	 * @return [type]                 [description]
 	 */
-	function mopsiLogin ( DBConnection $db, string $username, string $password ) : bool {
+	function requestMopsiLogin ( DBConnection $db, string $username, string $password ) {
 		$username = trim( $username );
 		$usernameLength = strlen( $username );
 		$passwordLength = strlen( $password );
@@ -239,7 +298,7 @@ class UserController implements Controller {
 		if ( $usernameLength > self::MAX_USERNAME_LENGTH
 			or $passwordLength < 1 // I don't know the Mopsi password rules, not really my problem
 			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
-			$this->result = -1;
+			$this->setError( -1, 'Username or password length wrong' );
 			return false;
 		}
 
@@ -249,6 +308,7 @@ class UserController implements Controller {
 			'request_type' => 'user_login',
 		];
 		$jsonData = json_encode( $postData );
+		// We send it as a POST-request, but Mopsi-server still wants the data in JSON
 
 		$curlHandle = curl_init();
 
@@ -256,7 +316,7 @@ class UserController implements Controller {
 			CURLOPT_URL => "https://cs.uef.fi/mopsi/mobile/server.php",
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => ["param"=>$jsonData],
+			CURLOPT_POSTFIELDS => [ "param" => $jsonData ],
 			// Mopsi server wants the "param", and the JSON, in this specific format
 			// Not my fault.
 		];
@@ -271,25 +331,83 @@ class UserController implements Controller {
 
 		curl_close( $curlHandle );
 
-		if ( $response->message !== -1
-			and $response->id !== -1
-		 	and $response->error === null ) {
+		if ( $response->message === -1
+			and $response->id === -1
+			and $response->error !== null ) {
 
-			$user = User::fetchUser( $db, $username );
-
-			// Mopsi user found
-			// Check for mymopsi account
-			// If found: log in
-			// If no a
+			$this->setError( -2, 'Mopsi says: ' . $response->error );
+			return false;
 		}
 
+		/*
+		 * We have a Mopsi-user. Now let's find the linked mymopsi-user,
+		 * or create a new one.
+		 */
+
+		$row = $db->query(
+			'select user_id from mymopsi_user_third_party_link where mopsi_id = ?',
+			[ $response->id ]
+		);
+
+		if ( !$row ) {
+			// Create new empty MyMopsi user, so the site has something to refer to.
+			$user = $this->createEmptyUserRowInDatabase( $db );
+			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
+		}
+		else {
+			$user = new User();
+			$user->id = $row->user_id;
+		}
+
+		// If found: log in
+		$_SESSION['user_id'] = $user->id;
+		$_SESSION['username'] = $response->username;
+
+		// If not, create a new stub user and log that in
 		$this->result = [
-			'success' =>'true',
+			'success' => true,
 			'response' => $response
 		];
 
-		$user = User::fetchUser( $db, $username );
-
 		return true;
+	}
+
+	/**
+	 * //TODO
+	 * @param DBConnection $db [description]
+	 * @param User $user [description]
+	 * @return [type]             [description]
+	 */
+	function requestDeleteUser ( DBConnection $db, User $user ) {
+	}
+
+	/**
+	 * //TODO
+	 * @param DBConnection $db [description]
+	 * @param User $user [description]
+	 * @param string $new_password [description]
+	 * @return [type]                     [description]
+	 */
+	function requestPasswordChange ( DBConnection $db, User $user, string $new_password ) {
+	}
+
+	/**
+	 * //TODO
+	 * @param DBConnection $db [description]
+	 * @param User $user [description]
+	 * @param string $new_username [description]
+	 * @return [type]                     [description]
+	 */
+	function requestUsernameChange ( DBConnection $db, User $user, string $new_username ) {
+	}
+
+	/**
+	 * //TODO
+	 * @param DBConnection $db [description]
+	 * @param User $user [description]
+	 * @param string $new_email [description]
+	 * @return [type]                     [description]
+	 */
+	function requestEmailChange ( DBConnection $db, User $user, string $new_email ) {
 	}
 }

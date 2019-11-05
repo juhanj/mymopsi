@@ -57,6 +57,8 @@
 	--error-darker: hsl(349, 85%, 30%);
     --info: var(--primary-light);
     --warning: hsl(35, 100%, 50%);
+
+    --border-radius: .3rem;
 }
 
 .info {
@@ -127,7 +129,7 @@ body.grid {
     display: flex;
     flex-direction: column;
     align-content: space-evenly;
-    justify-content: space-evenly;
+    /*justify-content: space-evenly;*/
 }
 
 .box {
@@ -138,7 +140,7 @@ body.grid {
 
     background: var(--content-box-bg);
     padding: 1.5rem;
-    border-radius: .2rem;
+    border-radius: var(--border-radius);
 }
 
 /****************************************************************************
@@ -152,9 +154,8 @@ body.grid {
 
     padding: 1rem;
     width: 100%;
-    min-width: 25rem;
     border: 0;
-	border-radius: .2rem;
+    border-radius: var(--border-radius);
 
     box-shadow: 0 .1rem 0 0 var(--button-shadow);
 }
@@ -167,12 +168,10 @@ body.grid {
 
 .button:hover, .button.hover {
     background-color: var(--primary-darker);
-    color: var(--text-light);
 }
 
 .button:active, .button.active {
     background-color: var(--primary-dark);
-    color: var(--text-light);
     box-shadow: 0 0 0 0;
 }
 
@@ -184,12 +183,10 @@ body.grid {
 
 .button.red:hover, .button.red.hover {
 	background-color: var(--error-darker);
-	color: var(--text-light);
 }
 
 .button.red:active, .button.red.active {
 	background-color: var(--error-darker);
-	color: var(--text-light);
 }
 
 .button:disabled {
@@ -244,7 +241,7 @@ body.grid {
 *****************************************************************************/
 form label {
     display: block;
-    border-radius: .2rem;
+    border-radius: var(--border-radius);
 }
 
 form input {
@@ -254,7 +251,7 @@ form input {
 
     background-color: var(--input-bg);
     border: 0;
-    border-radius: .2rem;
+    border-radius: var(--border-radius);
 }
 
 form span.required:after {

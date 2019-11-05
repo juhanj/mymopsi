@@ -6,9 +6,16 @@
 interface Controller {
 
 	/**
-	 * @param $db
-	 * @param $req
-	 * @return mixed
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param array $req
 	 */
-	public function handleRequest ( $db, $req );
+	public function handleRequest ( DBConnection $db, User $user, array $req );
+
+	/**
+	 * @param int $id
+	 * @param string $msg
+	 */
+	public function setError ( int $id, string $msg );
+
 }

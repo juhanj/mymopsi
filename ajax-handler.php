@@ -17,6 +17,7 @@ require	$_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 
 $class_controller = $request['class'] . 'Controller';
+
 /**
  * @var Controller $controller
  */

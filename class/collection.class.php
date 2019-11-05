@@ -9,9 +9,6 @@ class Collection {
 	/** @var int $owner_id */
 	public $owner_id;
 
-	/** @var Image[] Images in collection, and their info. */
-	public $imgs;
-
 	public $name;
 	public $description;
 
@@ -23,47 +20,79 @@ class Collection {
 
 	public $number_of_images;
 
-	function __construct () {}
+	/** @var Image[] $images Images in collection, and their info. */
+	public $images;
 
-	function populateVariables ( DBConnection $db, int $id ) {
-		$sql = "select id, owner_id, random_uid, name, description, public, editable, date_added, last_edited
-				from mymopsi_collection c
-				where c.id = ?
-				limit 1";
+	/** @var User $owner */
+	public $owner;
 
-		$row = $db->query( $sql, [ $id ] );
-
-		if ( !$row ) { return; }
-
-		foreach ( $row as $property => $propertyValue ) {
-			$this->{$property} = $propertyValue;
-		}
-	}
-
-	function getCollectionImgs ( DBConnection $db ) {
-		$sql = "select id, collection_id, random_uid, hash, name, original_name, filepath, latitude, longitude, date_created, date_added, size
-				from mymopsi_img i
-				where collection_id = ?
-				order by name";
-
-		$this->imgs = $db->query( $sql, [ $this->id ], true, 'Image' );
+	function __construct () {
 	}
 
 	/**
-	 * @param \DBConnection $db
-	 * @param string        $uid
-	 * @return \Collection
+	 * @param DBConnection $db
+	 * @param int $id
+	 * @return Collection|null
 	 */
-	static function fetchCollection ( DBConnection $db, string $uid ) : ?Collection {
-		$sql = 'select id, owner_id, random_uid, name, description, public, editable, date_added, last_edited
-				from mymopsi_collection 
-				where random_uid = ? 
+	public static function fetchCollectionByID ( DBConnection $db, int $id ): ?Collection {
+		$sql = 'select c.*, 
+                    count(i.id) as number_of_images
+				from mymopsi_collection c
+					left join mymopsi_img i on c.id = i.collection_id 
+				where c.id = ?
+				group by c.id
 				limit 1';
-		$values = [ $uid ];
+		$values = [ $id ];
 
 		/** @var Collection $row */
 		$row = $db->query( $sql, $values, false, 'Collection' );
 
 		return $row ?: null;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param string $ruid
+	 * @return Collection|null
+	 */
+	public static function fetchCollectionByRUID ( DBConnection $db, string $ruid ): ?Collection {
+		$sql = 'select c.*, 
+                    count(i.id) as number_of_images
+				from mymopsi_collection c
+					left join mymopsi_img i on c.id = i.collection_id 
+				where c.random_uid = ?
+				group by c.id
+				limit 1';
+		$values = [ $ruid ];
+
+		/** @var Collection $row */
+		$row = $db->query( $sql, $values, false, 'Collection' );
+
+		return $row ?: null;
+	}
+
+	/**
+	 * Get collection's images from the database
+	 * @param DBConnection $db
+	 */
+	public function getImages ( DBConnection $db ) {
+		$sql = "select *
+				from mymopsi_img i
+				where collection_id = ?";
+
+		$this->images = $db->query( $sql, [ $this->id ], true, 'Image' );
+	}
+
+	/**
+	 * Get collection's images from the database
+	 * @param DBConnection $db
+	 */
+	public function getOwner ( DBConnection $db ) {
+		$sql = "select *
+				from mymopsi_user u
+				where id = ?
+				limit 1";
+
+		$this->owner = $db->query( $sql, [ $this->owner_id ], false, 'User' );
 	}
 }

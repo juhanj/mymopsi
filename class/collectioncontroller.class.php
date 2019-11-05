@@ -1,388 +1,270 @@
 <?php declare(strict_types=1);
 
-class CollectionController {
-
-	public $result = null;
+/**
+ * Class CollectionController
+ */
+class CollectionController implements Controller {
 
 	public const KB = 1024;
 	public const MB = 1048576;
 	public const GB = 1073741824;
 
-	/**
-	 * CollectionController constructor.
-	 * @param DBConnection $db
-	 * @param array         $parameters For example, from a form POST data.
-	 */
-	function __construct ( DBConnection $db , array $parameters ) {
-		if ( !$db or !$parameters ) {
-			return;
-		}
+//	public const MIN_NAME_LENGTH = INI['Settings']['coll_name_min_len'];
+	public const MAX_NAME_LENGTH = INI['Settings']['coll_name_max_len'];
 
-		switch ( $parameters[ 'request' ] ) {
-			case 'createNewCollection':
-				$this->createNewCollection( $db , $parameters[ 'name' ] , $parameters[ 'email' ] );
+//	public const MIN_DESCR_LENGTH = INI['Settings']['coll_descr_min_len'];
+	public const MAX_DESCR_LENGTH = INI['Settings']['coll_descr_max_len'];
+
+	/**
+	 * @var mixed
+	 */
+	public $result = null;
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param array $req
+	 */
+	public function handleRequest ( DBConnection $db, User $user, array $req ) {
+		switch ( $req['request'] ?? null ) {
+			case 'new':
+				$result = $this->requestCreateNewCollection( $db, $user, $req );
 				break;
-			case 'addImagesToCollection':
-				$this->addImagesToCollection( $db, $parameters[ 'collection-uid' ], $_FILES );
-				break;
-			case 'getPublicCollections':
-				$this->getPublicCollections( $db, $parameters[ 'collection-uid' ] );
+			case 'delete':
+				$result = $this->requestDeleteCollection( $db, $user, $req );
 				break;
 			default:
-				$this->result = [ 'success' => false ];
+				$result = false;
+				$this->setError( 0, 'Invalid request' );
 		}
-	}
 
-	function checkRandomUIDAvailable ( DBConnection $db, $ruid ) {
-		return !$db->query(
-			'select 1 from mymopsi_collection where random_uid = ?',
-			[ $ruid ]
-		);
+		$this->result['success'] = $result;
 	}
 
 	/**
-	 * @param DBConnection $db
-	 * @return string A 20-char long random string. Either random_byte() (cryptographically secure pseudo-random),
-	 * or just shuffled alpha-numeric characters (not secure, only used if random_bytes() not available).
-	 * Guaranteed unique (checked against database)
+	 * @param int $id
+	 * @param string $msg
 	 */
-	function createRandomUID ( DBConnection $db ) {
-		$uid = null;
-		do {
-			try {
-				$uid = bin2hex( random_bytes( 10 ) );
-			} catch ( Exception $e ) {
-				$uid = substr( str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ), 0, 20 );
-			}
-		} while ( !$this->checkRandomUIDAvailable( $db, $uid ) );
-
-		return $uid;
+	public function setError ( int $id, string $msg ) {
+		$this->result = [
+			'error' => true,
+			'err' => $id,
+			'errMsg' => $msg,
+		];
 	}
 
 	/**
+	 * Create an empty stub collection in the database. Only has rows marked NOT NULL.
+	 * Returns a copy of created collection.
 	 * @param DBConnection $db
-	 * @param string        $email
-	 * @param string        $id
+	 * @param User $user Must have ID
+	 * @param string|null $ruid
+	 * @return Collection|null
+	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	function changeCollectionOwner ( DBConnection $db , string $email , string $id ) {
-		// Check if user already exists in database
-		$row = $db->query(
-			'select id from mymopsi_user where email = ?' ,
-			[ $email ]
-		);
-
-		// Create user if not
-		if ( !$row ) {
-			$db->query(
-				'insert into mymopsi_user (email,random_uid) values (?,?)' ,
-				[ $email , $ruuid = $this->createRandomUID($db) ]
-			);
+	function createEmptyCollectionRowInDatabase ( DBConnection $db, User $user, string $ruid = null ): ?Collection {
+		if ( is_null( $user->id ) ) {
+			throw new InvalidArgumentException( "User is not valid." );
 		}
-		$user_id = $row->id ?? $db->getConnection()->lastInsertId();
+		if ( is_null( $ruid ) ) {
+			$ruid = createRandomUID( $db );
+		}
+
 		$db->query(
-			'update mymopsi_collection set owner_id = ? where id = ?' ,
-			[ $user_id , $id ]
+			'insert into mymopsi_collection (owner_id, random_uid) values (?,?)',
+			[ $user->id, $ruid ]
 		);
+
+		$collection = Collection::fetchCollectionByID( $db, (int)$db->getConnection()->lastInsertId() );
+
+		return $collection;
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param string        $name
-	 * @param string        $owner
+	 * @param Collection $collection
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	function createNewCollection ( DBConnection $db , string $name , string $owner ) {
-		$sql = "insert into mymopsi_collection ( name, random_uid ) values (?,?)";
-
-		$values = [ $name , $ruuid = $this->createRandomUID($db) ];
-		$result = $db->query( $sql , $values );
-		$id = $db->getConnection()->lastInsertId();
-
-		if ( $id and !file_exists( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$id}/" ) ) {
-			mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$id}/" , 0755 );
+	public function removeCollectionFromDatabase ( DBConnection $db, Collection $collection ): bool {
+		if ( is_null( $collection->id ) ) {
+			throw new InvalidArgumentException( "Collection is not valid." );
 		}
-		else {
-			$this->result = false;
-			return;
+		$rows_changed = $db->query(
+			'delete from mymopsi_collection where id = ? limit 1',
+			[ $collection->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param Collection $collection Must have ID
+	 * @param string $name
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
+	 */
+	public function updateName ( DBConnection $db, Collection $collection, string $name ): bool {
+		if ( is_null( $collection->id ) ) {
+			throw new InvalidArgumentException( "Collection is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_collection set name = ? where id = ? limit 1',
+			[ $name, $collection->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param Collection $collection Must have ID
+	 * @param string $description
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
+	 */
+	public function updateDescription ( DBConnection $db, Collection $collection, string $description ): bool {
+		if ( is_null( $collection->id ) ) {
+			throw new InvalidArgumentException( "Collection is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_collection set description = ? where id = ? limit 1',
+			[ $description, $collection->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param Collection $collection
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
+	 */
+	public function togglePublic ( DBConnection $db, Collection $collection ): bool {
+		if ( is_null( $collection->id ) ) {
+			throw new InvalidArgumentException( "Collection is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_collection set public = !public where id = ? limit 1',
+			[ $collection->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param Collection $collection
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
+	 */
+	public function toggleEditable ( DBConnection $db, Collection $collection ): bool {
+		if ( is_null( $collection->id ) ) {
+			throw new InvalidArgumentException( "Collection is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_collection set editable = !editable where id = ? limit 1',
+			[ $collection->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param array $options
+	 * @return bool
+	 */
+	public function requestCreateNewCollection ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		$name = (!empty( $options['name'] ))
+			? trim( mb_substr( $options['name'], 0, self::MAX_NAME_LENGTH ) )
+			: null;
+		$description = (!empty( $options['description'] ))
+			? trim( mb_substr( $options['description'], 0, self::MAX_DESCR_LENGTH ) )
+			: null;
+		$public = !empty( $options['public'] );
+		$editable = !empty( $options['editable'] );
+
+		$new_coll = $this->createEmptyCollectionRowInDatabase( $db, $user );
+
+		if ( !$new_coll ) {
+			$this->setError( -2, 'Failed adding to database' );
+			return false;
+		}
+
+		if ( $name ) {
+			$this->updateName( $db, $new_coll, $name );
+		}
+		if ( $description ) {
+			$this->updateName( $db, $new_coll, $description );
+		}
+		if ( $public ) {
+			$this->togglePublic( $db, $new_coll );
+		}
+		if ( $editable ) {
+			$this->toggleEditable( $db, $new_coll );
 		}
 
 		$this->result = [
-			'success' => $result,
-			'uid' => $ruuid,
-			'name' => $name
+			'success' => true,
+			'collection_id' => $new_coll->id
 		];
-
-		if ( $owner ) {
-			$this->changeCollectionOwner( $db , $owner , $id );
-		}
-	}
-
-	function deleteImage () {
-		//TODO: Delete image
-		//  delete img from database
-		//  delete img from folder
-	}
-
-	function deleteCollection ( DBConnection $db , string $id ) {
-		//TODO: Delete collection
-		//  check images first
-		//      use deleteImage() ?
-		//      more efficient to do all at once? For file deletion probably not.
-		//  delete collection from database
-		//  delete folder
-	}
-
-	/**
-	 * For organizing the global _FILES variable a bit more sensibly, and more usable.
-	 * See comment https://www.php.net/manual/en/reserved.variables.files.php#121500 in the PHP manual.
-	 * @param array $_files _FILES global variable
-	 * @return array re-formatted _FILES array
-	 */
-	function reorganizeUploadFilesArray ( array $_files ) {
-		$result = array();
-		foreach ( $_files as $fileArray ) {
-			if ( is_array( $fileArray[ 'name' ] ) ) {
-				foreach ( $fileArray as $attrib => $list ) {
-					foreach ( $list as $index => $value ) {
-						$result[ $index ][ $attrib ] = $value;
-					}
-				}
-			}
-			else {
-				$result[] = $fileArray;
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Run exiftool for a given collection and output to console in JSON format.
-	 * Note! ExifTool will not read .tmp files. They need to be given correct file extension first.
-	 * @param string $dir Directory under path_to_collections
-	 * @return array Image metadata from all images in given directory
-	 */
-	function runExiftool ( string $dir ) {
-
-		$perl = INI[ 'Misc' ][ 'perl' ];
-
-		$exift = DOC_ROOT . WEB_PATH . '/exiftool/exiftool';
-
-		// -j : print JSON console output
-		// -g3 : I DON'T KNOW, but it's important!
-		// -a : allow duplicates (needed for gps coordinates)
-		// -gps:all : all gps exif data
-		// -Datecreate : self-explanatory (should be time image was taken/created)
-		// -ImageSize : self-explanatory
-		// -c %.6f : format for gps coordinates output
-		$command = "-j -g3 -a -gps:all -Datecreate -ImageSize -c %.6f";
-
-		// Reads all images in the given directory
-		$target = INI[ 'Misc' ][ 'path_to_collections' ] . "/{$dir}/";
-
-		exec(
-			"{$perl} {$exift} {$command} {$target}" ,
-			$output
-		);
-
-		return json_decode( implode( "" , $output ) );
-	}
-
-	/**
-	 * Checks that uploaded file firstly uploade properly, and secondly is a valid image file.
-	 * @param array $file
-	 * @return bool True is valid file, false otherwise
-	 */
-	function checkUploadedFile ( array &$file ) {
-		/*
-		 * First part: Check for PHP upload errors.
-		 * See https://www.php.net/manual/en/features.file-upload.errors.php for possible codes.
-		 */
-		if ( $file[ 'error' ] ) {
-			return false;
-		}
-
-		/*
-		 * Second part: checking for mimetype to see if image file.
-		 * We don't use the $file['type'] because never trust user input!
-		 *
-		 * Checking for image mimetype using PHP finfo-extension, and regex.
-		 * regex pattern: /(image\/)(\w+)/
-		 *      (image\/)   string 'image/'
-		 *      (\w+)       one or more word character
-		 * So checks for mimetype "image/ *" basically. Could check for
-		 * more specific mimetypes, but let's start with this.
-		 */
-		$file_mimetype = finfo_file(
-			finfo_open( FILEINFO_MIME_TYPE ) ,
-			$file[ 'tmp_name' ]
-		);
-		$file[ 'mimetype' ] = $file_mimetype;
-		$regex_result = preg_match(
-			'/(image\/)(\w+)/' ,
-			$file_mimetype
-		);
-
-		if ( !$regex_result ) {
-			// Overwrite the error variable, because we already checked it and it was 0.
-			$file[ 'error' ] = -1;
-
-			return false;
-		}
 
 		return true;
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param int           $id
-	 * @param array         $file
-	 * @return int
+	 * @param User $user
+	 * @param array $options
+	 * @return bool
 	 */
-	function addImageToDatabase ( DBConnection $db , int $id , array &$file ) {
-		$hash = sha1_file( $file[ 'current_path' ] );
-		$random_uid = $this->createRandomUID($db);
-		$file['new_path'] = sprintf( "%s/%s/%s.%s" ,
-             INI[ 'Misc' ][ 'path_to_collections' ] ,
-             $id ,
-             $random_uid ,
-             pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION )
-		);
-
-		$sql = "insert ignore into mymopsi_img 
-	                ( collection_id, random_uid, name, original_name, filepath, 
-	                 latitude, longitude, date_created, hash, size, mediatype ) 
-				values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-		$values = [
-			$id ,
-			$this->createRandomUID($db) ,
-			pathinfo( $file[ 'name' ] , PATHINFO_FILENAME ) ,
-			pathinfo( $file[ 'name' ] , PATHINFO_FILENAME ) ,
-			$file[ 'new_path' ] ,
-			$file[ 'metadata' ]->GPSLatitude ?? null ,
-			$file[ 'metadata' ]->GPSLongitude ?? null ,
-			$file[ 'metadata' ]->Datecreate ?? null ,
-			$hash ,
-			$file[ 'size' ] ,
-			$file[ 'mimetype' ]
-		];
-
-		$result = $db->query( $sql , $values );
-
-		return $result
-			? $db->getConnection()->lastInsertId()
-			: 0;
-	}
-
-	/**
-	 * Add new images to an existing collection.
-	 * Also runs exiftool at the same time.
-	 * @param DBConnection $db
-	 * @param string        $uid
-	 * @param array         $_files
-	 */
-	function addImagesToCollection ( DBConnection $db , string $uid, array $_files ) {
-		// Organising _FILES global variable. The default structure is dumb and hard to use.
-		$files = $this->reorganizeUploadFilesArray( $_files );
-
-		// Let's make sure that no accidents happen because a variable is empty for some reason.
-		if ( !$files or (strlen( INI[ 'Misc' ][ 'path_to_collections' ] ) < 20) ) {
-			return;
+	public function requestDeleteCollection ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
 		}
 
-		$collection = Collection::fetchCollection( $db, $uid );
-		$id = $collection->id;
+		$collection = (!empty( $options['collection'] ))
+			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+			: null;
 
-		/*
-		 * Create a temporary folder for running exiftool specific for this upload batch
-		 */
-		$new_temp_folder = "temp-{$id}-" . mt_rand( 0 , 10000 );
-		mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$new_temp_folder}/" );
-
-		// For keeping track of failed uploads, and sending them back too.
-		$errors = array();
-
-
-		/*
-		 * Moving files to temporary directory, while also dropping any uploaded files with errors.
-		 * Not moving straight to final destination so that I won't run exiftool on already uploaded files.
-		 */
-		foreach ( $files as $index => &$file ) {
-			if ( !$this->checkUploadedFile( $file ) ) {
-				$errors[] = $file;
-				unset( $files[ $index ] );
-				continue;
-			}
-
-			$file[ 'current_path' ]	=
-				sprintf( "%s/%s/%s.%s" ,
-			         INI[ 'Misc' ][ 'path_to_collections' ] ,
-			         $new_temp_folder ,
-			         basename( $file[ 'tmp_name' ] ) ,
-			         pathinfo( $file[ 'name' ] , PATHINFO_EXTENSION  ) );
-
-			move_uploaded_file(
-				$file[ 'tmp_name' ] ,
-				$file[ 'current_path' ]
-			);
+		if ( !$collection ) {
+			$this->setError( -2, 'Collection not valid' );
+			return false;
 		}
 
-		unset( $file );
-
-		/*
-		 * Running exiftool for the directory made above.
-		 * This is more efficient than running it individually, and avoids running for
-		 * the whole collection, which are already in the database with GPS coordinates saved.
-		 */
-		/**
-		 * @var $img_metadata \stdClass
-		 *  SourceFile,
-		 *  Main =>
-		 *      GPSLatitudeRef,
-		 *      GPSLatitude,
-		 *      GPSLongitudeRef,
-		 *      GPSLongitude,
-		 *      ImageSize
-		 */
-		$img_metadata = $this->runExiftool( $new_temp_folder );
-
-		/*
-		 * Finally add images to database, and move to final storage location.
-		 * Only valid, accepted images get moved.
-		 */
-		foreach ( $files as $key => &$file ) {
-			$file[ 'metadata' ] = $img_metadata[ $key ]->Main ?? null;
-
-			$image_id = $this->addImageToDatabase( $db , $id , $file );
-
-			// If there is a duplicate, this is where it stops
-			if ( !$image_id ) {
-				$errors[] = $file;
-				unlink( $file[ 'current_path' ] );
-				unset( $files[ $key ] );
-				continue;
-			}
-
-			rename(
-				$file[ 'current_path' ] ,
-				$file[ 'new_path' ]
-			);
+		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
+			$this->setError( -3, "User {$user->random_uid} does not own this collection" );
+			return false;
 		}
 
-		rmdir( INI[ 'Misc' ][ 'path_to_collections' ] . "/{$new_temp_folder}/" );
+		if ( $collection->number_of_images !== 0 ) {
+			$this->setError( -4,
+				"Collection {$collection->random_uid} has {$collection->number_of_images} images in it."
+				. " Cannot delete collections with images. Delete images first." );
+			return false;
+		}
 
-		// Pass on info on rejected/accepted images to the user.
+		$result = $this->removeCollectionFromDatabase( $db, $collection );
+
+		if ( !$result ) {
+			$this->setError( -5, "Collection could not be deleted." );
+			return false;
+		}
+
 		$this->result = [
-			'success' => $files ,
-			'errors' => $errors
+			'success' => true
 		];
-	}
 
-	/**
-	 * Returns all public collections from the database.
-	 */
-	function getPublicCollections () {
-		//TODO: get all collections set public from database --jj190509
-		// database call, get id, name, descr, size of collection (join)
-		// return results
+		return true;
 	}
 }

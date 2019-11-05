@@ -5,13 +5,13 @@
 	<!-- Name -->
 	<label>
 		<span class="label required"><?= $lang->NAME ?></span>
-		<input type="text" name="name" required>
+		<input type="text" name="name">
 	</label>
 
 	<!-- Description -->
 	<label>
 		<span class="label required"><?= $lang->DESCRIPTION ?></span>
-		<input type="text" name="description" required>
+		<input type="text" name="description">
 	</label>
 
 	<!-- Public -->
@@ -28,7 +28,7 @@
 		<span><?= $lang->EDITABLE_INFO ?></span>
 	</label>
 
-	<input type="hidden" name="type" value="new">
+	<input type="hidden" name="request" value="new">
 
 	<!-- Cancel & Save -->
 	<div>

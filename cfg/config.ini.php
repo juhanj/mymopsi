@@ -8,6 +8,14 @@ name = "database"
 user = "root"
 pass = ""
 
+[Settings]
+username_min_len = 1
+username_max_len = 50
+password_min_len = 8
+password_max_len = 300
+coll_name_max_len = 50
+coll_descr_max_len = 300
+
 [Misc]
 ; Localhost / server difference on Perl setup
 perl = "./path/to/perl"

@@ -13,28 +13,30 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 <?php require 'html-header.php'; ?>
 
-<article class="feedback" id="feedback"></article>
+<section class="feedback" id="feedback"></section>
 
 <main class="main-body-container">
 
 	<a href="index.php" class="button return">
-		<?= $lang->RETURN_INDEX ?>
+		<?= $lang->RETURN ?>
 	</a>
 
-	<article class="box lang-settings" id="languages">
+	<article class="box settings">
 		<h2 class="settings-head"><?= $lang->SETT_LANG_HEAD ?></h2>
 		<p><?= $lang->SETT_LANG_INFO ?></p>
 
 		<label for="english">
-			<input type="radio" id="english" name="lang" value="en"
-				<?= $lang->lang == 'en' ? 'checked' : '' ?>>
-			<span class="label"><?= $lang->SETT_LANG_ENG ?></span>
+			<input type="radio" name="lang" value="en" id="english"
+				<?= $lang->lang === 'en' ? 'checked' : '' ?>
+			>
+			<span class="label">🇬🇧 English</span>
 		</label>
 
 		<label for="finnish">
-			<input type="radio" id="finnish" name="lang" value="fi"
-				<?= $lang->lang == 'fi' ? 'checked' : '' ?>>
-			<span class="label"><?= $lang->SETT_LANG_FIN ?></span>
+			<input type="radio" name="lang" value="fi" id="finnish"
+				<?= $lang->lang == 'fi' ? 'checked' : '' ?>
+			>
+			<span>🇫🇮 Suomi</span>
 		</label>
 	</article>
 

@@ -36,7 +36,7 @@ $collection->getCollectionImgs( $db );
 			<?= $lang->FRONTPAGE ?>
 		</a>
 
-		<a href="edit_collection.php" class="button">
+		<a href="edit-collection.php" class="button">
 			<i class="material-icons">edit</i>
 		</a>
 

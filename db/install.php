@@ -25,10 +25,13 @@ echo '<p>Database installed successfully.</p>';
  */
 $controller = new UserController();
 
-$controller->addUserToDatabase( $db, 'admin' );
-$controller->updatePassword( $db, User::fetchUser( $db, 'admin' ), 'admin' );
+$controller->addNewUserToDatabase( $db, 'admin' );
+$admin = User::fetchUserByID( $db, 1 );
+$controller->setPassword( $db, $admin, 'password' );
 
-$admin = User::fetchUser( $db, 'admin' );
+$db->query( 'update mymopsi_user set admin = true where id = 1 limit 1' );
+
+$admin = User::fetchUserByID( $db, 1 );
 
 debug( $admin );
 

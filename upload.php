@@ -37,7 +37,7 @@ if ( !$collection ) {
     <div class="feedback" id="feedback"><?= $feedback ?></div>
 
 	<!-- Link back to collection we're adding images to -->
-	<a href="./view.php?id=<?= $collection->random_uid ?>" class="button">
+	<a href="collection.php?id=<?= $collection->random_uid ?>" class="button">
 		<i class="material-icons">arrow_back</i>
 		<?= $lang->BACK_TO_COLL ?>
 	</a>

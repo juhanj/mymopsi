@@ -1,31 +1,26 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
- * @var $lang
- * @var $user
+ * @var DBConnection $db
+ * @var Language $lang
+ * @var User $user
  */
 
 if ( !empty( $_POST ) ) {
-
 	$controller = new UserController();
+	$controller->handleRequest( $db, $_POST );
 
-	if ( $_POST['type'] === 'new' ) {
-
-		$controller->createNewUser( $db, trim($_POST['username']), $_POST['password'] );
-
-		switch ( $controller->result ) {
-			case -2:
-				$_SESSION['feedback'] = "<p class='error'>{$lang->USERNAME_NOT_AVAILABLE}</p>";
-				break;
-			case -1:
-				$_SESSION['feedback'] = "<p class='error'>{$lang->TOO_LONG_STRING}</p>";
-				break;
-			case 1:
-				$_SESSION['feedback'] = "<p class='success'>{$lang->NEW_USER_CREATED}</p>";
-				header( "Location: ./index.php" );
-				exit();
-		}
+	switch ( $controller->result ) {
+		case -2:
+			$_SESSION['feedback'] = "<p class='error'>{$lang->USERNAME_NOT_AVAILABLE}</p>";
+			break;
+		case -1:
+			$_SESSION['feedback'] = "<p class='error'>{$lang->TOO_LONG_STRING}</p>";
+			break;
+		case 1:
+			$_SESSION['feedback'] = "<p class='success'>{$lang->NEW_USER_CREATED}</p>";
+			header( "Location: ./index.php" );
+			exit();
 	}
 }
 

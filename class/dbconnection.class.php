@@ -1,4 +1,6 @@
-<?php declare(strict_types=1); //
+<?php
+declare(strict_types=1);
+
 /**
  * This class handles the database connection. A wrapper for PDO, if you will.
  *
@@ -43,8 +45,6 @@ class DBConnection {
 	 */
 	protected $prepared_stmt = null;
 
-	const FETCH_ALL = true;
-
 	/**
 	 * Reads necessary information directly from config.ini -file.
 	 * @param array $config [optional] <p> Order of fields: <br>
@@ -52,7 +52,6 @@ class DBConnection {
 	 *                      - If assoc: Doesn't matter, but field names must be the same as in config.ini -file.
 	 */
 	public function __construct( array $config = [] ) {
-		define( 'FETCH_ALL', true );
 		if ( empty($config) ) {
 			$config = INI['Database'];
 		}
@@ -79,7 +78,7 @@ class DBConnection {
 	 * @param string $className      [optional] <p> Jos haluat jonkin tietyn luokan olion. <p>
 	 *                               Huom: haun muuttujien nimet pitää olla samat kuin luokan muuttujat.
 	 *
-	 * @return array|int|bool|stdClass <p> Palauttaa stdClass[], jos SELECT ja FETCH_ALL==true.
+	 * @return array|int|bool|stdClass <p> Palauttaa stdClass[], jos SELECT ja fetchAllRows==true.
 	 *                               Palauttaa stdClass-objektin, jos haetaan vain yksi.<br>
 	 *                               Palauttaa <code>$stmt->rowCount</code> (muutettujen rivien määrä), jos esim.
 	 *                               INSERT tai DELETE.<br>

@@ -9,14 +9,15 @@ MEDIUMINT   |   8388607 / 16777215
 */
 
 create table if not exists mymopsi_user (
-	id         int          not null auto_increment,                                   -- PK
-	random_uid varchar(20)  not null comment 'public facing string for URLs and such', -- UK
-	username   varchar(190) not null comment 'Username for logging in',                -- UK
+	id         int         not null auto_increment,                                          -- PK
+	random_uid varchar(20) not null comment 'public facing string for URLs and such',        -- UK
+	username   varchar(50) comment 'Username for logging in. NULL if 3rd party login used', -- UK
 	password   varchar(190) comment 'Hashed & salted. NULL if 3rd party login used.',
-	type       tinyint default null comment 'Password type. NULL:Not processed, 1:old, 2:new.',
+	type       tinyint     not null default 2 comment 'Password type. NULL:Not processed, 1:old, 2:new.',
 	email      varchar(190),                                                                 -- UK
+	admin      boolean default false,
 	primary key (id),
-	unique email (email),                                                                    -- NULL values ignored in MySQL for unique constraint
+	unique email (email),                              -- NULL values ignored in MySQL for unique constraint
 	unique username (username),
 	unique random_uid (random_uid)
 )
@@ -37,13 +38,13 @@ create table if not exists mymopsi_collection (
 	id          int                      not null auto_increment,                                   -- PK
 	owner_id    int                      not null,                                                  -- PK FK
 	random_uid  varchar(20)              not null comment 'public facing string for URLs and such', -- UK
-	name        varchar(190)             not null,
-	description text default null,
+	name        varchar(50),
+	description text default null, -- max ~65k characters
 	public      boolean default false comment 'Is the collection public, i.e. shown on front page',
 	editable    boolean default false comment 'Can anyone edit this, owner/admin can always edit',
 	date_added  timestamp default now( ) not null,
-	last_edited timestamp default now( ) not null,
-	primary key (id, owner_id),
+	last_edited timestamp default now( ) not null comment 'Last time images were added to collection',
+	primary key (id),
 	unique random_uid (random_uid),
 	constraint fk_collection_user foreign key (owner_id) references mymopsi_user (id)
 )

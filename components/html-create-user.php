@@ -30,7 +30,7 @@
 		<span class="required"></span> = <?= $lang->REQUIRED_INPUT ?>
 	</p>
 
-	<input type="hidden" name="type" value="new">
+	<input type="hidden" name="request" value="new">
 
 	<!-- Cancel & Save -->
 	<div class="buttons margins-off">

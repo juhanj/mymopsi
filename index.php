@@ -30,7 +30,7 @@ if ( $user ) {
 
 <main class="main-body-container">
 
-	<h1 class="title">My Mopsi</h1>
+	<h1 class="title">MyMopsi</h1>
 
 	<?php if ( !$user ) : ?>
 		<!-- User-login form -->
@@ -46,7 +46,7 @@ if ( $user ) {
 
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
-						<input type="password" name="password" minlength="8" maxlength="300">
+						<input type="password" name="password" minlength="5" maxlength="300">
 					</label>
 
 					<input type="hidden" name="class" value="User">
@@ -75,14 +75,8 @@ if ( $user ) {
 					<input type="hidden" name="class" value="User">
 					<input type="hidden" name="method" value="mopsiLogin">
 
-					<input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button" id="mopsi-submit">
+					<input type="submit" value="<?= $lang->MOPSI_LOGIN_SUBMIT ?>" class="button" id="mopsi-submit">
 				</form>
-			</section>
-
-			<hr>
-
-			<section>
-				<button class="button" id="google-login"><?= $lang->GOOGLE_LOGIN ?></button>
 			</section>
 
 		</article>
@@ -91,7 +85,7 @@ if ( $user ) {
 			<!-- Link to new user creation page -->
 			<section>
 				<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
-				<a href="./edit_user.php?new" class="button">
+				<a href="edit-user.php?new" class="button">
 					<?= $lang->CREATE_NEW_USER_LINK ?>
 				</a>
 			</section>
@@ -101,7 +95,10 @@ if ( $user ) {
 
 		<!-- Create new collection -->
 		<article class="box">
-			<a href="./edit_collection.php?new"><?= $lang->NEW_COLLECTION ?></a>
+			<h2><?= $lang->NEW_COLLECTION ?></h2>
+			<a href="edit-collection.php?new" class="button">
+				<?= $lang->NEW_COLLECTION ?>
+			</a>
 		</article>
 
 	<?php endif; ?>
@@ -128,10 +125,7 @@ if ( $user ) {
 				<!-- If no public collections found, print note, and if user logged in link to create new -->
 				<p><?= $lang->NO_PUBLIC_COLL_AVAILABLE ?>
 					<?php if ( $user ) : ?>
-						<?= $lang->NOTE_CREATE_PUBLIC_COLL ?>
-						<a href="./edit_collection.php?new">
-							<?= $lang->NOTE_CREATE_PUBLIC_COLL_LINK ?>
-						</a>
+						<?= $lang->CREATE_PUBLIC_COLL ?>
 					<?php endif; ?>
 				</p>
 			<?php endif; ?>

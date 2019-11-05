@@ -4,40 +4,12 @@
 *************************************************************/
 
 .main-body-container {
-	width: 100%;
-	max-width: 30rem; /* With default max-width takes too much space */
-}
-
-.box {
-	background-color: var(--content-box-bg);
-	border: 1px var(--accent) solid;
-	border-radius: .2rem;
-	padding: 1rem;
-	display: flex;
-	flex-direction: column;
-}
-
-.box > * {
-	flex: 1;
+	/* Default max-width set in main.css is a bit much here, hence 30rem set here */
+	max-width: 30rem;
 }
 
 label {
 	padding: 1rem;
-	border: 1px var(--accent-light) dashed;
-	border-radius: 5px;
-}
-
-label:hover {
-	padding: 1rem;
-	border: 1px var(--accent-dark) solid;
-	border-radius: 0;
-}
-
-/* Centering the text, changes colours, and full-width */
-.button.return {
-	display: flex;
-
-	background: var(--primary-light);
-	color: var(--text-dark);
-	border-color: var(--primary);
+	background-color: var(--input-bg);
+	border-radius: var(--border-radius);
 }

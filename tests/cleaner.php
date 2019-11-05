@@ -37,6 +37,4 @@ $db->query(
 	$sql
 );
 
-setcookie('collections', '', -1, '/mopsi_dev/mymopsi');
-
 echo "<a href='../db/install.php'>Link to install</a>";

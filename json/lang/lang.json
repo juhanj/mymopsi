@@ -5,7 +5,8 @@
 			"fi": "MyMopsi"
 		},
 		"HEADER_TITLE": {
-			"en": "MyMopsi"
+			"en": "MyMopsi",
+			"fi": "MyMopsi"
 		},
 		"REQUIRED_INPUT": {
 			"en": "Required",
@@ -19,6 +20,9 @@
 		},
 		"LOGIN_REQUIRED": {
 			"en": "Login required to use this feature."
+		},
+		"RETURN": {
+			"en": "Return"
 		}
 	},
 	"index": {
@@ -42,6 +46,9 @@
 		"USER_SUBMIT": {
 			"en": "Login"
 		},
+		"MOPSI_LOGIN_SUBMIT": {
+			"en": "Login with Mopsi account"
+		},
 		"CREATE_USER_HEADER": {
 			"en": "Create new user"
 		},
@@ -51,8 +58,11 @@
 		"NEW_COLLECTION": {
 			"en": "Create a new collection"
 		},
-		"LOCAL_COLLECTIONS": {
-			"en": "Local collections"
+		"USER_COLLECTIONS": {
+			"en": "Your collections"
+		},
+		"VIEW_USER_COLLECTIONS": {
+			"en": "View your own collections"
 		},
 		"PUBLIC_COLLECTIONS": {
 			"en": "Public collections"
@@ -60,14 +70,38 @@
 		"NO_PUBLIC_COLL_AVAILABLE": {
 			"en": "No public collections available."
 		},
-		"NOTE_CREATE_PUBLIC_COLL": {
-			"en": "Maybe you'd like to"
+		"CREATE_PUBLIC_COLL": {
+			"en": "Maybe you'd like to <a href='./edit_collection.php?new' class='link'>create one?</a>"
+		}
+	},
+	"settings": {
+		"SETT_LANG_HEAD": {
+			"en": "Select language"
 		},
-		"NOTE_CREATE_PUBLIC_COLL_LINK": {
-			"en": "create one?"
+		"SETT_LANG_INFO": {
+			"en": "Refresh page to apply selected language."
+		}
+	},
+	"login-handler": {
+		"LOGIN_SUCCESS": {
+			"en": "You have successfully logged in."
 		},
-		"MODAL_FOOTER": {
-			"en": "Name and email can be changed later."
+		"LOGIN_FAIL": {
+			"en": "Login failed. Try again?"
+		}
+	},
+	"collections": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Collections",
+			"fi": "MyMopsi | Kokoelmat"
+		},
+		"HEADER_TITLE": {
+			"en": "Collections",
+			"fi": "Kokoelmat"
+		},
+		"NEW_COLLECTION": {
+			"en": "New Collection",
+			"fi": "Uusi kokoelma"
 		}
 	}
 }
