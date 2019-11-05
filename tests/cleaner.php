@@ -32,7 +32,7 @@ foreach ( $folders as $folder ) {
  * Dropping tables, and recreating them with testdata
  */
 
-$sql = "drop table if exists mymopsi_img, mymopsi_collection, mymopsi_user";
+$sql = "drop table if exists mymopsi_img, mymopsi_collection, mymopsi_user, mymopsi_user_third_party_link";
 $db->query(
 	$sql
 );
