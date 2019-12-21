@@ -35,7 +35,7 @@ class Utils {
 	 * Check feedback variable, and prevent resending form on page refresh or back button.
 	 * @return string $feedback
 	 */
-	public static function check_feedback_POST() : string {
+	public static function checkFeedbackAndPOST() : string {
 		// Stop form resending
 		if ( !empty($_POST) or !empty($_FILES) ){
 			header("Location: " . $_SERVER['REQUEST_URI']);
@@ -57,9 +57,9 @@ class Utils {
 	 * @return bool
 	 */
 	public static function checkRandomUIDAvailable ( DBConnection $db, $ruid ) {
-		$sql = "select 
-			        exists (select 1 from mymopsi_user where random_uid = ?) or 
-			        exists (select 1 from mymopsi_collection where random_uid = ?) or 
+		$sql = "select
+			        exists (select 1 from mymopsi_user where random_uid = ?) or
+			        exists (select 1 from mymopsi_collection where random_uid = ?) or
 			        exists (select 1 from mymopsi_img where random_uid = ?)
 		        as found";
 		$result = $db->query( $sql, [ $ruid, $ruid, $ruid ] );
@@ -87,5 +87,30 @@ class Utils {
 		} while ( $checkIfUsed and !self::checkRandomUIDAvailable( $db, $ruid ) );
 
 		return $ruid;
+	}
+
+	/**
+	 * Runs exiftool for given target (file or dir)
+	 * @param string $target  file or directory
+	 * @param string $options options for exiftool, by default has "-ext '*' -j"
+	 * @return stdClass[] decoded JSON-output from command line
+	 */
+	public static function runExiftool ( string $target, string $options = '' ) {
+		$perl = INI[ 'Misc' ][ 'perl' ];
+	    $exiftool = DOC_ROOT . WEB_PATH . '/exiftool/exiftool';
+
+	    $commandOptions =
+	 	   ' -ext "*"' // Process all files
+	 	   . " -j" // Print output in JSON format
+ 	   ;
+		$commandOptions .= $options;
+
+
+	    exec(
+	 	   "{$perl} {$exiftool} {$commandOptions} {$target}",
+	 	   $output
+	    );
+
+	    return json_decode( implode( "" , $output ) );
 	}
 }

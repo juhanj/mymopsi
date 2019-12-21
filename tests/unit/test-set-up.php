@@ -14,13 +14,14 @@ require $home_directory . 'class/controller.class.php';
 
 require $home_directory . 'class/collectioncontroller.class.php';
 require $home_directory . 'class/usercontroller.class.php';
+require $home_directory . 'class/imagecontroller.class.php';
 
 function set_up_database () {
 	$db = new DBConnection();
 
 	/*
-	 * Test users
-	 * 1:'Admin' and 2:'Test'
+	 * unit users
+	 * 1:'Admin' and 2:'unit'
 	 */
 	$sql = 'insert into mymopsi_user (id, random_uid, username, password, type, email, admin) 
 			values (?,?,?,?,?,?,?), (?,?,?,?,?,?,?)
@@ -32,7 +33,7 @@ function set_up_database () {
 	$db->query( $sql, $values );
 
 	/*
-	 * Test collections
+	 * unit collections
 	 * 1:'test' (user:1) and 2:null (user:2)
 	 */
 	$sql = 'insert into mymopsi_collection (id, owner_id, random_uid, name, description)
@@ -40,13 +41,13 @@ function set_up_database () {
 			on duplicate key update owner_id = values(owner_id), name = values(name), description = values(description), 
 			                        public=false, editable=false, date_added = now(), last_edited = now()';
 	$values = [
-		1, 1, Utils::createRandomUID( $db, 20, false ), 'test', '',
-		2, 1, Utils::createRandomUID( $db, 20, false ), 'test', '',
+		1, 1, Utils::createRandomUID( $db, 20, false ), 'test1', null,
+		2, 1, Utils::createRandomUID( $db, 20, false ), 'test2', null,
 	];
 	$db->query( $sql, $values );
 
 	/*
-	 * Test image
+	 * unit image
 	 * 1 (all ones, collection:1)
 	 */
 	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size)
@@ -73,11 +74,25 @@ $settings = [
 	"coll_name_max_len" => 50,
 	"coll_descr_max_len" => 300,
 ];
+$misc = [
+	'perl' => "C:/xampp/perl/bin/perl.exe",
+	'path_to_collections' => "D:\juhanj\Documents\mymopsi\collections",
+];
 
 define(
 	'INI',
 	[
 		"Database" => $database_configs,
 		"Settings" => $settings,
+		'Misc' => $misc,
 	]
+);
+
+define(
+	'DOC_ROOT',
+	'C:\xampp\htdocs'
+);
+define(
+	'WEB_PATH',
+	'/mopsi_dev/mymopsi/'
 );

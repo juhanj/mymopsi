@@ -1,16 +1,17 @@
-<?php ?>
+<?php
+declare(strict_types=1); ?>
 
 <!-- One single <form> -->
 <form method="post" class="box">
 	<!-- Name -->
 	<label>
-		<span class="label required"><?= $lang->NAME ?></span>
+		<span class="label"><?= $lang->NAME ?></span>
 		<input type="text" name="name">
 	</label>
 
 	<!-- Description -->
 	<label>
-		<span class="label required"><?= $lang->DESCRIPTION ?></span>
+		<span class="label"><?= $lang->DESCRIPTION ?></span>
 		<input type="text" name="description">
 	</label>
 
@@ -22,7 +23,7 @@
 	</label>
 
 	<!-- Editable -->
-	<label>
+	<label hidden>
 		<input type="checkbox" name="editable">
 		<span class="label"><?= $lang->EDITABLE ?></span>
 		<span><?= $lang->EDITABLE_INFO ?></span>
@@ -32,9 +33,7 @@
 
 	<!-- Cancel & Save -->
 	<div>
-		<!-- Cancel -->
-		<button><?= $lang->CANCEL ?></button>
 		<!-- Save -->
-		<input type="submit" name="<?= $lang->SUBMIT ?>">
+		<input type="submit" name="<?= $lang->SUBMIT ?>" class="button">
 	</div>
 </form>

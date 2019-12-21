@@ -67,7 +67,7 @@ class CollectionController implements Controller {
 			throw new InvalidArgumentException( "User is not valid." );
 		}
 		if ( is_null( $ruid ) ) {
-			$ruid = createRandomUID( $db );
+			$ruid = Utils::createRandomUID( $db );
 		}
 
 		$db->query(
@@ -86,7 +86,7 @@ class CollectionController implements Controller {
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function removeCollectionFromDatabase ( DBConnection $db, Collection $collection ): bool {
+	public function deleteCollectionFromDatabase ( DBConnection $db, Collection $collection ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -105,7 +105,7 @@ class CollectionController implements Controller {
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function updateName ( DBConnection $db, Collection $collection, string $name ): bool {
+	public function setName ( DBConnection $db, Collection $collection, string $name ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -124,7 +124,7 @@ class CollectionController implements Controller {
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function updateDescription ( DBConnection $db, Collection $collection, string $description ): bool {
+	public function setDescription ( DBConnection $db, Collection $collection, string $description ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -139,16 +139,16 @@ class CollectionController implements Controller {
 	/**
 	 * @param DBConnection $db
 	 * @param Collection $collection
+	 * @param bool $value
 	 * @return bool
-	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function togglePublic ( DBConnection $db, Collection $collection ): bool {
+	public function setPublic ( DBConnection $db, Collection $collection, bool $value ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
 		$rows_changed = $db->query(
-			'update mymopsi_collection set public = !public where id = ? limit 1',
-			[ $collection->id ]
+			'update mymopsi_collection set public = ? where id = ? limit 1',
+			[ $value, $collection->id ]
 		);
 
 		return boolval( $rows_changed );
@@ -157,16 +157,16 @@ class CollectionController implements Controller {
 	/**
 	 * @param DBConnection $db
 	 * @param Collection $collection
+	 * @param bool $value
 	 * @return bool
-	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function toggleEditable ( DBConnection $db, Collection $collection ): bool {
+	public function setEditable ( DBConnection $db, Collection $collection, bool $value ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
 		$rows_changed = $db->query(
-			'update mymopsi_collection set editable = !editable where id = ? limit 1',
-			[ $collection->id ]
+			'update mymopsi_collection set editable = ? where id = ? limit 1',
+			[ $value, $collection->id ]
 		);
 
 		return boolval( $rows_changed );
@@ -190,8 +190,8 @@ class CollectionController implements Controller {
 		$description = (!empty( $options['description'] ))
 			? trim( mb_substr( $options['description'], 0, self::MAX_DESCR_LENGTH ) )
 			: null;
-		$public = !empty( $options['public'] );
-		$editable = !empty( $options['editable'] );
+		$public = isset( $options['public'] );
+		$editable = isset( $options['editable'] );
 
 		$new_coll = $this->createEmptyCollectionRowInDatabase( $db, $user );
 
@@ -201,16 +201,16 @@ class CollectionController implements Controller {
 		}
 
 		if ( $name ) {
-			$this->updateName( $db, $new_coll, $name );
+			$this->setName( $db, $new_coll, $name );
 		}
 		if ( $description ) {
-			$this->updateName( $db, $new_coll, $description );
+			$this->setDescription( $db, $new_coll, $description );
 		}
 		if ( $public ) {
-			$this->togglePublic( $db, $new_coll );
+			$this->setPublic( $db, $new_coll, $public );
 		}
 		if ( $editable ) {
-			$this->toggleEditable( $db, $new_coll );
+			$this->setEditable( $db, $new_coll, $editable );
 		}
 
 		$this->result = [
@@ -254,7 +254,7 @@ class CollectionController implements Controller {
 			return false;
 		}
 
-		$result = $this->removeCollectionFromDatabase( $db, $collection );
+		$result = $this->deleteCollectionFromDatabase( $db, $collection );
 
 		if ( !$result ) {
 			$this->setError( -5, "Collection could not be deleted." );

@@ -1,34 +1,20 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
-echo '<style>html{background-color: #0f111a;color: #c0c6c5;font-size: larger;}</style>';
 /*/////////////////////////////////////////////////*/
 
-$postData = [
-	'username' => 'test',
-	'password' => 'test',
-	'request_type' => 'user_login',
-];
-$jsonData = json_encode( $postData );
-//echo $jsonData;
-$curlHandle = curl_init();
+$temp_folder = 'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set';
 
-$curlOptions = [
-	CURLOPT_URL => "https://cs.uef.fi/mopsi/mobile/server.php",
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_POST => true,
-	CURLOPT_POSTFIELDS => ["param"=>$jsonData]
-];
+// run exiftool on that folder
+$commandOptions =
+	" -g3" // I don't know, but it's important! Related to getting GPS fields
+	. " -a" // Allow duplicates (needed for gps coordinates)
+	. " -filename"
+	. " -gps:all" // All GPS metadata
+	. " -Datecreate"
+	. " -ImageSize"
+	. " -c %.6f" // format for gps coordinates output
+;
 
-curl_setopt_array(
-	$curlHandle,
-	$curlOptions
-);
+$metadata = Utils::runExiftool( $temp_folder, $commandOptions );
 
-$response = curl_exec( $curlHandle );
-
-curl_close( $curlHandle );
-
-debug(
-	json_decode($response),
-	true
-);
+Utils::debug( $metadata );

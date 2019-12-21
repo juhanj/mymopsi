@@ -50,7 +50,7 @@
 
     --content-box-bg: hsl(0, 0%, 100%);
 
-    --site-bg: hsl(0, 0%, 30%);
+    --site-bg: hsl(0, 0%, 28%);
 
     --success: hsl(120, 50%, 60%);
     --error: hsl(349, 80%, 40%);
@@ -81,11 +81,12 @@
     color: var(--text-dark)
 }
 
-html {
-    height: 100vh;
+html, body {
+    height: 100vh; /* Problems on Android/iOS, this does not work correctly */
 }
 
 body {
+    color: var(--text-light);
     background-color: var(--site-bg);
     min-height: 100%; /* 100% of html's 100vh */
 }
@@ -133,6 +134,7 @@ body.grid {
 }
 
 .box {
+    color: var(--text-dark);
     display: flex;
     flex-direction: column;
     align-content: space-evenly;

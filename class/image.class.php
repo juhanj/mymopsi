@@ -6,20 +6,20 @@ class Image {
 	public $collection_id;
 	public $random_uid;
 
+	public $hash;
+
 	public $name;
 	public $original_name;
-	public $mediatype;
-
 	public $filepath;
+
+	public $mediatype;
+	public $size;
 
 	public $latitude;
 	public $longitude;
 
 	public $date_created;
 	public $date_added;
-
-	public $hash;
-	public $size;
 
 	/**
 	 * @param DBConnection $db
@@ -28,12 +28,12 @@ class Image {
 	 */
 	public static function fetchImageByID ( DBConnection $db, int $id ): ?Image {
 		$sql = 'select *
-				from mymopsi_image
+				from mymopsi_img
 				where id = ?
 				limit 1';
 		$values = [ $id ];
 
-		/** @var User $row */
+		/** @var Image $row */
 		$row = $db->query( $sql, $values, false, 'Image' );
 
 		return $row ?: null;
@@ -46,12 +46,12 @@ class Image {
 	 */
 	public static function fetchImageByRUID ( DBConnection $db, $ruid ): ?Image {
 		$sql = 'select *
-				from mymopsi_image
+				from mymopsi_img
 				where random_uid = ?
 				limit 1';
 		$values = [ $ruid ];
 
-		/** @var User $row */
+		/** @var Image $row */
 		$row = $db->query( $sql, $values, false, 'Image' );
 
 		return $row ?: null;

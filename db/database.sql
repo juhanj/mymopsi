@@ -61,7 +61,7 @@ create table if not exists mymopsi_img (
 	original_name varchar(190)             not null comment 'for posterity',
 	filepath      varchar(190) comment 'full real path with file extension',                                      -- UK
 	mediatype     varchar(50)              not null comment 'File media (or MIME) type',
-	size          int                      not null comment 'in bytes (bits?)',                                   -- UK no_duplicates
+	size          int                      not null comment 'in bytes',                                   -- UK no_duplicates
 	latitude      float(10, 6)             null default null comment 'in degrees',
 	longitude     float(10, 6)             null default null comment 'in degrees',
 	date_created  timestamp                null default null comment 'file creation time (i.e. when was time taken)',

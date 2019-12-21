@@ -12,9 +12,9 @@ class UserController implements Controller {
 	const MAX_PASSWORD_LENGTH = INI['Settings']['password_max_len'];
 
 	/**
-	 * @var null Used for returning results to Ajax-requests.
+	 * @var array Used for returning results to Ajax-requests.
 	 */
-	public $result = null;
+	public $result;
 
 	/**
 	 * @param DBConnection $db
@@ -22,12 +22,15 @@ class UserController implements Controller {
 	 * @param array $req
 	 */
 	public function handleRequest ( DBConnection $db, $user, array $req ) {
-		switch ( $req['method'] ) {
-			case 'login':
-				$this->requestLogin( $db, $req['user'], $req['password'] );
+		switch ( $req['request'] ) {
+			case 'new':
+				$this->requestCreateNewUser( $db, $req['username'], $req['password'] );
 				break;
-			case 'mopsiLogin':
-				$this->mopsiLogin( $db, $req['user'], $req['password'] );
+			case 'login':
+				$this->requestLogin( $db, $req['username'], $req['password'] );
+				break;
+			case 'mopsi_login':
+				$this->requestMopsiLogin( $db, $req['username'], $req['password'] );
 				break;
 			default:
 				$this->setError( -99, 'Invalid Request' );
@@ -63,9 +66,7 @@ class UserController implements Controller {
 			[ $ruid ]
 		);
 
-		$user = User::fetchUserByID( $db, (int)$db->getConnection()->lastInsertId() );
-
-		return $user;
+		return User::fetchUserByID( $db, (int)$db->getConnection()->lastInsertId() );
 	}
 
 	/**
@@ -199,7 +200,7 @@ class UserController implements Controller {
 		$result = $db->query(
 			'insert into mymopsi_user_third_party_link (user_id, mopsi_id) 
 				values (?,?) 
-				on duplicate key update mopsi_id = value(mopsi_id)',
+				on duplicate key update mopsi_id = values(mopsi_id)',
 			[ $user->id, $mopsiID ]
 		);
 		return boolval( $result );
@@ -239,6 +240,12 @@ class UserController implements Controller {
 		$hashed_password = password_hash( $password, PASSWORD_DEFAULT );
 		$this->setPassword( $db, $user, $hashed_password );
 
+		$this->result = [
+			'success' => true,
+			'error' => false,
+			'user_uid' => $user->random_uid
+		];
+
 		return true;
 	}
 
@@ -277,7 +284,9 @@ class UserController implements Controller {
 
 		$this->result = [
 			'success' => true,
+			'error' => false,
 			'user_id' => $user->id,
+			'user_uid' => $user->random_uid,
 		];
 
 		return true;
@@ -288,7 +297,7 @@ class UserController implements Controller {
 	 * @param DBConnection $db [description]
 	 * @param string $username [description]
 	 * @param string $password [description]
-	 * @return [type]                 [description]
+	 * @return bool
 	 */
 	function requestMopsiLogin ( DBConnection $db, string $username, string $password ) {
 		$username = trim( $username );
@@ -353,61 +362,21 @@ class UserController implements Controller {
 			// Create new empty MyMopsi user, so the site has something to refer to.
 			$user = $this->createEmptyUserRowInDatabase( $db );
 			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
-		}
-		else {
+		} else {
 			$user = new User();
 			$user->id = $row->user_id;
 		}
 
-		// If found: log in
-		$_SESSION['user_id'] = $user->id;
-		$_SESSION['username'] = $response->username;
-
 		// If not, create a new stub user and log that in
 		$this->result = [
 			'success' => true,
+			'error' => false,
+			'user_id' => $user->id,
+			'username' => $response->username,
+			'user_uid' => $user->random_uid,
 			'response' => $response
 		];
 
 		return true;
-	}
-
-	/**
-	 * //TODO
-	 * @param DBConnection $db [description]
-	 * @param User $user [description]
-	 * @return [type]             [description]
-	 */
-	function requestDeleteUser ( DBConnection $db, User $user ) {
-	}
-
-	/**
-	 * //TODO
-	 * @param DBConnection $db [description]
-	 * @param User $user [description]
-	 * @param string $new_password [description]
-	 * @return [type]                     [description]
-	 */
-	function requestPasswordChange ( DBConnection $db, User $user, string $new_password ) {
-	}
-
-	/**
-	 * //TODO
-	 * @param DBConnection $db [description]
-	 * @param User $user [description]
-	 * @param string $new_username [description]
-	 * @return [type]                     [description]
-	 */
-	function requestUsernameChange ( DBConnection $db, User $user, string $new_username ) {
-	}
-
-	/**
-	 * //TODO
-	 * @param DBConnection $db [description]
-	 * @param User $user [description]
-	 * @param string $new_email [description]
-	 * @return [type]                     [description]
-	 */
-	function requestEmailChange ( DBConnection $db, User $user, string $new_email ) {
 	}
 }

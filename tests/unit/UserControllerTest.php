@@ -91,12 +91,17 @@ class UserControllerTest extends TestCase {
 		$username = Utils::createRandomUID( $this->db, 4, false );
 		$password = 'password';
 
-		$result = $this->ctrl->requestCreateNewUser( $this->db, $username, $password );
+		$post = [
+			'request' => 'new',
+			'username' => $username,
+			'password' => $password
+		];
 
-		$user = User::fetchUserByUsernameOrEmail( $this->db, $username );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
-		self::assertTrue( $result, print_r( $this->ctrl->result, true ) );
-		self::assertInstanceOf( User::class, $user );
+		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
+		self::assertFalse( $this->ctrl->result['error'], print_r( $this->ctrl->result, true ) );
+		self::assertIsString( $this->ctrl->result['user_uid'] );
 	}
 
 	public function test_RequestCreateNewUser_Fail () {
@@ -110,10 +115,15 @@ class UserControllerTest extends TestCase {
 	}
 
 	public function test_RequestLogin () {
-		$result = $this->ctrl->requestLogin( $this->db, 'admin', 'password' );
+		$post = [
+			'request' => 'login',
+			'username' => 'admin',
+			'password' => 'password'
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
-		self::assertTrue( $result, print_r($this->ctrl->result, true) );
-		self::assertTrue( $this->ctrl->result['success'] );
+		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
+		self::assertFalse( $this->ctrl->result['error'], print_r( $this->ctrl->result, true ) );
 	}
 
 	public function test_RequestLogin_Fail_PasswordUsernameLength () {
@@ -139,10 +149,17 @@ class UserControllerTest extends TestCase {
 	}
 
 	public function test_RequestMopsiLogin () {
-		$result = $this->ctrl->requestMopsiLogin( $this->db, 'test', 'test' );
+		$post = [
+			'request' => 'mopsi_login',
+			'username' => 'test',
+			'password' => 'test'
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
-		self::assertTrue( $result, print_r($this->ctrl->result, true) );
-		self::assertTrue( $this->ctrl->result['success'] );
+		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
+		self::assertFalse( $this->ctrl->result['error'], print_r( $this->ctrl->result, true ) );
+
+		self::assertIsInt( $_SESSION['user_id'] );
 	}
 
 	public function test_RequestMopsiLogin_fail_UserNotFound () {

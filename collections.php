@@ -6,13 +6,34 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
-$feedback = check_feedback_POST();
+$feedback = Utils::checkFeedbackAndPOST();
 
 // For now, we only care if there are any public collections.
 $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection where public = true limit 1" );
 
-if ( $user ) {
+/**
+ * @var Collection[] $collections
+ */
+$collections = [];
+
+if ( $user and $user->admin and !empty($_GET['user']) ) {
+	$temp_user = User::fetchUserByRUID( $db, $_GET['user'] );
+
+	$temp_user->getCollections( $db );
+
+	$collections = $temp_user->collections;
+}
+elseif ( $user and !isset($_GET['public']) ) {
 	$user->getCollections( $db );
+	$collections = $user->collections;
+}
+elseif ( isset($_GET['public']) or !$user ) {
+	$collections = $db->query(
+		"select * from mymopsi_collection where public = true",
+		[],
+		true,
+		'Collection'
+	);
 }
 ?>
 
@@ -31,7 +52,7 @@ if ( $user ) {
 <main class="main-body-container">
 
 	<section>
-		<h2>User: <?= $user->username ?></h2>
+		<h2><?= $lang->USER ?>: <?= $user->username ?? $lang->USER_PUBLIC ?></h2>
 	</section>
 
 	<article>
@@ -42,14 +63,14 @@ if ( $user ) {
 					<i class="material-icons">add</i>
 				</a>
 			</li>
-			<?php foreach ( $user->collections as $c ) : ?>
+			<?php foreach ( $collections as $c ) : ?>
 				<li class="collection box" data-id="<?= $c->random_uid ?>">
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
 						<h3><?= $c->name ?: substr($c->random_uid, 0, 2) ?></h3>
 						<?php if ( $c->description ) : ?>
 							<p class="description"><?= $c->description ?></p>
 						<?php endif; ?>
-						<p>Number of images: <?= $c->number_of_images ?></p>
+						<p><?= $lang->NRO_OF_IMGS ?>: <?= $c->number_of_images ?></p>
 					</a>
 				</li>
 			<?php endforeach; ?>

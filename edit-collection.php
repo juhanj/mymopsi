@@ -13,12 +13,21 @@ if ( !$user ) {
 
 if ( !empty( $_POST ) ) {
 	$controller = new CollectionController();
-	$controller->handleRequest( $db, $_POST );
+	$controller->handleRequest( $db, $user, $_POST );
+
+	if ( $controller->result['success'] ) {
+		$_SESSION['feedback'] .= "<p class='success'>{$lang->NEW_COLL_SUCCESS}</p>";
+		header( "Location:./collections.php?user={$user->random_uid}" );
+		exit;
+	} else {
+		$_SESSION['feedback'] .= "<p class='error'>{$lang->COLL_FAIL}</p>";
+		$_SESSION['feedback'] .= "<p class='error'>{$controller->result['errMsg']}</p>";
+	}
 }
 
 $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] ?? '' );
 
-$feedback = check_feedback_POST();
+$feedback = Utils::checkFeedbackAndPOST();
 ?>
 
 <!DOCTYPE html>

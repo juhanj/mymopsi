@@ -6,6 +6,9 @@ require_once $home_directory . '\tests\unit\test-set-up.php';
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class CollectionTest
+ */
 class CollectionTest extends TestCase {
 
 	protected $db;
@@ -24,21 +27,21 @@ class CollectionTest extends TestCase {
 	}
 
 	/** @test */
-	public function testCreateEmptyCollectionObject () {
+	public function test_CreateEmptyCollectionObject () {
 		$coll = new Collection();
 
 		self::assertInstanceOf( Collection::class, $coll );
 		self::assertNull( $coll->id );
 	}
 
-	public function testFetchCollectionWithID () {
+	public function test_FetchCollectionByID () {
 		$coll = Collection::fetchCollectionByID( $this->db, 1 );
 
 		self::assertEquals( 1, $coll->id );
-		self::assertGreaterThanOrEqual( 1, $coll->number_of_images );
+		self::assertIsInt( $coll->number_of_images );
 	}
 
-	public function testFetchCollectionWithRUID () {
+	public function test_FetchCollectionByRUID () {
 		$coll = Collection::fetchCollectionByID( $this->db, 1 );
 		$coll = Collection::fetchCollectionByRUID( $this->db, $coll->random_uid );
 
@@ -46,16 +49,19 @@ class CollectionTest extends TestCase {
 		self::assertIsInt( $coll->number_of_images );
 	}
 
-	public function testGettingImages () {
+	public function test_GetImages () {
 		$coll = Collection::fetchCollectionByID( $this->db, 1 );
 
 		$coll->getImages( $this->db );
 
-		self::assertNotEmpty( $coll->images );
-		self::assertInstanceOf( Image::class, $coll->images[0] );
+		self::assertIsArray( $coll->images );
+		self::assertGreaterThanOrEqual(
+			2,
+			count($coll->images)
+		);
 	}
 
-	public function testGettingOwner () {
+	public function test_GetOwner () {
 		$coll = Collection::fetchCollectionByID( $this->db, 1 );
 
 		$coll->getOwner( $this->db );

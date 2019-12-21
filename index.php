@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
-$feedback = check_feedback_POST();
+$feedback = Utils::checkFeedbackAndPOST();
 
 // For now, we only care if there are any public collections.
 $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection where public = true limit 1" );
@@ -41,16 +41,16 @@ if ( $user ) {
 				<form action="login-handler.php" method="post">
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_NAME ?></span>
-						<input type="text" name="user" minlength="1" maxlength="190">
+						<input type="text" name="username" minlength="1" maxlength="190">
 					</label>
 
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
-						<input type="password" name="password" minlength="5" maxlength="300">
+						<input type="password" name="password" minlength="8" maxlength="300">
 					</label>
 
-					<input type="hidden" name="class" value="User">
-					<input type="hidden" name="method" value="login">
+					<input type="hidden" name="class" value="user">
+					<input type="hidden" name="request" value="login">
 
 					<input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button">
 				</form>
@@ -64,7 +64,7 @@ if ( $user ) {
 				<form action="login-handler.php" method="post">
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_NAME ?></span>
-						<input type="text" name="user" minlength="1" maxlength="190">
+						<input type="text" name="username" minlength="1" maxlength="190">
 					</label>
 
 					<label class="compact">
@@ -72,8 +72,8 @@ if ( $user ) {
 						<input type="password" name="password" minlength="1" maxlength="300">
 					</label>
 
-					<input type="hidden" name="class" value="User">
-					<input type="hidden" name="method" value="mopsiLogin">
+					<input type="hidden" name="class" value="user">
+					<input type="hidden" name="request" value="mopsi_login">
 
 					<input type="submit" value="<?= $lang->MOPSI_LOGIN_SUBMIT ?>" class="button" id="mopsi-submit">
 				</form>
@@ -123,10 +123,8 @@ if ( $user ) {
 				<a href="./collections.php?public" class="button"><?= $lang->VIEW_PUBLIC_COLLECTIONS ?></a>
 			<?php else : ?>
 				<!-- If no public collections found, print note, and if user logged in link to create new -->
-				<p><?= $lang->NO_PUBLIC_COLL_AVAILABLE ?>
-					<?php if ( $user ) : ?>
-						<?= $lang->CREATE_PUBLIC_COLL ?>
-					<?php endif; ?>
+				<p>
+					<?= $lang->NO_PUBLIC_COLL_AVAILABLE ?>
 				</p>
 			<?php endif; ?>
 		</section>

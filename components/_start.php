@@ -58,15 +58,13 @@ define(
 	)
 );
 
-require 'helper-functions.php';
-
 session_start();
 
 /*
  * Creating necessary objects
  */
 $db = new DBConnection();
-$lang = Language::getLanguageStrings($_COOKIE['lang'] ?? 'en', CURRENT_PAGE);
+$lang = Language::getLanguageStrings($_COOKIE['mymopsi_lang'] ?? 'en', CURRENT_PAGE);
 
 $user = !empty($_SESSION['user_id'])
 	? User::fetchUserByID( $db, $_SESSION['user_id'] )

@@ -1,12 +1,14 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
+ * @var DBConnection $db
+ * @var Language $lang
+ * @var User $user
  */
 
-$feedback = check_feedback_POST();
+$feedback = Utils::checkFeedbackAndPOST();
 
-$collection = Collection::fetchCollection( $db, $_GET['id'] );
+$collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
 if ( !$collection ) {
 	$_SESSION['feedback'] = "<p class='error'>No collection found with given ID.</p>";
@@ -14,7 +16,7 @@ if ( !$collection ) {
 	exit();
 }
 
-$collection->getCollectionImgs( $db );
+$collection->getImages( $db );
 ?>
 
 <!DOCTYPE html>
@@ -30,21 +32,21 @@ $collection->getCollectionImgs( $db );
 
 <main class="main-body-container">
 
-	<div class="buttons margins-off">
+	<div class="buttons compact">
 		<a href="index.php" class="button light">
 			<i class="material-icons">arrow_back</i>
-			<?= $lang->FRONTPAGE ?>
+			<?= $lang->BACK ?>
 		</a>
 
 		<a href="edit-collection.php" class="button">
 			<i class="material-icons">edit</i>
+			<?= $lang->EDIT_COLL ?>
 		</a>
 
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
 			<i class="material-icons">add</i>
 			<i class="material-icons">photo_library</i>
-
-			<?= ''// $lang->ADD_NEW_IMG ?>
+			<?= $lang->ADD_IMG ?>
 		</a>
 
 		<a href="map.php?cid=<?= $collection->random_uid ?>" class="button margins-off">
@@ -84,13 +86,12 @@ $collection->getCollectionImgs( $db );
 	            </tr>
 	        </thead>
 	        <tbody>
-	        <?php foreach( $collection->imgs as $index => $img ) : ?>
-
+	        <?php foreach( $collection->images as $index => $img ) : ?>
 	            <tr id="">
 		            <td class="number"><?= $index+1 ?></td>
 	                <td class="center">
 		                <a href="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>">
-			                <img src="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>&thumb" height="25px">
+			                <img src="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>&thumb" height="25px" alt="Thumbnail of image">
 		                </a>
 	                </td>
 	                <td><?= $img->name ?></td>
@@ -102,8 +103,8 @@ $collection->getCollectionImgs( $db );
 		                        <i class="material-icons">link</i>
 		                    </span>
 		                    <span>
-			                    <?= fNumber($img->latitude, 4) ?><br>
-			                    <?= fNumber($img->longitude, 4) ?>
+			                    <?= Utils::fNumber($img->latitude, 4) ?><br>
+			                    <?= Utils::fNumber($img->longitude, 4) ?>
 		                    </span>
 	                    </a>
 		                <?php endif; ?>

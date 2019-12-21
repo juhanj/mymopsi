@@ -70,8 +70,8 @@
 		"NO_PUBLIC_COLL_AVAILABLE": {
 			"en": "No public collections available."
 		},
-		"CREATE_PUBLIC_COLL": {
-			"en": "Maybe you'd like to <a href='./edit_collection.php?new' class='link'>create one?</a>"
+		"NEW_USER_CREATED": {
+			"en": "New user created successfully. Please login with given username and password."
 		}
 	},
 	"settings": {
@@ -102,6 +102,52 @@
 		"NEW_COLLECTION": {
 			"en": "New Collection",
 			"fi": "Uusi kokoelma"
+		}
+	},
+	"edit-user": {
+		"NEW_USER_HEADER": {
+			"en": "Create a new user"
+		},
+		"USERNAME": {
+			"en": "Username"
+		},
+		"PASSWORD": {
+			"en": "Password"
+		},
+		"CONFIRM_PASSWORD": {
+			"en": "Confirm password"
+		}
+	},
+	"edit-collection": {
+		"NAME": {
+			"en": "Name",
+			"fi": "Nimi"
+		},
+		"DESCRIPTION": {
+			"en": "Description",
+			"fi": "Kuvaus"
+		},
+		"PUBLIC": {
+			"en": "Public",
+			"fi": "Julkinen"
+		},
+		"PUBLIC_INFO": {
+			"en": "Public collections can be viewed by anyone, even not logged-in users.",
+			"fi": "Kuka tahansa voi tarkastella julkista kokoelmaa."
+		}
+	},
+	"upload": {
+		"COLL_ID_REQ": {
+			"en": "Collection ID required",
+			"fi": "Kokoelma ID puuttuu"
+		},
+		"NOT_COLL_OWNER": {
+			"en": "You have no access to given collection",
+			"fi": "Ei oikeutta muokata annettua kokoelmaa"
+		},
+		"BACK": {
+			"en": "Return to previous page",
+			"fi": "Takaisin edelliselle sivulle"
 		}
 	}
 }

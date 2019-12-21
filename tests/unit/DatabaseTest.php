@@ -19,11 +19,11 @@ class DatabaseTest extends TestCase {
 			: $this->db;
 	}
 
-	public function testConnection () {
+	public function test_Connection () {
 		self::assertInstanceOf( PDO::class, $this->db->getConnection() );
 	}
 
-	public function testGetOneRowFromDatabase () {
+	public function test_GetOneRowFromDatabase () {
 		$row = $this->db->query(
 			'select id from mymopsi_user where id = ? limit 1',
 			[1]
@@ -33,7 +33,7 @@ class DatabaseTest extends TestCase {
 		self::assertEquals( 1, $row->id ?? null );
 	}
 
-	public function testGetNoRowFromDatabase () {
+	public function test_GetNoRowFromDatabase () {
 		$row = $this->db->query(
 			'select id from mymopsi_user where id = 0 limit 1'
 		);
@@ -41,7 +41,7 @@ class DatabaseTest extends TestCase {
 		self::assertFalse( boolval($row) );
 	}
 
-	public function testGetClassFromDatabase () {
+	public function test_GetClassFromDatabase () {
 		$row = $this->db->query(
 			'select id from mymopsi_user where id = ? limit 1',
 			[1], false, 'User'
