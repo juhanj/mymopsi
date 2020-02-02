@@ -102,11 +102,25 @@
 		"NEW_COLLECTION": {
 			"en": "New Collection",
 			"fi": "Uusi kokoelma"
+		},
+		"USER": {
+			"en": "User",
+			"fi": "Käyttäjä"
+		},
+		"NRO_OF_IMGS": {
+			"en": "Images",
+			"fi": "Kuvia"
 		}
+
 	},
 	"edit-user": {
-		"NEW_USER_HEADER": {
-			"en": "Create a new user"
+		"NEW_USER_CREATED": {
+			"en": "New user created successfully. Please login with new account.",
+			"fi": "Uusi käyttäjä onnistuneesti luotu. Kirjaudu sisään uusilla tunnuksilla."
+		},
+		"USERNAME_NOT_AVAILABLE": {
+			"en": "Username not available. Please try another.",
+			"fi": "Käyttänimi ei ole saatavilla. Kokeile jotain muuta nimeä."
 		},
 		"USERNAME": {
 			"en": "Username"
@@ -134,6 +148,14 @@
 		"PUBLIC_INFO": {
 			"en": "Public collections can be viewed by anyone, even not logged-in users.",
 			"fi": "Kuka tahansa voi tarkastella julkista kokoelmaa."
+		},
+		"NEW_COLL_SUCCESS": {
+			"en": "New collection successfully created.",
+			"fi": "Uusi kokoelma luotu."
+		},
+		"COLL_FAIL": {
+			"en": "Collection creation failed for some reason. See error-message for more info.",
+			"fi": "Kokoelman luonti epäonnistui."
 		}
 	},
 	"upload": {
@@ -148,6 +170,24 @@
 		"BACK": {
 			"en": "Return to previous page",
 			"fi": "Takaisin edelliselle sivulle"
+		}
+	},
+	"collection": {
+		"BACK": {
+			"en": "Return to Collections-page",
+			"fi": "Takaisin edelliselle sivulle"
+		},
+		"EDIT_COLL": {
+			"en": "Edit collection",
+			"fi": "Muokkaa kokoelmaa"
+		},
+		"ADD_IMG": {
+			"en": "Add new images",
+			"fi": "Lisää kuvia"
+		},
+		"TO_MAP": {
+			"en": "View on map",
+			"fi": "Näe kokoelma kartalla"
 		}
 	}
 }

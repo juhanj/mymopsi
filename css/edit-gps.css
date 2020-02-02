@@ -1,0 +1,52 @@
+@CHARSET "UTF-8";
+
+.main-body-container {
+	max-width: 100%;
+}
+
+.map {
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+/****************************************************************************
+	Coordinate input form
+*****************************************************************************/
+.coordinate-form {
+	display: grid;
+	grid:
+		'latitude submit' auto
+		'longitude submit' auto
+		/auto auto;
+	background-color: var(--content-box-bg);
+	color: var(--text-dark);
+}
+
+.coordinate-form #lat-label {
+	grid-area: latitude;
+}
+.coordinate-form #long-label {
+	grid-area: longitude;
+}
+.coordinate-form #submit-button {
+	grid-area: submit;
+}
+
+.coordinate-form label {
+	display: flex;
+	flex-direction: row;
+}
+
+.coordinate-form label span.label {
+	width: 4rem;
+}
+
+.coordinate-form label input[type=text] {
+	width: auto;
+}
+
+.coordinate-form input[type=submit] {
+	word-break: normal;
+	margin: 1rem 0;
+}

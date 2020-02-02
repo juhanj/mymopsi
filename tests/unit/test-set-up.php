@@ -39,7 +39,7 @@ function set_up_database () {
 	$sql = 'insert into mymopsi_collection (id, owner_id, random_uid, name, description)
 			values (?,?,?,?,?),(?,?,?,?,?)
 			on duplicate key update owner_id = values(owner_id), name = values(name), description = values(description), 
-			                        public=false, editable=false, date_added = now(), last_edited = now()';
+			                        public=false, editable=false, date_added = now()';
 	$values = [
 		1, 1, Utils::createRandomUID( $db, 20, false ), 'test1', null,
 		2, 1, Utils::createRandomUID( $db, 20, false ), 'test2', null,

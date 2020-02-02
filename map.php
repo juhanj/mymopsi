@@ -1,23 +1,25 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
+ * @var DBConnection $db
+ * @var Language $lang
+ * @var User $user
  */
 
-$coll = Collection::fetchCollection( $db, $_GET['cid'] );
+$collection = Collection::fetchCollectionByRUID( $db, $_GET['cid'] );
 
-if ( !$coll ) {
+if ( !$collection ) {
 	$_SESSION['feedback'] = "<p class='error'>{$lang->NO_COLLECTION_FOUND}</p>";
-	header('location: index.php' );
+	header( 'location: index.php' );
 	exit;
 }
 
-$coll->getCollectionImgs($db);
+$collection->getImages( $db );
 
-if ( !empty($_GET['iid']) ) {
-	foreach ( $coll->imgs as $img ) {
+if ( !empty( $_GET['iid'] ) ) {
+	foreach ( $collection->images as $img ) {
 		if ( $img->random_uid === $_GET['iid'] ) {
-			$focus = [(float)$img->latitude, (float)$img->longitude];
+			$focus = [ (float)$img->latitude, (float)$img->longitude ];
 		}
 	}
 }
@@ -43,10 +45,12 @@ if ( !empty($_GET['iid']) ) {
 <?php require 'html-footer.php'; ?>
 
 <script>
-	let collectionSize = <?= count($coll->imgs) ?>;
+	let collectionSize = <?= count( $collection->images ) ?>;
 	let points = [
-	<?php foreach ( $coll->imgs as $i => $img ) : ?>
-		<?php if ( !$img->latitude ) { continue; } ?>
+		<?php foreach ( $collection->images as $i => $img ) : ?>
+		<?php if ( !$img->latitude ) {
+		continue;
+	} ?>
 		{
 			id: <?= $i ?>,
 			Lat: '<?= $img->latitude ?>',
@@ -54,14 +58,14 @@ if ( !empty($_GET['iid']) ) {
 			src: './img/img.php?id=<?= $img->random_uid ?>',
 			name: '<?= $img->name ?>',
 		},
-	<?php endforeach; ?>
+		<?php endforeach; ?>
 	];
 	let validImages = points.length;
 
-	let mapCentre = {lat: 62.25, lng: 26.39};
+	let mapCentre = { lat: 62.25, lng: 26.39 };
 	let initialZoom = 5;
 
-	<?php if ( !empty($_GET['iid']) ) : ?>
+	<?php if ( !empty( $_GET['iid'] ) ) : ?>
 		mapCentre.lat = <?= $focus[0] ?>;
 		mapCentre.lng = <?= $focus[1] ?>;
 		initialZoom = 13;

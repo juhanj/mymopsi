@@ -1,6 +1,26 @@
-<?php declare( strict_types=1 );
-require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+<?php declare(strict_types=1);
 
+/**
+ * Start stuff, copied from _start.php
+ * here was a line that fetched something from database that doesn't exist, which breaks the script
+ */
+define( 'DOC_ROOT', $_SERVER['DOCUMENT_ROOT'] );
+define( 'WEB_PATH', '/mopsi_dev/mymopsi/' );
+set_include_path(
+	get_include_path() . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . '/class/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . '/cfg/' . PATH_SEPARATOR );
+spl_autoload_extensions( '.class.php' );
+spl_autoload_register();
+define(
+	'INI',
+	parse_ini_file( (parse_ini_file( 'config.ini.php' )['config']), true, INI_SCANNER_TYPED )
+);
+$db = new DBConnection();
+
+/**
+ * Actual install starts here
+ */
 echo "<pre>";
 
 $f = file( './database.sql', FILE_IGNORE_NEW_LINES ); // Fetch tables from file
@@ -19,20 +39,20 @@ foreach ( $db_file as $sql ) {
 }
 
 echo '<p>Database installed successfully.</p>';
+echo '<a href="../">Link to front page.</a>';
 
 /*
  * Creating an admin user
  */
 $controller = new UserController();
 
-$controller->addNewUserToDatabase( $db, 'admin' );
-$admin = User::fetchUserByID( $db, 1 );
-$controller->setPassword( $db, $admin, 'password' );
+$controller->requestCreateNewUser( $db, 'admin', 'adminadmin' );
+$controller->requestCreateNewUser( $db, 'user', 'useruser' );
 
 $db->query( 'update mymopsi_user set admin = true where id = 1 limit 1' );
 
 $admin = User::fetchUserByID( $db, 1 );
+$user = User::fetchUserByID( $db, 2 );
 
-debug( $admin );
-
-echo '<a href="../">Link to front page.</a>';
+Utils::debug( $admin );
+Utils::debug( $user );

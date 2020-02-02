@@ -33,87 +33,34 @@ $collection->getImages( $db );
 <main class="main-body-container">
 
 	<div class="buttons compact">
-		<a href="index.php" class="button light">
-			<i class="material-icons">arrow_back</i>
+		<a href="index.php" class="button">
 			<?= $lang->BACK ?>
 		</a>
 
 		<a href="edit-collection.php" class="button">
-			<i class="material-icons">edit</i>
 			<?= $lang->EDIT_COLL ?>
 		</a>
 
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
-			<i class="material-icons">add</i>
-			<i class="material-icons">photo_library</i>
 			<?= $lang->ADD_IMG ?>
 		</a>
 
 		<a href="map.php?cid=<?= $collection->random_uid ?>" class="button margins-off">
-			<i class="material-icons">map</i>
 			<?= $lang->TO_MAP ?>
-			<i class="material-icons">arrow_forward</i>
 		</a>
 	</div>
 
-	<div class="box">
-	    <table>
-		    <colgroup>
-			    <col class="number">
-			    <col class="img">
-			    <col>
-			    <col class="coordinates">
-		    </colgroup>
-	        <thead>
-		        <tr class="table-title">
-			        <th colspan="4">
-				        <?= $lang->TABLE_HEADER ?>:
-				        <span class="collection-name" id="collection-name"
-				              data-name="<?= $collection->name ?>" data-uid="<?= $collection->random_uid ?>">
-					        <?= $collection->name ?>
-				        </span>
-			        </th>
-		        </tr>
-	            <tr>
-	                <th class="number">#</th>
-	                <th class="center">
-		                <i class="material-icons">image</i>
-	                </th>
-	                <th><?= $lang->IMG_NAME ?></th>
-	                <th class="center">
-		                <i class="material-icons">map</i>
-	                </th>
-	            </tr>
-	        </thead>
-	        <tbody>
-	        <?php foreach( $collection->images as $index => $img ) : ?>
-	            <tr id="">
-		            <td class="number"><?= $index+1 ?></td>
-	                <td class="center">
-		                <a href="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>">
-			                <img src="<?= WEB_PATH ?>/img/img.php?id=<?= $img->random_uid ?>&thumb" height="25px" alt="Thumbnail of image">
-		                </a>
-	                </td>
-	                <td><?= $img->name ?></td>
-	                <td class="center">
-		                <?php if ( $img->latitude ) : ?>
-	                    <a href="<?= WEB_PATH ?>/map.php?cid=<?= $collection->random_uid ?>&iid=<?= $img->random_uid ?>"
-	                        class="image-link margins-off">
-		                    <span>
-		                        <i class="material-icons">link</i>
-		                    </span>
-		                    <span>
-			                    <?= Utils::fNumber($img->latitude, 4) ?><br>
-			                    <?= Utils::fNumber($img->longitude, 4) ?>
-		                    </span>
-	                    </a>
-		                <?php endif; ?>
-	                </td>
-	            </tr>
-	        <?php endforeach; ?>
-	        </tbody>
-	    </table>
-	</div>
+	<ul class="image-list">
+		<?php foreach ( $collection->images as $img ) : ?>
+			<li class="image box">
+				<a href="./image.php?id=<?= $img->random_uid ?>">
+					<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
+					     class="img" alt="<?= $img->name ?>">
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+
 </main>
 
 <?php require 'html-footer.php'; ?>

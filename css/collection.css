@@ -1,0 +1,26 @@
+
+.image-list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    align-content: space-around;
+}
+
+.image-list .image {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: .5rem;
+    padding: 0;
+    height: 5rem;
+}
+
+.image-list .image:hover,
+.image-list .image:focus {
+    top: -10px;
+    box-shadow: 0 0.3rem 0.3rem 0.1rem var(--text-dark);
+}
+
+.image-list .image .img {
+    height: 1em;
+}

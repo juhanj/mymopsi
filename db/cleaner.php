@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-require	$_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /*/////////////////////////////////////////////////*/
 
 /*
@@ -8,7 +8,7 @@ require	$_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 $folders = scandir( INI['Misc']['path_to_collections'] );
 
-debug( $folders );
+Utils::debug( $folders );
 
 foreach ( $folders as $folder ) {
 	if ( $folder=='.' or $folder=='..' ) {
@@ -17,7 +17,7 @@ foreach ( $folders as $folder ) {
 
 	$imgs = scandir( INI['Misc']['path_to_collections'] . '/' . $folder );
 
-	debug( $imgs );
+	Utils::debug( $imgs );
 
 	foreach ( $imgs as $img ) {
 		if ( $img=='.' or $img=='..' ) continue;
@@ -25,7 +25,7 @@ foreach ( $folders as $folder ) {
 		unlink( INI['Misc']['path_to_collections'] . '/' . $folder . '/' . $img );
 	}
 
-	debug( rmdir( INI['Misc']['path_to_collections'] . '/' . $folder ) );
+	Utils::debug( rmdir( INI['Misc']['path_to_collections'] . '/' . $folder ) );
 }
 
 /*
@@ -37,4 +37,4 @@ $db->query(
 	$sql
 );
 
-echo "<a href='../db/install.php'>Link to install</a>";
+echo "<a href='install.php'>Link to install</a>";

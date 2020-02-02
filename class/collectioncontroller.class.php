@@ -215,7 +215,8 @@ class CollectionController implements Controller {
 
 		$this->result = [
 			'success' => true,
-			'collection_id' => $new_coll->id
+			'collection_id' => $new_coll->id,
+			'collection_uid' => $new_coll->random_uid,
 		];
 
 		return true;

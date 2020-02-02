@@ -6,31 +6,29 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
+// If no user logged-in, we send back to front page with error message
 if ( !$user ) {
 	header( 'location: index.php' );
 	$_SESSION['feedback'] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
+	exit();
 }
 
-if ( !empty($_GET['id']) ) {
-	header( 'location: index.php' );
-	$_SESSION['feedback'] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
-}
-
+// After form submit, send request to CollectionController for processing
 if ( !empty( $_POST ) ) {
 	$controller = new CollectionController();
 	$controller->handleRequest( $db, $user, $_POST );
 
 	if ( $controller->result['success'] ) {
-		$_SESSION['feedback'] .= "<p class='success'>{$lang->EDIT_SUCCESS}</p>";
+		$_SESSION['feedback'] .= "<p class='success'>{$lang->NEW_COLL_SUCCESS}</p>";
+		header( "Location:./collection.php?id={$controller->result['collection_uid']}" );
+		exit;
 	} else {
-		$_SESSION['feedback'] .= "<p class='error'>{$lang->EDIT_FAIL}</p>";
+		$_SESSION['feedback'] .= "<p class='error'>{$lang->COLL_FAIL}</p>";
 		$_SESSION['feedback'] .= "<p class='error'>{$controller->result['errMsg']}</p>";
 	}
 }
 
 $feedback = Utils::checkFeedbackAndPOST();
-
-$collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 ?>
 
 <!DOCTYPE html>
@@ -47,41 +45,42 @@ $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
 <main class="main-body-container">
 
+	<!-- One single <form> -->
 	<form method="post" class="box">
 		<!-- Name -->
 		<label>
-			<span class="label required"><?= $lang->NAME ?></span>
-			<input type="text" name="name" value="<?= $collection->name ?>" required>
+			<span class="label"><?= $lang->NAME ?></span>
+			<input type="text" name="name">
 		</label>
 
 		<!-- Description -->
 		<label>
-			<span class="label required"><?= $lang->DESCRIPTION ?></span>
-			<input type="text" name="description" value="<?= $collection->description ?>" required>
+			<span class="label"><?= $lang->DESCRIPTION ?></span>
+			<input type="text" name="description">
 		</label>
 
 		<!-- Public -->
 		<label>
-			<input type="checkbox" name="public" <?= $collection->public ? 'checked' : '' ?> >
+			<input type="checkbox" name="public">
 			<span class="label"><?= $lang->PUBLIC ?></span>
+			<span><?= $lang->PUBLIC_INFO ?></span>
 		</label>
 
 		<!-- Editable -->
-		<label>
-			<input type="checkbox" name="editable" <?= $collection->editable ? 'checked' : '' ?> >
+		<label hidden>
+			<input type="checkbox" name="editable">
 			<span class="label"><?= $lang->EDITABLE ?></span>
+			<span><?= $lang->EDITABLE_INFO ?></span>
 		</label>
 
 		<!-- Hidden stuff for server-side handler -->
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="request" value="edit">
+		<input type="hidden" name="request" value="new">
 
 		<!-- Cancel & Save -->
 		<div>
-			<!-- Cancel -->
-			<button><?= $lang->CANCEL ?></button>
 			<!-- Save -->
-			<input type="submit" name="<?= $lang->CANCEL ?>">
+			<input type="submit" name="<?= $lang->SUBMIT ?>" class="button">
 		</div>
 	</form>
 

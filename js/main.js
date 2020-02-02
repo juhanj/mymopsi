@@ -24,7 +24,7 @@ async function sendJSON ( data, url = './ajax-handler.php', returnJSON = true ) 
  * Send a POST request to server, receive JSON back.
  * Usage: sendForm(formdata).then((jsonResponse) => {});
  * @param {FormData} data Form-element, must be an FormData object
- * @param {string} url optional, default == ./ajax-handler.php
+ * @param {string} url optional, default = ./ajax-handler.php
  * @param {boolean} returnJSON
  * @returns {Promise<object>} JSON
  */

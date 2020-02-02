@@ -58,7 +58,7 @@ elseif ( isset($_GET['public']) or !$user ) {
 	<article>
 		<ol class="collections-list margins-off">
 			<li class="collection box">
-				<a href="edit-collection.php?new" class="collection-link">
+				<a href="create-collection.php" class="collection-link">
 					<?= $lang->NEW_COLLECTION ?>
 					<i class="material-icons">add</i>
 				</a>
@@ -66,7 +66,7 @@ elseif ( isset($_GET['public']) or !$user ) {
 			<?php foreach ( $collections as $c ) : ?>
 				<li class="collection box" data-id="<?= $c->random_uid ?>">
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
-						<h3><?= $c->name ?: substr($c->random_uid, 0, 2) ?></h3>
+						<h3><?= $c->name ?: substr($c->random_uid, 0, 5) ?></h3>
 						<?php if ( $c->description ) : ?>
 							<p class="description"><?= $c->description ?></p>
 						<?php endif; ?>

@@ -11,6 +11,11 @@ if ( empty( $_GET['id'] ) ) {
 	header( 'location: index.php' );
 	exit();
 }
+if ( !$user ) {
+	$_SESSION['feedback'] = "<p class='error'>{$lang->NOT_LOGGED_IN}</p>";
+	header( 'location: index.php' );
+	exit();
+}
 
 $feedback = Utils::checkFeedbackAndPOST();
 
@@ -52,28 +57,40 @@ if ( (!$collection->public and !$collection->editable) and ($collection->owner_i
 	    Contains <input type=file>-tag, and two hidden input-tags (request and collection-ID)
 	    The submit is handled by javascript, since we send one file at a time (very large uploads).
 	-->
-	<section class="box">
-		<form method="post" enctype='multipart/form-data' id="uploadForm">
+	<section class="box" id="upload-form-box">
+		<form method="post" enctype='multipart/form-data' id="upload-form">
 			<input type="hidden" name="MAX_FILE_SIZE" value="10000000"/>
 			<label>
 				<span class="label"><?= $lang->FILE_INPUT ?></span>:
-				<input type="file" name="images[]" accept="image/*" id="fileInput" multiple="multiple" required>
-				<!-- The input also has some english text which cannot be styles or changed. -->
+				<input type="file" name="images[]" accept="image/*" id="file-input" multiple="multiple" required>
+				<!-- The input also has some english text which cannot be styled or changed. -->
 			</label>
 
-			<input type="hidden" name="request" value="addImagesToCollection">
-			<input type="hidden" name="collection-uid" value="<?= $collection->random_uid ?>">
+			<input type="hidden" name="class" value="image">
+			<input type="hidden" name="request" value="upload">
+			<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
 
-			<input type="submit" value="<?= $lang->SUBMIT ?>" class="button" id="submitButton" hidden>
-			<button class="button" id="changeFiles" hidden>
-				<?= $lang->CHANGE_FILES ?>
-			</button>
+			<input type="submit" value="<?= $lang->SUBMIT ?>" class="button" id="submit-button" hidden>
 		</form>
+
+		<section class="progress-bar-container" id="progress-bar-container" hidden>
+			<label>
+				<span class="label"><?= $lang->PROGRESS_FILES ?>></span>
+				<progress id="progress-files"></progress>
+			</label>
+			<label>
+				<span class="label"><?= $lang->PROGRESS_BITS ?>></span>
+				<progress id="progress-bits"></progress>
+			</label>
+		</section>
 	</section>
 
-	<div id="filesInfo">
+	<div class="box" id="files-info" hidden>
 		<!-- For info on files to be uploaded. -->
 	</div>
+
+	<div class="box" id="successful-uploads"></div>
+	<div class="box" id="failed-uploads"></div>
 </main>
 
 <?php require 'html-footer.php'; ?>
