@@ -15,8 +15,7 @@ class Collection {
 	public $public;
 	public $editable;
 
-	public $added;
-	public $last_edited;
+	public $date_added;
 
 	public $number_of_images;
 
