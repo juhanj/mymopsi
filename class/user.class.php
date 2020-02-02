@@ -92,7 +92,7 @@ class User {
 	 */
 	function getCollections ( DBConnection $db ) {
 		$sql = 'select c.id, c.owner_id, c.random_uid, c.name, c.description, c.public, 
-                    c.editable, c.date_added, c.last_edited, count(i.id) as number_of_images
+                    c.editable, c.date_added, count(i.id) as number_of_images
 				from mymopsi_collection c
 				left join mymopsi_img i on c.id = i.collection_id
 				where c.owner_id = ?

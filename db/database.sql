@@ -43,7 +43,6 @@ create table if not exists mymopsi_collection (
 	public      boolean default false comment 'Is the collection public, i.e. shown on front page',
 	editable    boolean default false comment 'Can anyone edit this, owner/admin can always edit',
 	date_added  timestamp default now( ) not null,
-	last_edited timestamp default now( ) not null comment 'Last time images were added to collection',
 	primary key (id),
 	unique random_uid (random_uid),
 	constraint fk_collection_user foreign key (owner_id) references mymopsi_user (id)
