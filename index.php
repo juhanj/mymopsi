@@ -85,7 +85,7 @@ if ( $user ) {
 			<!-- Link to new user creation page -->
 			<section>
 				<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
-				<a href="edit-user.php?new" class="button">
+				<a href="create-user.php" class="button">
 					<?= $lang->CREATE_NEW_USER_LINK ?>
 				</a>
 			</section>
