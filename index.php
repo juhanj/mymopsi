@@ -78,17 +78,14 @@ if ( $user ) {
 					<input type="submit" value="<?= $lang->MOPSI_LOGIN_SUBMIT ?>" class="button" id="mopsi-submit">
 				</form>
 			</section>
-
 		</article>
 
 		<article class="box">
 			<!-- Link to new user creation page -->
-			<section>
-				<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
-				<a href="create-user.php" class="button">
-					<?= $lang->CREATE_NEW_USER_LINK ?>
-				</a>
-			</section>
+			<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
+			<a href="create-user.php" class="button">
+				<?= $lang->CREATE_NEW_USER_LINK ?>
+			</a>
 		</article>
 
 	<?php else : ?>
@@ -96,7 +93,7 @@ if ( $user ) {
 		<!-- Create new collection -->
 		<article class="box">
 			<h2><?= $lang->NEW_COLLECTION ?></h2>
-			<a href="edit-collection.php?new" class="button">
+			<a href="create-collection.php" class="button">
 				<?= $lang->NEW_COLLECTION ?>
 			</a>
 		</article>
