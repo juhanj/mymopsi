@@ -32,15 +32,8 @@ $collection->getImages( $db );
 
 <main class="main-body-container">
 
-	<div class="buttons compact">
-		<a href="index.php" class="button">
-			<?= $lang->BACK ?>
-		</a>
-
-		<a href="edit-collection.php" class="button">
-			<?= $lang->EDIT_COLL ?>
-		</a>
-
+	<div class="buttons margins-off" style="display: flex; flex-flow: row;">
+		<?php // TODO: Move to unique card, like on collections page ?? ?>
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->ADD_IMG ?>
 		</a>
@@ -66,6 +59,11 @@ $collection->getImages( $db );
 <?php require 'html-footer.php'; ?>
 
 <script>
+	// These are used in page-specific JS-file, for header-link.
+	let collectionName = "<?= $collection->name ?? substr($collection->random_uid,0,5) ?>";
+	let collectionRUID = "<?= $collection->random_uid ?>";
+
+	//TODO: Add edit svg img to header link --jj 2020-02-03
 </script>
 
 </body>
