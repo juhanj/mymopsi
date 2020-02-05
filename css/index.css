@@ -5,13 +5,3 @@
 	color: var(--text-light);
 	text-align: center;
 }
-
-.box {
-	/*background: var(--content-box-bg);*/
-	/*padding: 1rem;*/
-	/*border-radius: .2rem;*/
-}
-
-footer.site-footer .settings-link {
-	display: flex;
-}

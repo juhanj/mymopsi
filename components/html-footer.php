@@ -6,9 +6,11 @@
 		<p>MyMopsi</p>
 	</section>
 
+	<?php // TODO: Fix this on the front page, looks wrong ?>
 	<section class="right">
 		<a href="<?= WEB_PATH ?>/settings.php" class="button light settings-link">
-			<i class="material-icons">settings</i>
+			Settings
+			<?php echo file_get_contents("./img/settings.svg"); ?>
 		</a>
     </section>
 

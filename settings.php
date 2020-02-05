@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
- * @var $db DBConnection
+ * @var DBConnection $db
+ * @var Language $lang
+ * @var User $user
  */
 ?>
 <!DOCTYPE html>
@@ -17,7 +19,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 <main class="main-body-container">
 
-	<a href="index.php" class="button return">
+	<?php // TODO: Make it return to previous page ?>
+	<a href="javascript:history.go(-1)" class="button return">
 		<?= $lang->RETURN ?>
 	</a>
 
@@ -39,6 +42,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 			<span>🇫🇮 Suomi</span>
 		</label>
 	</article>
+
+	<?php // TODO: Add logout button ?>
 
     <article class="box links">
         <h2>Links</h2>

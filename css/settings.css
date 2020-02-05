@@ -13,3 +13,8 @@ label {
 	background-color: var(--input-bg);
 	border-radius: var(--border-radius);
 }
+
+
+footer.site-footer .settings-link {
+	display: none;
+}

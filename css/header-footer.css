@@ -34,15 +34,19 @@ footer.site-footer {
 	justify-content: space-between;
 	align-items: center;
 
-	min-height: 1.5rem;
+	min-height: 2.5rem;
 }
 
 footer.site-footer .settings-link {
-	padding: 0 2.5rem;
-	display: none;
+	padding: 0 2rem;
 }
 
 
 footer.site-footer .right .material-icons {
 	font-size: 2rem;
+}
+
+footer.site-footer .svg.settings {
+	height: 2rem;
+	margin: .2rem;
 }
