@@ -35,20 +35,24 @@ if ( $user ) {
 	<?php if ( !$user ) : ?>
 		<!-- User-login form -->
 		<article class="box">
+			<!-- MyMopsi account login, separate from Mopsi-login for security reasons -->
 			<section>
 				<h2 class="box-header"><?= $lang->USER_LOGIN ?></h2>
 
 				<form action="login-handler.php" method="post">
+					<!-- Username input field -->
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_NAME ?></span>
 						<input type="text" name="username" minlength="1" maxlength="190">
 					</label>
 
+					<!-- Password input field -->
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
 						<input type="password" name="password" minlength="8" maxlength="300">
 					</label>
 
+					<!-- Hidden fields for server-side processing -->
 					<input type="hidden" name="class" value="user">
 					<input type="hidden" name="request" value="login">
 
@@ -58,20 +62,24 @@ if ( $user ) {
 
 			<hr>
 
+			<!-- Mopsi account login, separate for security reasons -->
 			<section>
 				<h2 class="box-header">Mopsi account</h2>
 
 				<form action="login-handler.php" method="post">
+					<!-- Username input field -->
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_NAME ?></span>
 						<input type="text" name="username" minlength="1" maxlength="190">
 					</label>
 
+					<!-- Password input field -->
 					<label class="compact">
 						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
 						<input type="password" name="password" minlength="1" maxlength="300">
 					</label>
 
+					<!-- Hidden fields for server-side processing -->
 					<input type="hidden" name="class" value="user">
 					<input type="hidden" name="request" value="mopsi_login">
 
