@@ -9,11 +9,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 if ( !$user ) {
 	header( 'location: index.php' );
 	$_SESSION['feedback'] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
+	exit();
 }
 
-if ( !empty($_GET['id']) ) {
+if ( empty($_GET['id']) ) {
 	header( 'location: index.php' );
-	$_SESSION['feedback'] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
+	$_SESSION['feedback'] = "<p class='warning'>{$lang->INVALID_ID}</p>";
+	exit();
 }
 
 if ( !empty( $_POST ) ) {
