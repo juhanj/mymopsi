@@ -77,10 +77,15 @@ $feedback = Utils::checkFeedbackAndPOST();
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="request" value="new">
 
+
+		<p class="required-input side-note">
+			<span class="required"></span> = <?= $lang->REQUIRED_INPUT ?>
+		</p>
+
 		<!-- Cancel & Save -->
 		<div>
 			<!-- Save -->
-			<input type="submit" name="<?= $lang->SUBMIT ?>" class="button">
+			<input type="submit" value="<?= $lang->SUBMIT ?>" class="button">
 		</div>
 	</form>
 
