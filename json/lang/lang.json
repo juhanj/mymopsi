@@ -9,7 +9,7 @@
 			"fi": "MyMopsi"
 		},
 		"REQUIRED_INPUT": {
-			"en": "Required",
+			"en": "Required field",
 			"fi": "Pakollinen kenttä"
 		},
 		"CANCEL": {
@@ -75,6 +75,12 @@
 		}
 	},
 	"settings": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Settings"
+		},
+		"HEADER_TITLE": {
+			"en": "Settings"
+		},
 		"SETT_LANG_HEAD": {
 			"en": "Select language"
 		},
@@ -132,22 +138,68 @@
 			"en": "Confirm password"
 		}
 	},
-	"edit-collection": {
+	"create-collection": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | New collection"
+		},
+		"HEADER_TITLE": {
+			"en": "New collection creation"
+		},
 		"NAME": {
-			"en": "Name",
-			"fi": "Nimi"
+			"en": "Name of the new collection",
+			"fi": "Uuden kokoelman nimi"
 		},
 		"DESCRIPTION": {
-			"en": "Description",
-			"fi": "Kuvaus"
+			"en": "Description of the new collection",
+			"fi": "Uuden kokoelman kuvaus"
 		},
 		"PUBLIC": {
 			"en": "Public",
 			"fi": "Julkinen"
 		},
 		"PUBLIC_INFO": {
-			"en": "Public collections can be viewed by anyone, even not logged-in users.",
+			"en": "Public collections can be viewed by anyone, even without logging-in.",
 			"fi": "Kuka tahansa voi tarkastella julkista kokoelmaa."
+		},
+		"SUBMIT": {
+			"en": "Create new collection",
+			"fi": "Luo kokoelma"
+		},
+		"NEW_COLL_SUCCESS": {
+			"en": "New collection successfully created.",
+			"fi": "Uusi kokoelma luotu."
+		},
+		"COLL_FAIL": {
+			"en": "Collection creation failed for some reason. See error-message for more info.",
+			"fi": "Kokoelman luonti epäonnistui."
+		}
+	},
+	"edit-collection": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | New collection"
+		},
+		"HEADER_TITLE": {
+			"en": "New collection creation"
+		},
+		"NAME": {
+			"en": "Name of the new collection",
+			"fi": "Uuden kokoelman nimi"
+		},
+		"DESCRIPTION": {
+			"en": "Description of the new collection",
+			"fi": "Uuden kokoelman kuvaus"
+		},
+		"PUBLIC": {
+			"en": "Public",
+			"fi": "Julkinen"
+		},
+		"PUBLIC_INFO": {
+			"en": "Public collections can be viewed by anyone, even without logging-in.",
+			"fi": "Kuka tahansa voi tarkastella julkista kokoelmaa."
+		},
+		"SUBMIT": {
+			"en": "Create new collection",
+			"fi": "Luo kokoelma"
 		},
 		"NEW_COLL_SUCCESS": {
 			"en": "New collection successfully created.",
@@ -173,13 +225,11 @@
 		}
 	},
 	"collection": {
-		"BACK": {
-			"en": "Return to Collections-page",
-			"fi": "Takaisin edelliselle sivulle"
+		"HTML_TITLE": {
+			"en": "MyMopsi | Collection"
 		},
-		"EDIT_COLL": {
-			"en": "Edit collection",
-			"fi": "Muokkaa kokoelmaa"
+		"HEADER_TITLE": {
+			"en": "Collection | <a id='header-coll-name'>Name</a>"
 		},
 		"ADD_IMG": {
 			"en": "Add new images",
