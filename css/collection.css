@@ -1,4 +1,8 @@
+/******************************************************************************
+    Single collection
 
+    Images in a card layout
+ *****************************************************************************/
 .image-list {
     display: flex;
     flex-flow: row wrap;
@@ -13,6 +17,7 @@
     margin: .5rem;
     padding: 0;
     height: 5rem;
+    width: 5rem;
 }
 
 .image-list .image:hover,
@@ -22,5 +27,16 @@
 }
 
 .image-list .image .img {
-    height: 1em;
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttons .button {
+    width: 70%;
 }

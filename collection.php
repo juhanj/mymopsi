@@ -32,8 +32,7 @@ $collection->getImages( $db );
 
 <main class="main-body-container">
 
-	<div class="buttons margins-off" style="display: flex; flex-flow: row;">
-		<?php // TODO: Move to unique card, like on collections page ?? ?>
+	<div class="buttons margins-off">
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->ADD_IMG ?>
 			<?= file_get_contents('./img/file-plus.svg') ?>
@@ -47,8 +46,8 @@ $collection->getImages( $db );
 
 	<ul class="image-list">
 		<?php foreach ( $collection->images as $img ) : ?>
-			<li class="image box">
-				<a href="./image.php?id=<?= $img->random_uid ?>">
+			<li class="image">
+				<a href="./image.php?id=<?= $img->random_uid ?>" class="link">
 					<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
 					     class="img" alt="<?= $img->name ?>">
 				</a>
