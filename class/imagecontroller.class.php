@@ -245,7 +245,7 @@ class ImageController implements Controller {
 				[
 					$collection->id, $file['new_ruid'], $file['hash'], $file['name'], $file['name'],
 					$file['final_path'], $file['mime'], $file['size'], $file['latitude'] ?? null, $file['longitude'] ?? null,
-					filectime( $file['temp_path'] )
+					filectime( $file['final_path'] )
 				]
 			);
 
@@ -262,6 +262,7 @@ class ImageController implements Controller {
 
 		$this->result = [
 			'success' => true,
+			'error' => false,
 			'good_uploads' => $good_uploads,
 			'failed_uploads' => $bad_uploads,
 			'metadata' => $metadata,
