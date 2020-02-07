@@ -22,7 +22,7 @@ if ( $controller->result['success'] ) {
 	$_SESSION['user_id'] = $controller->result['user_id'];
 	$_SESSION['username'] = $controller->result['username'] ?: null;
 	$_SESSION['feedback'] .= "<p class='success'>{$lang->LOGIN_SUCCESS}</p>";
-	header( "Location:./index.php" );
+	header( "Location:././collections.php?user={$controller->result['user_uid']}" );
 	exit;
 } else {
 	$_SESSION['feedback'] .= "<p class='error'>{$lang->LOGIN_FAIL}</p>";
