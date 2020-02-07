@@ -60,7 +60,7 @@ elseif ( isset($_GET['public']) or !$user ) {
 			<li class="collection box">
 				<a href="create-collection.php" class="collection-link">
 					<?= $lang->NEW_COLLECTION ?>
-					<i class="material-icons">add</i>
+					<?= file_get_contents('./img/folder-plus.svg') ?>
 				</a>
 			</li>
 			<?php foreach ( $collections as $c ) : ?>

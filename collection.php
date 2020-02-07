@@ -36,10 +36,12 @@ $collection->getImages( $db );
 		<?php // TODO: Move to unique card, like on collections page ?? ?>
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->ADD_IMG ?>
+			<?= file_get_contents('./img/file-plus.svg') ?>
 		</a>
 
 		<a href="map.php?cid=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->TO_MAP ?>
+			<?= file_get_contents('./img/map.svg') ?>
 		</a>
 	</div>
 

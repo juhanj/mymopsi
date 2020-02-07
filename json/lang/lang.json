@@ -229,7 +229,7 @@
 			"en": "MyMopsi | Collection"
 		},
 		"HEADER_TITLE": {
-			"en": "Collection | <a id='header-coll-name'>Name</a>"
+			"en": "Collection | <a id='header-coll-name'>Name</a><object type='image/svg+xml' data='./img/edit.svg'></object>"
 		},
 		"ADD_IMG": {
 			"en": "Add new images",

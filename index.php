@@ -56,7 +56,12 @@ if ( $user ) {
 					<input type="hidden" name="class" value="user">
 					<input type="hidden" name="request" value="login">
 
-					<input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button">
+
+					<button type="submit" class="button">
+						<?= $lang->USER_SUBMIT ?>
+						<?= file_get_contents('./img/log-in.svg') ?>
+					</button>
+					<!-- <input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button"> -->
 				</form>
 			</section>
 
@@ -83,7 +88,11 @@ if ( $user ) {
 					<input type="hidden" name="class" value="user">
 					<input type="hidden" name="request" value="mopsi_login">
 
-					<input type="submit" value="<?= $lang->MOPSI_LOGIN_SUBMIT ?>" class="button" id="mopsi-submit">
+					<button type="submit" class="button">
+						<?= $lang->MOPSI_LOGIN_SUBMIT ?>
+						<?= file_get_contents('./img/log-in.svg') ?>
+					</button>
+					<!-- <input type="submit" value="<?= $lang->MOPSI_LOGIN_SUBMIT ?>" class="button" id="mopsi-submit"> -->
 				</form>
 			</section>
 		</article>
@@ -93,6 +102,7 @@ if ( $user ) {
 			<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
 			<a href="create-user.php" class="button">
 				<?= $lang->CREATE_NEW_USER_LINK ?>
+				<?= file_get_contents('./img/user-plus.svg') ?>
 			</a>
 		</article>
 
