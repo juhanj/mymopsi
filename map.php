@@ -34,11 +34,21 @@ if ( !empty( $_GET['iid'] ) ) {
 
 <?php require 'html-header.php'; ?>
 
-<main class="main-body-container">
+<main class="main-body-container margins-off">
 
-	<div id="googleMap" class="map margins-initial">
+	<section class="clustering-container">
+		<label>
+			Clustering
+			<select>
+				<option value="server">Server</option>
+				<option value="client">Client</option>
+			</select>
+		</label>
+	</section>
+
+	<section id="googleMap" class="map margins-initial">
 		<!-- Google Map goes here. `margins-initial`-class necessary to not break Google's own styling -->
-	</div>
+	</section>
 
 </main>
 

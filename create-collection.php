@@ -6,6 +6,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
+// TODO: Page missing language strings
+
 // If no user logged-in, we send back to front page with error message
 if ( !$user ) {
 	header( 'location: index.php' );
@@ -61,8 +63,10 @@ $feedback = Utils::checkFeedbackAndPOST();
 
 		<!-- Public -->
 		<label>
+			<?php // TODO: Fix this layout. Move checkbox to left, underline text on select, dashed on hover ?>
 			<input type="checkbox" name="public">
 			<span class="label"><?= $lang->PUBLIC ?></span>
+			<?php // TODO: IS this explanation needed? ?>
 			<span><?= $lang->PUBLIC_INFO ?></span>
 		</label>
 

@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+
+// TODO: Fix this whole page of a mess. Complete rewrite.
 /**
  * @var DBConnection $db
  * @var Language $lang
@@ -49,42 +51,23 @@ $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
 <main class="main-body-container">
 
-	<form method="post" class="box">
-		<!-- Name -->
+	<section class="box">
+		<p>Nothing to see here yet.
+	</section>
+
+	<form class="box" method="post">
 		<label>
 			<span class="label required"><?= $lang->NAME ?></span>
 			<input type="text" name="name" value="<?= $collection->name ?>" required>
 		</label>
-
-		<!-- Description -->
-		<label>
-			<span class="label required"><?= $lang->DESCRIPTION ?></span>
-			<input type="text" name="description" value="<?= $collection->description ?>" required>
-		</label>
-
-		<!-- Public -->
-		<label>
-			<input type="checkbox" name="public" <?= $collection->public ? 'checked' : '' ?> >
-			<span class="label"><?= $lang->PUBLIC ?></span>
-		</label>
-
-		<!-- Editable -->
-		<label>
-			<input type="checkbox" name="editable" <?= $collection->editable ? 'checked' : '' ?> >
-			<span class="label"><?= $lang->EDITABLE ?></span>
-		</label>
-
-		<!-- Hidden stuff for server-side handler -->
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="request" value="edit">
+		<input type="hidden" name="method" value="edit-name">
+	</form>
 
-		<!-- Cancel & Save -->
-		<div>
-			<!-- Cancel -->
-			<button><?= $lang->CANCEL ?></button>
-			<!-- Save -->
-			<input type="submit" name="<?= $lang->CANCEL ?>">
-		</div>
+	<form class="box" method="post">
+		<label> <input type="text" name="description" value="<?= $collection->description ?>"> </label>
+		<input type="hidden" name="class" value="collection">
+		<input type="hidden" name="method" value="edit-description">
 	</form>
 
 </main>

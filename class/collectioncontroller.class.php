@@ -172,6 +172,30 @@ class CollectionController implements Controller {
 		return boolval( $rows_changed );
 	}
 
+	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ) {
+
+		$sql = "select filepath as filename, name, latitude as lat, longitude as lon 
+				from mymopsi_img 
+				where collection_id = ?
+					and latitude is not null
+					and longitude is not null";
+		$result = $db->query( $sql, [$collection->id] );
+
+		$file_path = INI['Misc']['path_to_collections'] . "/{$collection->random_uid}/cluster-data.json";
+
+		file_put_contents( $file_path, json_encode($result) );
+
+		return $file_path;
+
+//		[
+//			{
+//				"lat": "-33.1545",
+//				"lon": "-118.384",
+//				"name": "",
+//				"filename": "131009_20-03-50_899419002.jpg"
+//			},
+	}
+
 	/**
 	 * @param DBConnection $db
 	 * @param User $user

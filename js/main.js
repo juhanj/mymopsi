@@ -95,3 +95,5 @@ const MB = 1048576;
  * @type {number} 1 073 741 824
  */
 const GB = 1073741824;
+
+//TODO: Language thing for client side. Figure something out. This one is a big change.

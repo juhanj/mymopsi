@@ -51,10 +51,6 @@ elseif ( isset($_GET['public']) or !$user ) {
 
 <main class="main-body-container">
 
-	<section>
-		<h2><?= $lang->USER ?>: <?= $user->username ?? $lang->USER_PUBLIC ?></h2>
-	</section>
-
 	<article>
 		<ol class="collections-list margins-off">
 			<li class="collection box">
@@ -82,8 +78,10 @@ elseif ( isset($_GET['public']) or !$user ) {
 <?php require 'html-footer.php'; ?>
 
 <script>
+	// These are used in page-specific JS-file, for header-link.
+	let userName = "<?= $user->name ?? substr($user->random_uid,0,5) ?>";
+	let userRUID = "<?= $user->random_uid ?>";
 </script>
 
 </body>
 </html>
-

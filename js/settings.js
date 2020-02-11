@@ -11,3 +11,5 @@ document.querySelectorAll("input[name='lang']").forEach((input) => {
 		);
 	});
 });
+
+// TODO: Print something to user when language changed. "Refresh page to see changes."

@@ -6,6 +6,12 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
+// TODO: fix this page of a mess
+// submit button label
+// confirmation on complete
+// feedback on button
+// coordinate formatting 12.34N 32.10E
+
 if ( empty( $_GET['id'] ) ) {
 	$_SESSION['feedback'] = "<p class='error'>{$lang->COLL_ID_REQ}</p>";
 	header( 'location: index.php' );
@@ -90,7 +96,9 @@ if ( (!$collection->public and !$collection->editable) and ($collection->owner_i
 	</div>
 
 	<div class="box" id="successful-uploads"></div>
+
 	<div class="box" id="failed-uploads"></div>
+
 </main>
 
 <?php require 'html-footer.php'; ?>

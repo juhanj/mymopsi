@@ -102,8 +102,7 @@
 			"fi": "MyMopsi | Kokoelmat"
 		},
 		"HEADER_TITLE": {
-			"en": "Collections",
-			"fi": "Kokoelmat"
+			"en": "User | <a id='header-user-name'>Name</a><object type='image/svg+xml' data='./img/edit.svg'></object>"
 		},
 		"NEW_COLLECTION": {
 			"en": "New Collection",

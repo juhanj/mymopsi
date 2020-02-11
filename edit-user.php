@@ -30,6 +30,8 @@ if ( !empty( $_POST ) ) {
 }
 
 $feedback = Utils::checkFeedbackAndPOST();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -45,22 +47,49 @@ $feedback = Utils::checkFeedbackAndPOST();
 <div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
 <main class="main-body-container">
-	<?php
-	if ( $user ) {
-		require 'html-edit-user.php';
-	} else {
-		require 'html-create-user.php';
-	}
-	?>
 
-	<?php if ( $user ) : ?>
-		<!-- Collections  -->
-		<div class="box">
-			<a href="collections.php?user=<?= $user->random_uid ?>" class="button">
-				<?= $lang->COLLECTIONS_LINK ?>
-			</a>
-		</div>
-	<?php endif; ?>
+	<section class="box">
+		<p>Nothing to see here yet.
+	</section>
+
+	<section class="box">
+		<form method="post">
+			<label for="name">
+				<span class="label required"><?= $lang->USERNAME ?></span>
+				<input type="text" name="name" value="<?= $user->username ?>" required
+					minlength="<?= INI['Settings']['username_min_len'] ?>"
+					maxlength="<?= INI['Settings']['username_max_len'] ?>">
+			</label>
+			<input type="hidden" name="class" value="user">
+			<input type="hidden" name="method" value="edit-username">
+			<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+		</form>
+	</section>
+
+	<section class="box">
+		<form method="post">
+			<label for="password">
+				<span class="label required"><?= $lang->PASSWORD ?></span>
+				<input type="password" name="password" value="" required
+					minlength="<?= INI['Settings']['password_min_len'] ?>"
+					maxlength="<?= INI['Settings']['password_max_len'] ?>">
+			</label>
+			<label for="password-confirm">
+				<span class="label required"><?= $lang->PASSWORD_CONFIRM ?></span>
+				<input type="password" name="password-confirm" value="" required
+					minlength="<?= INI['Settings']['password_min_len'] ?>"
+					maxlength="<?= INI['Settings']['password_max_len'] ?>">
+			</label>
+			<input type="hidden" name="class" value="user">
+			<input type="hidden" name="method" value="edit-password">
+			<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+		</form>
+	</section>
+
+
+	<section class="box">
+		<p><?= $lang->COLLECTIONS_NRO ?>: </p>
+	</section>
 
 </main>
 

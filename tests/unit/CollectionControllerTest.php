@@ -190,4 +190,9 @@ class CollectionControllerTest extends TestCase {
 		);
 	}
 
+	public function test_CreateServerClusteringJSON () {
+		$result = $this->ctrl->createServerClusteringJSON( $this->db, $this->testCollection );
+
+		self::assertTrue( $result, print_r($result,true) );
+	}
 }

@@ -37,6 +37,17 @@ if ( ($user->id !== $collection->owner_id) and !$collection->public ) {
 
 <main class="main-body-container">
 
+	<form class="box" method="post">
+		<label> <span class="label required"><?= $lang->NAME ?></span> <input type="text" name="name" value="<?= $image->name ?>" required> </label>
+	</form>
+
+	<form class="box" method="post">
+		<label>
+			<span class="label required"><?= $lang->DESCRIPTION ?></span>
+			<input type="text" name="description" value="<?= $image->description ?>" required>
+		</label>
+	</form>
+
 	<section class="box">
 		<a href="edit-gps.php?id=<?= $image->random_uid ?>" class="button">
 			<?= $lang->EDIT_GPS ?>

@@ -26,9 +26,15 @@
     box-shadow: 0 0.3rem 0.3rem 0.1rem var(--text-dark);
 }
 
+.image-list .image .link {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+}
+
 .image-list .image .img {
     max-width: 100%;
-    height: auto;
+    max-height: 100%;
     margin: auto;
 }
 

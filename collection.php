@@ -63,8 +63,6 @@ $collection->getImages( $db );
 	// These are used in page-specific JS-file, for header-link.
 	let collectionName = "<?= $collection->name ?? substr($collection->random_uid,0,5) ?>";
 	let collectionRUID = "<?= $collection->random_uid ?>";
-
-	//TODO: Add edit svg img to header link --jj 2020-02-03
 </script>
 
 </body>

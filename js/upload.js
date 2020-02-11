@@ -4,13 +4,46 @@
  * @param {Object} response
  * @param {Object} response.request
  * @param {string} response.request.batchSizeBytes
+ * @param {string} response.request.batchIndex
  * @param {Object} response.result
- * @param {Object[]} response.result.success
- * @param {Object[]} response.result.errors
+ * @param {boolean} response.result.success
+ * @param {boolean} response.result.error
+ * @param {Object[]} response.result.good_uploads
+ * @param {string} response.result.good_uploads.new_ruid
+ * @param {string} response.result.good_uploads.mime
+ * @param {string} response.result.good_uploads.hash
+ * @param {string} response.result.good_uploads.final_path
+ * @param {string} response.result.good_uploads.latitude
+ * @param {string} response.result.good_uploads.longitude
+ * @param {Object[]} response.result.failed_uploads
+ * @param {string} response.result.failed_uploads.mime
+ * @param {string} response.result.failed_uploads.hash
+ * @param {Object[]} response.result.metadata
  */
 function handleRequestResponse ( response ) {
-	console.log( `Received response for batch` );
-	console.log(response);
+	console.log( `Received response for batch ${response.request.batchIndex}` );
+	console.log( `\tSuccess: ${response.result.good_uploads.length}` );
+	console.log( `\tFailed : ${response.result.failed_uploads.length}` );
+	console.log( response );
+
+	let good = response.result.good_uploads;
+	let bad = response.result.failed_uploads;
+
+	if ( Array.isArray( good ) && good.length ) {
+		let temp = '';
+		good.forEach( ( image ) => {
+			temp += `<p id="${image.new_ruid}">${image.name}, ${image.size}, ${image.mime}, ${image.lastModified}</p>`;
+		} );
+		successfulUploads.insertAdjacentHTML( 'beforeend', temp );
+	}
+
+	if ( Array.isArray( bad ) && bad.length ) {
+		let temp = '';
+		bad.forEach( ( image ) => {
+			temp += `<p id="${image.name}">${image.name}, ${image.size}, ${image.mime}, ${image.hash}</p>`;
+		} );
+		failedUploads.insertAdjacentHTML( 'beforeend', temp );
+	}
 }
 
 let maxBatchSize = 10 * MB;
@@ -33,7 +66,7 @@ fileInput.onchange = () => {
 	let temp = '';
 	let totalFileSize = 0;
 	Array.from( fileInput.files ).forEach( ( file ) => {
-		temp += `<p>${file.name}, ${file.size}, ${file.type}, ${file.lastModified}</p>`;
+		temp += `<p id="${file.name}">${file.name}, ${file.size}, ${file.type}, ${file.lastModified}</p>`;
 		totalFileSize += file.size;
 	} );
 
@@ -74,10 +107,15 @@ uploadForm.onsubmit = ( event ) => {
 		// Looping through fileInput.files, also moving the for-loop forwards
 		// adding files to the formData, according to batchsize
 		while ( fileInput.files[i] && (currentBatchSize + fileInput.files[i].size) < maxBatchSize ) {
+			// Some debuggin logs...
 			console.log( `File ${fileInput.files[i].name} added to batch ${currentBatchIndx}` );
+			// Adding the image to current batch (this gets emptied after request/batch is sent)
 			formData.append( 'images[]', fileInput.files[i] );
+			// Current batch size is used to determine whenthe batch is full and when to leave the while-loop
 			currentBatchSize += fileInput.files[i].size;
-			i++;
+			// Remove element from the "Waiting uploads"-list, for some better user-feedback
+			document.getElementById( fileInput.files[i].name ).remove();
+			i++; // Advance for-loop, inside said for-loop
 		}
 
 		// Check that we are actually sending something, and not just empty requests.
@@ -96,7 +134,10 @@ uploadForm.onsubmit = ( event ) => {
 			progressBarFiles.value++;
 			progressBarBytes.value += fileInput.files[i].size;
 
-			failedUploads.append( `<p>${fileInput.files[i].name},${fileInput.files[i].size}</p>` );
+			failedUploads.insertAdjacentHTML(
+				'beforeend',
+				`<p>${fileInput.files[i].name},${fileInput.files[i].size}</p>`
+			);
 		}
 	}
 };

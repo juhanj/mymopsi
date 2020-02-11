@@ -6,7 +6,7 @@
 	Main element
 	Display: flex for centering elements
  */
-header.site-header {
+.site-header {
 	background: var(--primary-darker);
 	color: var(--text-light);
 	display: flex;
@@ -17,14 +17,14 @@ header.site-header {
 /*
 	Default font here a bit heavy, drop font-weight a bit
  */
-header.site-header h1.page-title {
+.site-header h1.page-title {
 	font-weight: lighter;
 }
 
 /************************************************************
 	FOOTER STYLINGS (ALL PAGES)
 *************************************************************/
-footer.site-footer {
+.site-footer {
 	display: flex;
 	flex: 1 0;
 
@@ -37,16 +37,16 @@ footer.site-footer {
 	min-height: 2.5rem;
 }
 
-footer.site-footer .settings-link {
+.site-footer .settings-link {
 	padding: 0 2rem;
 }
 
 
-footer.site-footer .right .material-icons {
+.site-footer .right .material-icons {
 	font-size: 2rem;
 }
 
-footer.site-footer .svg.settings {
+.site-footer .svg.settings {
 	height: 2rem;
 	margin: .2rem;
 }

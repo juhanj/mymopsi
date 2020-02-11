@@ -1,7 +1,4 @@
 'use strict';
-let map;
-let mapDiv = document.getElementById("googleMap");
-
 function initMopsiClustering() {
 	let options = {
 		clusteringMethod: "gridBased",
@@ -16,7 +13,7 @@ function initMopsiClustering() {
 		markerClusterHeight: 39,
 		markerClusterWidth: 48,
 		// [top|center|bottom] - [right|center|left]
-		thumbPosition: 'center'
+		thumbPosition: 'top-left'
 	};
 
 	let clusteringObj = new mopsiMarkerClustering(map, options, mapDiv);
@@ -76,3 +73,6 @@ function initGoogleMap() {
 		console.log(event);
 	});
 }
+
+let map;
+let mapDiv = document.getElementById("googleMap");
