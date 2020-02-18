@@ -2,7 +2,7 @@
 
 $request = $_GET
 	?: $_POST
-	?: json_decode( file_get_contents('php://input'), true );
+		?: json_decode( file_get_contents( 'php://input' ), true );
 
 if ( empty( $request ) ) {
 	header( '400 Bad Request', true, 400 );
@@ -39,4 +39,7 @@ header( 'Content-Type: application/json' );
 /*
  * Return result in JSON format back to client.
  */
-echo json_encode( $result );
+echo json_encode(
+	$result,
+	JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK
+);
