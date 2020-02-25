@@ -172,18 +172,27 @@ class CollectionController implements Controller {
 		return boolval( $rows_changed );
 	}
 
+	/**
+	 * Create a JSON file with specific format for the server-side clustering API.
+	 * @param DBConnection $db
+	 * @param Collection $collection
+	 * @return bool|string
+	 */
 	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ) {
-
 		$sql = "select filepath as filename, name, latitude as lat, longitude as lon 
 				from mymopsi_img 
 				where collection_id = ?
 					and latitude is not null
 					and longitude is not null";
-		$result = $db->query( $sql, [$collection->id] );
+		$rows = $db->query( $sql, [$collection->id] );
+
+		if ( !$rows ) {
+			return false;
+		}
 
 		$file_path = INI['Misc']['path_to_collections'] . "/{$collection->random_uid}/cluster-data.json";
 
-		file_put_contents( $file_path, json_encode($result) );
+		file_put_contents( $file_path, json_encode($rows) );
 
 		return $file_path;
 
@@ -223,6 +232,8 @@ class CollectionController implements Controller {
 			$this->setError( -2, 'Failed adding to database' );
 			return false;
 		}
+
+		mkdir( INI['Misc']['path_to_collections'] . "/{$new_coll->random_uid}/" );
 
 		if ( $name ) {
 			$this->setName( $db, $new_coll, $name );

@@ -29,7 +29,8 @@ create table if not exists mymopsi_user_third_party_link (
 	user_id   int not null, -- PK
 	mopsi_id  int,
 	google_id varchar(190),
-	primary key (user_id)
+	primary key (user_id),
+	constraint fk_3rdpartylink_user foreign key (user_id) references mymopsi_user (id)
 )
 	default charset = utf8mb4
 	collate = utf8mb4_unicode_ci;

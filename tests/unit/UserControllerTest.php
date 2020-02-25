@@ -37,7 +37,8 @@ class UserControllerTest extends TestCase {
 	}
 
 	public function test_DeleteUserRowFromDatabase () {
-		$result = $this->ctrl->deleteUserRowFromDatabase( $this->db, $this->testUser );
+		$temp_user = $this->ctrl->createEmptyUserRowInDatabase( $this->db );
+		$result = $this->ctrl->deleteUserRowFromDatabase( $this->db, $temp_user );
 
 		self::assertTrue( $result );
 	}
@@ -158,8 +159,6 @@ class UserControllerTest extends TestCase {
 
 		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
 		self::assertFalse( $this->ctrl->result['error'], print_r( $this->ctrl->result, true ) );
-
-		self::assertIsInt( $_SESSION['user_id'] );
 	}
 
 	public function test_RequestMopsiLogin_fail_UserNotFound () {
@@ -167,5 +166,44 @@ class UserControllerTest extends TestCase {
 
 		self::assertFalse( $result, print_r($this->ctrl->result, true) );
 		self::assertTrue( $this->ctrl->result['error'] );
+	}
+
+	public function test_RequestChangeName () {
+		$post_request = [
+			'request' => 'edit_name',
+			'username' => 'New name'
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
+	}
+
+	public function test_RequestChangePassword () {
+		$post_request = [
+			'request' => 'edit_password',
+			'password' => 'New password'
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
+	}
+
+	public function test_RequestChangeEmail () {
+		$post_request = [
+			'request' => 'edit_email',
+			'email' => 'new@email'
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
 	}
 }

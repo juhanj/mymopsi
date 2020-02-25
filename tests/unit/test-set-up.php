@@ -27,8 +27,8 @@ function set_up_database () {
 			values (?,?,?,?,?,?,?), (?,?,?,?,?,?,?)
 			on duplicate key update username = values(username), password = values(password), email = values(email)';
 	$values = [
-		1, Utils::createRandomUID( $db, 20, false ), 'admin', password_hash( 'password', PASSWORD_DEFAULT ), 2, 'admin@admin',true,
-		2, Utils::createRandomUID( $db, 20, false ), 'test', password_hash( '12345678', PASSWORD_DEFAULT ), 2, 'test@test',false,
+		1, 'unitest-user1-ruid', 'admin', password_hash( 'password', PASSWORD_DEFAULT ), 2, 'admin@admin',true,
+		2, 'unitest-user2-ruid', 'test', password_hash( '12345678', PASSWORD_DEFAULT ), 2, 'test@test',false,
 	];
 	$db->query( $sql, $values );
 
@@ -41,21 +41,23 @@ function set_up_database () {
 			on duplicate key update owner_id = values(owner_id), name = values(name), description = values(description), 
 			                        public=false, editable=false, date_added = now()';
 	$values = [
-		1, 1, Utils::createRandomUID( $db, 20, false ), 'test1', null,
-		2, 1, Utils::createRandomUID( $db, 20, false ), 'test2', null,
+		1, 1, 'unitest-collec1-ruid', 'test1', null,
+		2, 1, 'unitest-collec2-ruid', 'test2', null,
 	];
 	$db->query( $sql, $values );
+	@mkdir( INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/" );
+	@mkdir( INI['Misc']['path_to_collections'] . "/unitest-collec2-ruid/" );
 
 	/*
 	 * unit image
 	 * 1 (all ones, collection:1)
 	 */
-	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size)
-				values (?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?)
-				on duplicate key update id=id';
+	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size, latitude, longitude)
+				values (?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?)
+				on duplicate key update name=values(name)';
 	$values = [
-		1, 1, Utils::createRandomUID( $db, 20, false ), '1', '1', '1', '1', '1',
-		2, 1, Utils::createRandomUID( $db, 20, false ), '2', '2', '2', '2', '2'
+		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1','1','1',
+		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2','2','2',
 	];
 	$db->query( $sql, $values );
 }

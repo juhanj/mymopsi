@@ -32,6 +32,15 @@ class UserController implements Controller {
 			case 'mopsi_login':
 				$this->requestMopsiLogin( $db, $req['username'], $req['password'] );
 				break;
+			case 'edit_name':
+				$this->requestChangeUsername( $db, $user, $req['username'] );
+				break;
+			case 'edit_password':
+				$this->requestChangePassword( $db, $user, $req['password'] );
+				break;
+			case 'edit_email':
+				$this->requestChangePassword( $db, $user, $req['email'] );
+				break;
 			default:
 				$this->setError( -99, 'Invalid Request' );
 		}
@@ -212,7 +221,7 @@ class UserController implements Controller {
 	 * @param string $password Clear text password, from form POST
 	 * @return bool
 	 */
-	function requestCreateNewUser ( DBConnection $db, string $username, string $password ) {
+	public function requestCreateNewUser ( DBConnection $db, string $username, string $password ) {
 		$usernameLength = strlen( $username );
 		$passwordLength = strlen( $password );
 
@@ -255,7 +264,7 @@ class UserController implements Controller {
 	 * @param string $password Clear text password, from form POST
 	 * @return bool
 	 */
-	function requestLogin ( DBConnection $db, string $username, string $password ) {
+	public function requestLogin ( DBConnection $db, string $username, string $password ) {
 		$username = trim( $username );
 		$usernameLength = strlen( $username );
 		$passwordLength = strlen( $password );
@@ -299,7 +308,7 @@ class UserController implements Controller {
 	 * @param string $password [description]
 	 * @return bool
 	 */
-	function requestMopsiLogin ( DBConnection $db, string $username, string $password ) {
+	public function requestMopsiLogin ( DBConnection $db, string $username, string $password ) {
 		$username = trim( $username );
 		$usernameLength = strlen( $username );
 		$passwordLength = strlen( $password );
@@ -375,6 +384,108 @@ class UserController implements Controller {
 			'username' => $response->username,
 			'user_uid' => $user->random_uid,
 			'response' => $response
+		];
+
+		return true;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param string $new_name
+	 * @return bool
+	 */
+	public function requestChangeUsername ( DBConnection $db, User $user, string $new_name ) {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		$usernameLength = strlen( $new_name );
+
+		if ( $usernameLength < self::MIN_USERNAME_LENGTH
+			or $usernameLength > self::MAX_USERNAME_LENGTH ) {
+			$this->setError( -2, 'Username length wrong' );
+			return false;
+		}
+
+		if ( !$this->checkUsernameAvailable( $db, $new_name ) ) {
+			$this->setError( -3, "Username '{$new_name}' not available" );
+			return false;
+		}
+
+		$result = $this->setUsername( $db, $user, $new_name );
+
+		if ( !$result ) {
+			$this->setError( -3, 'Something went wrong, could not edit DB' );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
+		];
+
+		return true;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param string $new_password
+	 * @return bool
+	 */
+	public function requestChangePassword ( DBConnection $db, User $user, string $new_password ) {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		if ( strlen( $new_password ) < self::MIN_USERNAME_LENGTH
+			or strlen( $new_password ) > self::MAX_USERNAME_LENGTH ) {
+			$this->setError( -2, 'Password length wrong' );
+			return false;
+		}
+
+		$result = $this->setPassword( $db, $user, password_hash($new_password, PASSWORD_DEFAULT) );
+
+		if ( !$result ) {
+			$this->setError( -3, 'Something went wrong, could not edit DB' );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
+		];
+
+		return true;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param string $new_email
+	 * @return bool
+	 */
+	public function requestChangeEmail ( DBConnection $db, User $user, string $new_email ) {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		//TODO: Email length should probably have some kind of check for sanity
+
+		$result = $this->setEmail( $db, $user, $new_email );
+
+		if ( !$result ) {
+			$this->setError( -2, 'Something went wrong, could not edit DB' );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
 		];
 
 		return true;

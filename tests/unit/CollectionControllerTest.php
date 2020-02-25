@@ -80,6 +80,24 @@ class CollectionControllerTest extends TestCase {
 		self::assertTrue( $result );
 	}
 
+	public function test_CreateServerClusteringJSON () {
+		$collection = Collection::fetchCollectionByID($this->db,1);
+		$result = $this->ctrl->createServerClusteringJSON( $this->db, $collection );
+
+		echo $result;
+
+		self::assertTrue( is_string($result), print_r($result,true) );
+	}
+
+	public function test_CreateServerClusteringJSON_Fail_NoImages () {
+		$collection = Collection::fetchCollectionByID($this->db,2);
+		$result = $this->ctrl->createServerClusteringJSON( $this->db, $collection );
+
+		echo $result;
+
+		self::assertFalse( $result, print_r($result,true) );
+	}
+
 	public function test_requestCreateNewCollection () {
 		$user = User::fetchUserByID( $this->db, 1 );
 		$post_request = [
@@ -190,9 +208,17 @@ class CollectionControllerTest extends TestCase {
 		);
 	}
 
-	public function test_CreateServerClusteringJSON () {
-		$result = $this->ctrl->createServerClusteringJSON( $this->db, $this->testCollection );
+	public function test_RequestChangeName () {
+		$user = User::fetchUserByID( $this->db, 1 );
+		$post_request = [
+			'request' => 'editName',
+			'name' => 'New name'
+		];
+		$this->ctrl->handleRequest( $this->db, $user, $post_request );
 
-		self::assertTrue( $result, print_r($result,true) );
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
 	}
 }
