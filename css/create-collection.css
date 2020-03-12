@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+/******************************************************************************
+    Create new collection page
+ *****************************************************************************/
+.checkbox-grid {
+    display: grid;
+    grid: "checkbox label" auto
+        "checkbox info" auto
+        / 2rem auto;
+}
+
+.checkbox-grid:hover,
+.checkbox-grid:active {
+    text-decoration: underline dashed darkgrey;
+}
+
+.checkbox-grid input[type=checkbox] {
+    grid-area: checkbox;
+}
+
+.checkbox-grid span.label {
+    grid-area: label;
+}
+
+.checkbox-grid span.label-info {
+    grid-area: info;
+}

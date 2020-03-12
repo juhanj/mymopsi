@@ -11,27 +11,14 @@ if ( !empty( $_POST ) ) {
 	$controller->handleRequest( $db, $user, $_POST );
 
 	if ( $controller->result['success'] ) {
-		$_SESSION['feedback'] = "<p class='success'>{$lang->NEW_USER_CREATED}</p>";
-		header( "Location: ./index.php" );
-		exit();
+		$_SESSION['feedback'] = "<p class='success'>{$lang->EDIT_SAVED}</p>";
 	}
 	elseif ( $controller->result['error'] ) {
-		switch ( $controller->result['err'] ) {
-			case -2:
-				$_SESSION['feedback'] = "<p class='error'>{$lang->USERNAME_NOT_AVAILABLE}</p>";
-				break;
-			case -1:
-				$_SESSION['feedback'] = "<p class='error'>{$lang->STRING_LEN_ERROR}</p>";
-				break;
-			default:
-				$_SESSION['feedback'] = "<p class='error'>Error, unkown error</p>";
-		}
+		$_SESSION['feedback'] = "<p class='error'>Error, {$controller->result['errMsg']}</p>";
 	}
 }
 
 $feedback = Utils::checkFeedbackAndPOST();
-
-
 ?>
 
 <!DOCTYPE html>
@@ -48,47 +35,47 @@ $feedback = Utils::checkFeedbackAndPOST();
 
 <main class="main-body-container">
 
-	<section class="box">
-		<p>Nothing to see here yet.
-	</section>
-
+	<!-- Username edit container -->
 	<section class="box">
 		<form method="post">
+			<!-- username -->
 			<label for="name">
 				<span class="label required"><?= $lang->USERNAME ?></span>
-				<input type="text" name="name" value="<?= $user->username ?>" required
+				<input type="text" name="username" value="<?= $user->username ?>" required
 					minlength="<?= INI['Settings']['username_min_len'] ?>"
 					maxlength="<?= INI['Settings']['username_max_len'] ?>">
 			</label>
+			<!-- Server-stuff -->
 			<input type="hidden" name="class" value="user">
-			<input type="hidden" name="method" value="edit-username">
+			<input type="hidden" name="request" value="edit_username">
+			<!-- Submit -->
 			<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 		</form>
 	</section>
 
+	<!-- Password edit container -->
 	<section class="box">
 		<form method="post">
+			<!-- Password -->
 			<label for="password">
 				<span class="label required"><?= $lang->PASSWORD ?></span>
 				<input type="password" name="password" value="" required
 					minlength="<?= INI['Settings']['password_min_len'] ?>"
 					maxlength="<?= INI['Settings']['password_max_len'] ?>">
 			</label>
-			<label for="password-confirm">
-				<span class="label required"><?= $lang->PASSWORD_CONFIRM ?></span>
+			<!-- Password confirm (client-side check only) -->
+			<!--<label for="password-confirm">
+				<span class="label required"><?/*= $lang->CONFIRM_PASSWORD */?></span>
 				<input type="password" name="password-confirm" value="" required
-					minlength="<?= INI['Settings']['password_min_len'] ?>"
-					maxlength="<?= INI['Settings']['password_max_len'] ?>">
-			</label>
+					minlength="<?/*= INI['Settings']['password_min_len'] */?>"
+					maxlength="<?/*= INI['Settings']['password_max_len'] */?>">
+			</label>-->
+			<!-- Server-side stuff -->
 			<input type="hidden" name="class" value="user">
-			<input type="hidden" name="method" value="edit-password">
+			<input type="hidden" name="request" value="edit_password">
+			<!-- Submit button -->
 			<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 		</form>
-	</section>
-
-
-	<section class="box">
-		<p><?= $lang->COLLECTIONS_NRO ?>: </p>
 	</section>
 
 </main>

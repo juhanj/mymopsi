@@ -1,5 +1,7 @@
 "use strict";
-
+/**************************************************
+ * Functions
+ **************************************************/
 /**
  * @param {Object} response
  * @param {Object} response.request
@@ -28,11 +30,13 @@ function handleRequestResponse ( response ) {
 
 	let good = response.result.good_uploads;
 	let bad = response.result.failed_uploads;
+	let totalBitsProcessed = 0;
 
 	if ( Array.isArray( good ) && good.length ) {
 		let temp = '';
 		good.forEach( ( image ) => {
 			temp += `<p id="${image.new_ruid}">${image.name}, ${image.size}, ${image.mime}, ${image.lastModified}</p>`;
+			totalBitsProcessed += image.size;
 		} );
 		successfulUploads.insertAdjacentHTML( 'beforeend', temp );
 	}
@@ -41,14 +45,22 @@ function handleRequestResponse ( response ) {
 		let temp = '';
 		bad.forEach( ( image ) => {
 			temp += `<p id="${image.name}">${image.name}, ${image.size}, ${image.mime}, ${image.hash}</p>`;
+			totalBitsProcessed += image.size;
 		} );
 		failedUploads.insertAdjacentHTML( 'beforeend', temp );
 	}
+
+	progressBarFiles.value += good.length + bad.length;
+	progressBarBits.value += totalBitsProcessed;
 }
 
+/**************************************************
+ * "Main" code
+ **************************************************/
 let maxBatchSize = 10 * MB;
 
 let uploadForm = document.getElementById( 'upload-form' );
+let fileInputpluslabel = document.getElementById( 'fileinput-label' );
 let fileInput = document.getElementById( 'file-input' );
 let submitButton = document.getElementById( 'submit-button' );
 
@@ -61,6 +73,7 @@ let successfulUploads = document.getElementById( 'successful-uploads' );
 let failedUploads = document.getElementById( 'failed-uploads' );
 
 fileInput.onchange = () => {
+	fileInputpluslabel.hidden = true;
 	submitButton.hidden = false;
 
 	let temp = '';
@@ -70,7 +83,7 @@ fileInput.onchange = () => {
 		totalFileSize += file.size;
 	} );
 
-	filesInfo.innerHTML = temp;
+	filesInfo.insertAdjacentHTML( 'beforeend', temp );
 	filesInfo.hidden = false;
 
 	progressBarFiles.max = fileInput.files.length;
@@ -85,6 +98,9 @@ uploadForm.onsubmit = ( event ) => {
 
 	uploadForm.hidden = true;
 	progressBars.hidden = false;
+	failedUploads.hidden = false;
+	successfulUploads.hidden = false;
+	filesInfo.hidden = true;
 
 	/**
 	 * while-true loop for sending files in batches

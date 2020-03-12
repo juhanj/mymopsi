@@ -14,8 +14,7 @@ if ( !empty( $_POST ) ) {
 		$_SESSION['feedback'] = "<p class='success'>{$lang->NEW_USER_CREATED}</p>";
 		header( "Location: ./index.php" );
 		exit();
-	}
-	elseif ( $controller->result['error'] ) {
+	} elseif ( $controller->result['error'] ) {
 		switch ( $controller->result['err'] ) {
 			case -2:
 				$_SESSION['feedback'] = "<p class='error'>{$lang->USERNAME_NOT_AVAILABLE}</p>";
@@ -46,47 +45,49 @@ $feedback = Utils::checkFeedbackAndPOST();
 
 <main class="main-body-container">
 
-    <!-- Form - with username & password & email & cancel & save -->
-    <form class="box" id="create" method="post">
-    	<h2 class="box-header">
-    		<?= $lang->NEW_USER_HEADER ?>
-    	</h2>
+	<!-- Form - with username & password & email & cancel & save -->
+	<form class="box" id="create" method="post">
+		<h2 class="box-header">
+			<?= $lang->NEW_USER_HEADER ?>
+		</h2>
 
-    	<!-- Username -->
-    	<label class="compact">
-    		<span class="label required"><?= $lang->USERNAME ?></span>
-    		<input type="text" name="username" required maxlength="190" minlength="1">
-    	</label>
+		<!-- Username -->
+		<label class="compact">
+			<span class="label required"><?= $lang->USERNAME ?></span>
+			<input type="text" name="username" required
+			       minlength="<?= INI['Settings']['username_min_len'] ?>"
+			       maxlength="<?= INI['Settings']['username_max_len'] ?>">
+		</label>
 
-    	<!-- Password -->
-    	<label class="compact">
-    		<span class="label required"><?= $lang->PASSWORD ?></span>
-    		<input type="password" name="password" required minlength="8" maxlength="300" id="pw">
-    	</label>
+		<!-- Password -->
+		<label class="compact">
+			<span class="label required"><?= $lang->PASSWORD ?></span>
+			<input type="password" name="password" required id="pw"
+			       minlength="<?= INI['Settings']['password_min_len'] ?>"
+			       maxlength="<?= INI['Settings']['password_max_len'] ?>">
+		</label>
 
-    	<!-- Confirm password -->
-    	<label class="compact">
-    		<span class="label required"><?= $lang->CONFIRM_PASSWORD ?></span>
-    		<input type="password" name="password-confirm" required minlength="8" maxlength="300" id="confirm-pw">
-    	</label>
+		<!-- Confirm password -->
+		<label class="compact">
+			<span class="label required"><?= $lang->CONFIRM_PASSWORD ?></span>
+			<input type="password" name="password-confirm"  id="confirm-pw" required
+			       minlength="<?= INI['Settings']['password_min_len'] ?>"
+			       maxlength="<?= INI['Settings']['password_max_len'] ?>">
+		</label>
 
-    	<p id="error"></p>
+		<p id="error"></p>
 
-    	<!-- Required input explanation -->
-    	<p class="required-input side-note">
-    		<span class="required"></span> = <?= $lang->REQUIRED_INPUT ?>
-    	</p>
+		<!-- Required input explanation -->
+		<p class="required-input side-note">
+			<span class="required"></span> = <?= $lang->REQUIRED_INPUT ?>
+		</p>
 
-    	<input type="hidden" name="request" value="new">
+		<input type="hidden" name="request" value="new">
 
-    	<!-- Cancel & Save -->
-    	<div class="buttons margins-off">
-    		<!-- Cancel -->
-    		<button class="button light"><?= $lang->CANCEL ?></button>
-    		<!-- Save -->
-    		<input type="submit" value="<?= $lang->SUBMIT ?>" class="button">
-    	</div>
-    </form>
+		<!-- Save -->
+		<input type="submit" value="<?= $lang->SUBMIT ?>" class="button">
+
+	</form>
 
 </main>
 

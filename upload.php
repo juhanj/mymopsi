@@ -13,7 +13,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 // coordinate formatting 12.34N 32.10E
 
 if ( empty( $_GET['id'] ) ) {
-	$_SESSION['feedback'] = "<p class='error'>{$lang->COLL_ID_REQ}</p>";
+	$_SESSION['feedback'] = "<p class='error'>{$lang->ID_MISSING}</p>";
 	header( 'location: index.php' );
 	exit();
 }
@@ -28,13 +28,13 @@ $feedback = Utils::checkFeedbackAndPOST();
 $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
 if ( !$collection ) {
-	$_SESSION['feedback'] = "<p class='error'>{$lang->COLL_ID_REQ}</p>";
-	header( 'location: index.php' );
+	$_SESSION['feedback'] = "<p class='error'>{$lang->COLLECTION_INVALID}</p>";
+	header( 'location: ' . $_SERVER['HTTP_REFERER'] );
 	exit();
 }
 if ( (!$collection->public and !$collection->editable) and ($collection->owner_id !== $user->id) ) {
 	$_SESSION['feedback'] = "<p class='error'>{$lang->NOT_COLL_OWNER}</p>";
-	header( 'location: index.php' );
+	header( 'location: ' . $_SERVER['HTTP_REFERER'] );
 	exit();
 }
 ?>
@@ -54,50 +54,67 @@ if ( (!$collection->public and !$collection->editable) and ($collection->owner_i
 	<div class="feedback" id="feedback"><?= $feedback ?></div>
 
 	<!-- Link back to collection we're adding images to -->
-	<a href="collection.php?id=<?= $collection->random_uid ?>" class="button">
+	<a href="collection.php?id=<?= $collection->random_uid ?>" class="button return">
 		<i class="material-icons">arrow_back</i>
 		<?= $lang->BACK_TO_COLL ?>
 	</a>
+
+	<!-- Selected files by the user will be shown here before uploading -->
+	<div class="box" id="files-info" hidden>
+		<h2><?= $lang->SELECTED_FILES_HEADER ?></h2>
+	</div>
 
 	<!-- The form itself.
 	    Contains <input type=file>-tag, and two hidden input-tags (request and collection-ID)
 	    The submit is handled by javascript, since we send one file at a time (very large uploads).
 	-->
 	<section class="box" id="upload-form-box">
+		<!-- Form -->
 		<form method="post" enctype='multipart/form-data' id="upload-form">
 			<input type="hidden" name="MAX_FILE_SIZE" value="10000000"/>
-			<label>
+			<!-- File type input -->
+			<label id="fileinput-label">
 				<span class="label"><?= $lang->FILE_INPUT ?></span>:
-				<input type="file" name="images[]" accept="image/*" id="file-input" multiple="multiple" required>
+				<input type="file" name="images[]" accept="image/*" id="file-input" multiple="multiple">
 				<!-- The input also has some english text which cannot be styled or changed. -->
+				<span class="label-info"><?= $lang->UPLOAD_LABEL_INFO ?></span>
 			</label>
 
+			<!-- Server processing stuff -->
 			<input type="hidden" name="class" value="image">
 			<input type="hidden" name="request" value="upload">
 			<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
 
-			<input type="submit" value="<?= $lang->SUBMIT ?>" class="button" id="submit-button" hidden>
+			<button type="submit" class="button" id="submit-button" hidden>
+				<?= $lang->SUBMIT ?>
+				<?= file_get_contents('./img/upload.svg') ?>
+			</button>
 		</form>
 
+		<!-- Progress bars, one for files, one for bits -->
 		<section class="progress-bar-container" id="progress-bar-container" hidden>
+			<!-- Progress number of files -->
 			<label>
 				<span class="label"><?= $lang->PROGRESS_FILES ?>></span>
-				<progress id="progress-files"></progress>
+				<progress id="progress-files" value="0" ></progress>
 			</label>
+			<!-- Progress of bits, filesize -->
 			<label>
 				<span class="label"><?= $lang->PROGRESS_BITS ?>></span>
-				<progress id="progress-bits"></progress>
+				<progress id="progress-bits" value="0"></progress>
 			</label>
 		</section>
 	</section>
 
-	<div class="box" id="files-info" hidden>
-		<!-- For info on files to be uploaded. -->
+	<!-- Successful uploads will be listed here after submitting -->
+	<div class="box" id="successful-uploads" hidden>
+		<h2><?= $lang->SUCCESS_UPLOAD_HEADER ?></h2>
 	</div>
 
-	<div class="box" id="successful-uploads"></div>
-
-	<div class="box" id="failed-uploads"></div>
+	<!-- Failed uploads will be listed here after submitting -->
+	<div class="box" id="failed-uploads" hidden>
+		<h2><?= $lang->FAILED_UPLOAD_HEADER ?></h2>
+	</div>
 
 </main>
 

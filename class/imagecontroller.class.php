@@ -22,6 +22,9 @@ class ImageController implements Controller {
 			case 'upload':
 				$result = $this->requestUploadNewImages( $db, $user, $req );
 				break;
+			case 'edit_gps':
+				$result = $this->requestEditGPSCoordinate( $db, $user, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );

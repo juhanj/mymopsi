@@ -32,7 +32,7 @@ class UserController implements Controller {
 			case 'mopsi_login':
 				$this->requestMopsiLogin( $db, $req['username'], $req['password'] );
 				break;
-			case 'edit_name':
+			case 'edit_username':
 				$this->requestChangeUsername( $db, $user, $req['username'] );
 				break;
 			case 'edit_password':

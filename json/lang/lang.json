@@ -116,9 +116,14 @@
 			"en": "Images",
 			"fi": "Kuvia"
 		}
-
 	},
-	"edit-user": {
+	"create-user": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | New user"
+		},
+		"HEADER_TITLE": {
+			"en": "New user creation"
+		},
 		"NEW_USER_CREATED": {
 			"en": "New user created successfully. Please login with new account.",
 			"fi": "Uusi käyttäjä onnistuneesti luotu. Kirjaudu sisään uusilla tunnuksilla."
@@ -127,15 +132,50 @@
 			"en": "Username not available. Please try another.",
 			"fi": "Käyttänimi ei ole saatavilla. Kokeile jotain muuta nimeä."
 		},
+		"NEW_USER_HEADER": {
+			"en": "Enter new user information",
+			"fi": "Uuden käyttäjän tiedot"
+		},
 		"USERNAME": {
-			"en": "Username"
+			"en": "Username",
+			"fi": "Käyttäjänimi"
 		},
 		"PASSWORD": {
-			"en": "Password"
+			"en": "Password",
+			"fi": "Salasana"
 		},
 		"CONFIRM_PASSWORD": {
-			"en": "Confirm password"
+			"en": "Confirm password",
+			"fi": "Vahvista salasana"
+		},
+		"SUBMIT": {
+			"en": "Create new user",
+			"fi": "Luo uusi käyttäjä"
 		}
+	},
+	"edit-user": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Edit user"
+		},
+		"HEADER_TITLE": {
+			"en": "User info"
+		},
+		"EDIT_SAVED": {
+			"en": "New user info saved successfully"
+		},
+		"USERNAME": {
+			"en": "Username",
+			"fi": "Käyttäjänimi"
+		},
+		"PASSWORD": {
+			"en": "Password",
+			"fi": "Salasana"
+		},
+		"CONFIRM_PASSWORD": {
+			"en": "Confirm password",
+			"fi": "Vahvista salasana"
+		}
+
 	},
 	"create-collection": {
 		"HTML_TITLE": {
@@ -210,17 +250,31 @@
 		}
 	},
 	"upload": {
-		"COLL_ID_REQ": {
-			"en": "Collection ID required",
-			"fi": "Kokoelma ID puuttuu"
+		"HTML_TITLE": {
+			"en": "MyMopsi | Upload"
+		},
+		"HEADER_TITLE": {
+			"en": "Upload new images"
 		},
 		"NOT_COLL_OWNER": {
 			"en": "You have no access to given collection",
 			"fi": "Ei oikeutta muokata annettua kokoelmaa"
 		},
-		"BACK": {
-			"en": "Return to previous page",
+		"BACK_TO_COLL": {
+			"en": "Return to collection view",
 			"fi": "Takaisin edelliselle sivulle"
+		},
+		"FILE_INPUT": {
+			"en": "Select wanted files",
+			"fi": "Valitse halutut tiedostot"
+		},
+		"UPLOAD_LABEL_INFO": {
+			"en": "Either click the box, or drag & drop wanted files to it.",
+			"fi": "Klikkaa, tai drag&drop halutut tiedostot laatikkoon."
+		},
+		"SUBMIT": {
+			"en": "Upload new images to collection",
+			"fi": "Lataa uudet kuvat albumiin"
 		}
 	},
 	"collection": {

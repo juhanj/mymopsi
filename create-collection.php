@@ -62,15 +62,13 @@ $feedback = Utils::checkFeedbackAndPOST();
 		</label>
 
 		<!-- Public -->
-		<label>
-			<?php // TODO: Fix this layout. Move checkbox to left, underline text on select, dashed on hover ?>
+		<label class="checkbox-grid margins-off">
 			<input type="checkbox" name="public">
 			<span class="label"><?= $lang->PUBLIC ?></span>
-			<?php // TODO: IS this explanation needed? ?>
-			<span><?= $lang->PUBLIC_INFO ?></span>
+			<span class="label-info"><?= $lang->PUBLIC_INFO ?></span>
 		</label>
 
-		<!-- Editable -->
+		<!-- Editable (hidden for now, might not ever finish) -->
 		<label hidden>
 			<input type="checkbox" name="editable">
 			<span class="label"><?= $lang->EDITABLE ?></span>

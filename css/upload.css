@@ -1,1 +1,23 @@
 @CHARSET "UTF-8";
+
+.button.return {
+    background-color: var(--site-bg);
+    color: var(--text-light);
+
+    border: 1px solid var(--primary-lighter);
+}
+
+#submit-button {
+    font-size: larger;
+    margin: auto;
+    width: 100%;
+    height: 5rem;
+}
+
+#file-input {
+}
+
+svg.svg-icon {
+    color: red;
+    margin: .5rem;
+}

@@ -7,22 +7,17 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  */
 
 if ( !empty($_POST) ) {
-	Utils::debug($_POST);
-	Utils::debug($_SERVER);
-}
-
-if ( !empty($_POST) and false ) {
 	$controller = new ImageController();
 	$controller->handleRequest( $db, $user, $_POST );
 
 	if ( $controller->result['success'] ) {
 		$_SESSION['feedback'] = "<p class='success'>{$lang->EDIT_SUCCESS}</p>";
-		header( "Location: ./image.php?id={$image->random_uid}" );
+		header( "Location: ./image.php?id={$_POST['image']}" );
 		exit();
 	}
 	elseif ( $controller->result['error'] ) {
-		$_SESSION['feedback'] = "<p class='error'>{$controller->result}</p>";
-		header( "Location: ./image.php?id={$image->random_uid}" );
+		$_SESSION['feedback'] = "<p class='error'>{$controller->result['errMsg']}</p>";
+		header( "Location: ./image.php?id={$_POST['image']}" );
 		exit();
 	}
 }
@@ -31,12 +26,10 @@ if ( !empty($_POST) and false ) {
 
 $image = Image::fetchImageByRUID( $db, $_GET['id'] );
 if ( !$image ) {
-	$_SESSION['feedback'] = "<p class='error'>No Image found with given ID.</p>";
+	$_SESSION['feedback'] = "<p class='error'>GPS-edit: invalid ID.</p>";
 	header( "Location:index.php" );
 	exit();
 }
-
-$image = new Image();
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +61,7 @@ $image = new Image();
 			<!-- Hidden stuff for server-side handler -->
 			<input type="hidden" name="image" value="<?= $image->random_uid ?>">
 			<input type="hidden" name="class" value="image">
-			<input type="hidden" name="request" value="edit-gps">
+			<input type="hidden" name="request" value="edit_gps">
 
 			<!-- Submit button -->
 			<input type="submit" id="submit-button" value="<?= $lang->SUBMIT ?>" class="button">
