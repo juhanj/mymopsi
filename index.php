@@ -35,66 +35,33 @@ if ( $user ) {
 	<?php if ( !$user ) : ?>
 		<!-- User-login form -->
 		<article class="box">
-			<!-- MyMopsi account login, separate from Mopsi-login for security reasons -->
-			<section>
 				<h2 class="box-header"><?= $lang->USER_LOGIN ?></h2>
 
 				<form action="login-handler.php" method="post">
 					<!-- Username input field -->
 					<label class="compact">
-						<span class="label"><?= $lang->LOGIN_NAME ?></span>
-						<input type="text" name="username" minlength="1" maxlength="190">
+						<span class="label required"><?= $lang->USERNAME_LABEL ?></span>
+						<input type="text" name="username" minlength="1" maxlength="190"
+							placeholder="<?= $lang->USERNAME_PLACEHOLDER ?>" required>
 					</label>
 
 					<!-- Password input field -->
 					<label class="compact">
-						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
-						<input type="password" name="password" minlength="8" maxlength="300">
+						<span class="label required"><?= $lang->PASSWORD_LABEL ?></span>
+						<input type="password" name="password" minlength="1" maxlength="300"
+							placeholder="<?= $lang->PW_PLACEHOLDER ?>" required>
 					</label>
 
 					<!-- Hidden fields for server-side processing -->
 					<input type="hidden" name="class" value="user">
-					<input type="hidden" name="request" value="login">
+					<input type="hidden" name="request" value="unified_login">
 
-
-					<button type="submit" class="button">
-						<?= $lang->USER_SUBMIT ?>
+					<!-- Submit button, not input because <input> does not allow images inside it -->
+					<button type="submit" class="button" style="width:100%;">
+						<?= $lang->LOGIN_SUBMIT ?>
 						<?= file_get_contents('./img/log-in.svg') ?>
 					</button>
-					<!-- <input type="submit" value="<?= $lang->USER_SUBMIT ?>" class="button"> -->
 				</form>
-			</section>
-
-			<hr>
-
-			<!-- Mopsi account login, separate for security reasons -->
-			<section>
-				<h2 class="box-header">Mopsi account</h2>
-
-				<form action="login-handler.php" method="post">
-					<!-- Username input field -->
-					<label class="compact">
-						<span class="label"><?= $lang->LOGIN_NAME ?></span>
-						<input type="text" name="username" minlength="1" maxlength="190">
-					</label>
-
-					<!-- Password input field -->
-					<label class="compact">
-						<span class="label"><?= $lang->LOGIN_PASSWORD ?></span>
-						<input type="password" name="password" minlength="1" maxlength="300">
-					</label>
-
-					<!-- Hidden fields for server-side processing -->
-					<input type="hidden" name="class" value="user">
-					<input type="hidden" name="request" value="mopsi_login">
-
-					<button type="submit" class="button">
-						<?= $lang->MOPSI_LOGIN_SUBMIT ?>
-						<?= file_get_contents('./img/log-in.svg') ?>
-					</button>
-					<!-- <input type="submit" value="<?= $lang->MOPSI_LOGIN_SUBMIT ?>" class="button" id="mopsi-submit"> -->
-				</form>
-			</section>
 		</article>
 
 		<article class="box">

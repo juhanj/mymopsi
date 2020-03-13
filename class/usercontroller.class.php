@@ -26,6 +26,9 @@ class UserController implements Controller {
 			case 'new':
 				$this->requestCreateNewUser( $db, $req['username'], $req['password'] );
 				break;
+			case 'unified_login':
+				$this->requestUnifiedLogin( $db, $req );
+				break;
 			case 'login':
 				$this->requestLogin( $db, $req['username'], $req['password'] );
 				break;
@@ -207,8 +210,8 @@ class UserController implements Controller {
 			throw new InvalidArgumentException( "User is not valid." );
 		}
 		$result = $db->query(
-			'insert into mymopsi_user_third_party_link (user_id, mopsi_id) 
-				values (?,?) 
+			'insert into mymopsi_user_third_party_link (user_id, mopsi_id)
+				values (?,?)
 				on duplicate key update mopsi_id = values(mopsi_id)',
 			[ $user->id, $mopsiID ]
 		);
@@ -256,6 +259,26 @@ class UserController implements Controller {
 		];
 
 		return true;
+	}
+
+	public function requestUnifiedLogin ( DBConnection $db, array $options ) {
+		// Check $options
+		if ( empty($options['username']) ) {
+			$this->setError(-1,"No username given");
+			return false;
+		}
+		else if ( empty($options['password']) ) {
+			$this->setError(-2,"No password given")
+		}
+
+		// Check user data from mymopsi database
+
+
+		// checks mopsi database if above failed
+
+		// if both above fail return error
+
+		// otherwise great success!
 	}
 
 	/**
