@@ -2,6 +2,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /*/////////////////////////////////////////////////*/
 
+echo "{${rand(100,999)}}";
+
 Utils::debug(
-	INI
+	"{${rand(100,999)}}"
 );

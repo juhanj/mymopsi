@@ -79,7 +79,7 @@ elseif ( isset($_GET['public']) or !$user ) {
 
 <script>
 	// These are used in page-specific JS-file, for header-link.
-	let userName = "<?= $user->username ?? "edit" ?>";
+	let userName = "<?= $user->username ?>";
 	let userRUID = "<?= $user->random_uid ?>";
 </script>
 

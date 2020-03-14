@@ -218,19 +218,24 @@ class UserController implements Controller {
 		return boolval( $result );
 	}
 
-	function normalLogin () ( DBConnection $db, string $username, string $password ) : ?User {
+	/**
+	 * @param DBConnection $db
+	 * @param string $username
+	 * @param string $password
+	 * @return User|null
+	 */
+	function normalLogin ( DBConnection $db, string $username, string $password ): ?User {
 		if ( strlen( $username ) < self::MIN_USERNAME_LENGTH
 			or strlen( $username ) > self::MAX_USERNAME_LENGTH
 			or strlen( $password ) < self::MIN_PASSWORD_LENGTH
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
 			$this->setError( -1, 'Username or password length wrong' );
-			return false;
+			return null;
 		}
 
 		$user = User::fetchUserByUsernameOrEmail( $db, $username );
 
 		if ( $user ) {
-
 			if ( !$this->checkPasswordOnLogin( $db, $user, $password ) ) {
 				$this->setError( -3, 'Password wrong' );
 				return null;
@@ -239,8 +244,13 @@ class UserController implements Controller {
 		return $user;
 	}
 
-	function mopsiLogin ( DBConnection $db, string $username, string $password ) : ?User {
-
+	/**
+	 * @param DBConnection $db
+	 * @param string $username
+	 * @param string $password
+	 * @return User|null
+	 */
+	function mopsiLogin ( DBConnection $db, string $username, string $password ): ?User {
 		if ( strlen( $username ) > self::MAX_USERNAME_LENGTH
 			or strlen( $password ) < 1 // I don't know the Mopsi password rules, not really my problem
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
@@ -248,12 +258,11 @@ class UserController implements Controller {
 			return null;
 		}
 
-		$postData = [
+		$jsonData = json_encode( [
 			'username' => $username,
 			'password' => $password,
 			'request_type' => 'user_login',
-		];
-		$jsonData = json_encode( $postData );
+		] );
 		// We send it as a POST-request, but Mopsi-server still wants the data in JSON
 
 		$curlHandle = curl_init();
@@ -280,15 +289,10 @@ class UserController implements Controller {
 		if ( $response->message === -1
 			and $response->id === -1
 			and $response->error !== null ) {
-
-			$this->setError( -2, 'Mopsi says: ' . $response->error );
 			return null;
 		}
 
-		/*
-		 * We have a Mopsi-user. Now let's find the linked mymopsi-user,
-		 * or create a new one.
-		 */
+		// We have a Mopsi-user. Now let's find the linked mymopsi-user or create a new one.
 
 		$row = $db->query(
 			'select user_id from mymopsi_user_third_party_link where mopsi_id = ?',
@@ -298,10 +302,16 @@ class UserController implements Controller {
 		if ( !$row ) {
 			// Create new empty MyMopsi user, so the site has something to refer to.
 			$user = $this->createEmptyUserRowInDatabase( $db );
+
+			$new_username = $this->checkUsernameAvailable( $db, $response->username )
+				? $response->username
+				: "{$response->username}." . rand(100,999);
+
+			$this->setUsername( $db, $user, $new_username );
+
 			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
 		} else {
-			$user = new User();
-			$user->id = $row->user_id;
+			$user = User::fetchUserByRUID( $db, $row->user_id );
 		}
 
 		return $user;
@@ -350,169 +360,34 @@ class UserController implements Controller {
 		return true;
 	}
 
+	/**
+	 * @param DBConnection $db
+	 * @param array $options
+	 * @return bool
+	 */
 	public function requestUnifiedLogin ( DBConnection $db, array $options ) {
 		// Check $options
-		if ( empty($options['username']) or empty($options['password']) ) {
-			$this->setError(-1,"Invalid param");
+		if ( empty( $options['username'] ) or empty( $options['password'] ) ) {
+			$this->setError( -1, "Invalid param" );
 			return false;
 		}
 
 		$options['username'] = trim( $options['username'] );
 
-		// Check user data from mymopsi database
-		$user = $this->normalLogin( $db, $options['username'], $options['password'] );
-
-		// checks mopsi database if above failed
-		if (!$user) {
-			$user = $this->mopsiLogin( $db, $options['username'],  $options['password']);
-		}
+		// Check if either login returns a valid user.
+		$user = $this->normalLogin( $db, $options['username'], $options['password'] )
+			?? $this->mopsiLogin( $db, $options['username'], $options['password'] );
 
 		// if both above fail return error
-		if($user){
-			$this->setError(  )
-			return false;
-		}
-
-		// otherwise great success!
-
-				// If not, create a new stub user and log that in
-				$this->result = [
-					'success' => true,
-					'error' => false,
-					'user_id' => $user->id,
-					'username' => $response->username,
-					'user_uid' => $user->random_uid,
-					'response' => $response
-				];
-
-	}
-
-	/**
-	 * @param DBConnection $db
-	 * @param string $username From fornm POST
-	 * @param string $password Clear text password, from form POST
-	 * @return bool
-	 */
-	public function requestLogin ( DBConnection $db, string $username, string $password ) {
-		$username = trim( $username );
-		$usernameLength = strlen( $username );
-		$passwordLength = strlen( $password );
-
-		if ( $usernameLength < self::MIN_USERNAME_LENGTH
-			or $usernameLength > self::MAX_USERNAME_LENGTH
-			or $passwordLength < self::MIN_PASSWORD_LENGTH
-			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
-			$this->setError( -1, 'Username or password length wrong' );
-			return false;
-		}
-
-		$user = User::fetchUserByUsernameOrEmail( $db, $username );
-
 		if ( !$user ) {
-			$this->setError( -2, "Username '{$username}' not found" );
-			return false;
-		}
-
-		$password_correct = $this->checkPasswordOnLogin( $db, $user, $password );
-
-		if ( !$password_correct ) {
-			$this->setError( -3, 'Password wrong' );
+			$this->setError( -2, "No user found" );
 			return false;
 		}
 
 		$this->result = [
 			'success' => true,
 			'error' => false,
-			'user_id' => $user->id,
-			'user_uid' => $user->random_uid,
-		];
-
-		return true;
-	}
-
-	/**
-	 * //TODO
-	 * @param DBConnection $db [description]
-	 * @param string $username [description]
-	 * @param string $password [description]
-	 * @return bool
-	 */
-	public function requestMopsiLogin ( DBConnection $db, string $username, string $password ) {
-		$username = trim( $username );
-		$usernameLength = strlen( $username );
-		$passwordLength = strlen( $password );
-
-		if ( $usernameLength > self::MAX_USERNAME_LENGTH
-			or $passwordLength < 1 // I don't know the Mopsi password rules, not really my problem
-			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
-			$this->setError( -1, 'Username or password length wrong' );
-			return false;
-		}
-
-		$postData = [
-			'username' => $username,
-			'password' => $password,
-			'request_type' => 'user_login',
-		];
-		$jsonData = json_encode( $postData );
-		// We send it as a POST-request, but Mopsi-server still wants the data in JSON
-
-		$curlHandle = curl_init();
-
-		$curlOptions = [
-			CURLOPT_URL => "https://cs.uef.fi/mopsi/mobile/server.php",
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => [ "param" => $jsonData ],
-			// Mopsi server wants the "param", and the JSON, in this specific format
-			// Not my fault.
-		];
-
-		curl_setopt_array(
-			$curlHandle,
-			$curlOptions
-		);
-
-		$responseJSON = curl_exec( $curlHandle );
-		$response = json_decode( $responseJSON );
-
-		curl_close( $curlHandle );
-
-		if ( $response->message === -1
-			and $response->id === -1
-			and $response->error !== null ) {
-
-			$this->setError( -2, 'Mopsi says: ' . $response->error );
-			return false;
-		}
-
-		/*
-		 * We have a Mopsi-user. Now let's find the linked mymopsi-user,
-		 * or create a new one.
-		 */
-
-		$row = $db->query(
-			'select user_id from mymopsi_user_third_party_link where mopsi_id = ?',
-			[ $response->id ]
-		);
-
-		if ( !$row ) {
-			// Create new empty MyMopsi user, so the site has something to refer to.
-			$user = $this->createEmptyUserRowInDatabase( $db );
-			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
-		} else {
-			$user = new User();
-			$user->id = $row->user_id;
-		}
-
-		// If not, create a new stub user and log that in
-		$this->result = [
-			'success' => true,
-			'error' => false,
-			'user_id' => $user->id,
-			'username' => $response->username,
-			'user_uid' => $user->random_uid,
-			'response' => $response
+			'user_id' => $user->id
 		];
 
 		return true;
@@ -576,7 +451,7 @@ class UserController implements Controller {
 			return false;
 		}
 
-		$result = $this->setPassword( $db, $user, password_hash($new_password, PASSWORD_DEFAULT) );
+		$result = $this->setPassword( $db, $user, password_hash( $new_password, PASSWORD_DEFAULT ) );
 
 		if ( !$result ) {
 			$this->setError( -3, 'Something went wrong, could not edit DB' );
