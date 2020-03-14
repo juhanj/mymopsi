@@ -34,7 +34,7 @@ class Language extends stdClass {
 		$l = new Language( $lang, $page );
 
 		$json = json_decode(
-			file_get_contents( "lang/lang.json", true )
+			file_get_contents( "lang.json", true )
 		);
 
 		/**
