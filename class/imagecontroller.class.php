@@ -248,7 +248,7 @@ class ImageController implements Controller {
 				[
 					$collection->id, $file['new_ruid'], $file['hash'], $file['name'], $file['name'],
 					$file['final_path'], $file['mime'], $file['size'], $file['latitude'] ?? null, $file['longitude'] ?? null,
-					filectime( $file['final_path'] )
+					null /*filectime( $file['final_path'] )*/
 				]
 			);
 

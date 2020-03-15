@@ -178,7 +178,6 @@
 			"en": "Confirm password",
 			"fi": "Vahvista salasana"
 		}
-
 	},
 	"create-collection": {
 		"HTML_TITLE": {
@@ -294,6 +293,24 @@
 		"TO_MAP": {
 			"en": "View on map",
 			"fi": "Näe kokoelma kartalla"
+		}
+	},
+	"image": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Image",
+			"fi": "MyMopsi | Kuva"
+		},
+		"HEADER_TITLE": {
+			"en": "Image info and editing",
+			"fi": "Kuvan tiedot ja muokkaaminen"
+		},
+		"NAME": {
+			"en": "Name",
+			"fi": "Nimi"
+		},
+		"DESCRIPTION": {
+			"en": "Description",
+			"fi": "Kuvaus"
 		}
 	}
 }
