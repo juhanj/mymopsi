@@ -2,8 +2,6 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 /*/////////////////////////////////////////////////*/
 
-echo "{${rand(100,999)}}";
+echo get_include_path();
 
-Utils::debug(
-	"{${rand(100,999)}}"
-);
+echo file_get_contents("img/settings.svg",true);

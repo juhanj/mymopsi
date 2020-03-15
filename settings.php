@@ -19,7 +19,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 <main class="main-body-container">
 
-	<?php // TODO: Make it return to previous page ?>
 	<a href="javascript:history.go(-1)" class="button return">
 		<?= $lang->RETURN ?>
 	</a>
@@ -43,8 +42,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 		</label>
 	</article>
 
-	<?php // TODO: Add logout button ?>
-
     <article class="box links">
         <h2>Links</h2>
         <ul>
@@ -54,6 +51,9 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
             <li>
                 <a href="./tests/">Tests</a>
             </li>
+	        <li>
+		        <a href="./logout.php">Logout</a>
+	        </li>
         </ul>
     </article>
 </main>

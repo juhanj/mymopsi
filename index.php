@@ -49,7 +49,7 @@ if ( $user ) {
 					<label class="compact">
 						<span class="label required"><?= $lang->PASSWORD_LABEL ?></span>
 						<input type="password" name="password" minlength="1" maxlength="300"
-							placeholder="<?= $lang->PW_PLACEHOLDER ?>" required>
+							placeholder="<?= $lang->PASSWORD_PLACEHOLDER ?>" required>
 					</label>
 
 					<!-- Hidden fields for server-side processing -->

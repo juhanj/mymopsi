@@ -115,62 +115,31 @@ class UserControllerTest extends TestCase {
 		self::assertFalse( $result, print_r( $this->ctrl->result, true ) );
 	}
 
-	public function test_RequestLogin () {
+	public function test_RequestUnifiedLogin_normal () {
 		$post = [
-			'request' => 'login',
+			'request' => 'unified_login',
 			'username' => 'admin',
-			'password' => 'password'
+			'password' => 'admin'
 		];
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
 		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
-		self::assertFalse( $this->ctrl->result['error'], print_r( $this->ctrl->result, true ) );
 	}
 
-	public function test_RequestLogin_Fail_PasswordUsernameLength () {
-		$result = $this->ctrl->requestLogin( $this->db, 'admin', 'passw' );
-		self::assertFalse( $result );
-		self::assertEquals( -1, $this->ctrl->result['err'] );
-
-		$result = $this->ctrl->requestLogin( $this->db, '', 'password123' );
-		self::assertFalse( $result );
-		self::assertEquals( -1, $this->ctrl->result['err'] );
-	}
-
-	public function test_RequestLogin_Fail_UserNotFound () {
-		$result = $this->ctrl->requestLogin( $this->db, 'test_user_not_found', '12345678' );
-		self::assertFalse( $result );
-		self::assertEquals( -2, $this->ctrl->result['err'] );
-	}
-
-	public function test_RequestLogin_Fail_WrongPassword () {
-		$result = $this->ctrl->requestLogin( $this->db, 'admin', 'password123' );
-		self::assertFalse( $result, print_r( $this->ctrl->result, true ) );
-		self::assertEquals( -3, $this->ctrl->result['err'] );
-	}
-
-	public function test_RequestMopsiLogin () {
+	public function test_RequestUnifiedLogin_mopsi () {
 		$post = [
-			'request' => 'mopsi_login',
+			'request' => 'unified_login',
 			'username' => 'test',
 			'password' => 'test'
 		];
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
 		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
-		self::assertFalse( $this->ctrl->result['error'], print_r( $this->ctrl->result, true ) );
-	}
-
-	public function test_RequestMopsiLogin_fail_UserNotFound () {
-		$result = $this->ctrl->requestMopsiLogin( $this->db, 'test', 'fail' );
-
-		self::assertFalse( $result, print_r($this->ctrl->result, true) );
-		self::assertTrue( $this->ctrl->result['error'] );
 	}
 
 	public function test_RequestChangeName () {
 		$post_request = [
-			'request' => 'edit_name',
+			'request' => 'edit_username',
 			'username' => 'New name'
 		];
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );

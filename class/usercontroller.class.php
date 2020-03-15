@@ -29,12 +29,6 @@ class UserController implements Controller {
 			case 'unified_login':
 				$this->requestUnifiedLogin( $db, $req );
 				break;
-			case 'login':
-				$this->requestLogin( $db, $req['username'], $req['password'] );
-				break;
-			case 'mopsi_login':
-				$this->requestMopsiLogin( $db, $req['username'], $req['password'] );
-				break;
 			case 'edit_username':
 				$this->requestChangeUsername( $db, $user, $req['username'] );
 				break;
@@ -54,12 +48,13 @@ class UserController implements Controller {
 	 * @param string $msg
 	 */
 	public function setError ( int $id, string $msg ) {
-		$this->result = [
-			'success' => false,
-			'error' => true,
-			'err' => $id,
-			'errMsg' => $msg,
+		$this->result['success'] = false;
+
+		$this->result['errors'][] = [
+			'id' => $id,
+			'msg' => $msg
 		];
+
 	}
 
 	/**
@@ -225,9 +220,9 @@ class UserController implements Controller {
 	 * @return User|null
 	 */
 	function normalLogin ( DBConnection $db, string $username, string $password ): ?User {
-		if ( strlen( $username ) < self::MIN_USERNAME_LENGTH
+		if ( strlen( $username ) < 1
 			or strlen( $username ) > self::MAX_USERNAME_LENGTH
-			or strlen( $password ) < self::MIN_PASSWORD_LENGTH
+			or strlen( $password ) < 1
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
 			$this->setError( -1, 'Username or password length wrong' );
 			return null;
@@ -240,6 +235,9 @@ class UserController implements Controller {
 				$this->setError( -3, 'Password wrong' );
 				return null;
 			}
+		} else {
+			$this->setError( -2, "No MyMopsi user found in database" );
+			return null;
 		}
 		return $user;
 	}
@@ -252,7 +250,7 @@ class UserController implements Controller {
 	 */
 	function mopsiLogin ( DBConnection $db, string $username, string $password ): ?User {
 		if ( strlen( $username ) > self::MAX_USERNAME_LENGTH
-			or strlen( $password ) < 1 // I don't know the Mopsi password rules, not really my problem
+			or strlen( $password ) < 1
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
 			$this->setError( -1, 'Username or password length wrong' );
 			return null;
@@ -289,6 +287,7 @@ class UserController implements Controller {
 		if ( $response->message === -1
 			and $response->id === -1
 			and $response->error !== null ) {
+			$this->setError( -2, "Mopsi server error, no user found probably" );
 			return null;
 		}
 
@@ -305,13 +304,13 @@ class UserController implements Controller {
 
 			$new_username = $this->checkUsernameAvailable( $db, $response->username )
 				? $response->username
-				: "{$response->username}." . rand(100,999);
+				: "{$response->username}." . rand( 100, 999 );
 
 			$this->setUsername( $db, $user, $new_username );
 
 			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
 		} else {
-			$user = User::fetchUserByRUID( $db, $row->user_id );
+			$user = User::fetchUserByID( $db, $row->user_id );
 		}
 
 		return $user;
@@ -380,7 +379,7 @@ class UserController implements Controller {
 
 		// if both above fail return error
 		if ( !$user ) {
-			$this->setError( -2, "No user found" );
+			$this->setError( -2, "No MyMopsi or Mopsi user found" );
 			return false;
 		}
 

@@ -4,6 +4,15 @@
 
     Images in a card layout
  *****************************************************************************/
+header #header-coll-name {
+     color: var(--text-light);
+     text-decoration: underline dashed;
+ }
+header #header-coll-name:hover {
+    color: var(--primary-light);
+    text-decoration: underline solid;
+}
+
 .image-list {
     display: flex;
     flex-flow: row wrap;

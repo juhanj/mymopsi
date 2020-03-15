@@ -46,8 +46,13 @@ echo '<a href="../">Link to front page.</a>';
  */
 $controller = new UserController();
 
-$controller->requestCreateNewUser( $db, 'admin', 'adminadmin' );
-$controller->requestCreateNewUser( $db, 'user', 'useruser' );
+$db->query(
+	"insert into mymopsi_user (random_uid,username,password) values (?,?,?),(?,?,?)",
+	[
+		Utils::createRandomUID( $db, 20, false ), 'admin', password_hash('admin',PASSWORD_DEFAULT),
+		Utils::createRandomUID( $db, 20, false ), 'user', password_hash('user',PASSWORD_DEFAULT),
+	]
+);
 
 $db->query( 'update mymopsi_user set admin = true where id = 1 limit 1' );
 

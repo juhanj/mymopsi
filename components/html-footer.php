@@ -10,7 +10,7 @@
 	<section class="right">
 		<a href="<?= WEB_PATH ?>/settings.php" class="button light settings-link">
 			Settings
-			<?php echo file_get_contents("./img/settings.svg"); ?>
+			<?php echo file_get_contents("img/settings.svg",true); ?>
 		</a>
     </section>
 

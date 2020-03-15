@@ -2,6 +2,18 @@
 /******************************************************************************
     Collections view
  *****************************************************************************/
+header #header-user-name {
+    color: var(--text-light);
+    text-decoration: underline dashed;
+}
+header #header-user-name:hover {
+    color: var(--primary-light);
+    text-decoration: underline solid;
+}
+
+/******************************************************************************
+    Collections Card layout
+ *****************************************************************************/
 .collections-list {
     display: flex;
     flex-flow: row wrap;

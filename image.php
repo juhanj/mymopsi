@@ -37,6 +37,10 @@ if ( ($user->id !== $collection->owner_id) and !$collection->public ) {
 
 <main class="main-body-container">
 
+	<section class="box image-container">
+		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>">
+	</section>
+
 	<form class="box" method="post">
 		<label> <span class="label required"><?= $lang->NAME ?></span> <input type="text" name="name" value="<?= $image->name ?>" required> </label>
 	</form>

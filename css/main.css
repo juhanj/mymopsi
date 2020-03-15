@@ -50,7 +50,7 @@
 
     --content-box-bg: hsl(0, 0%, 100%);
 
-    --site-bg: hsl(0, 0%, 28%);
+    --site-bg: hsl(0, 0%, 40%);
 
     --success: hsl(120, 50%, 60%);
     --error: hsl(349, 80%, 40%);
@@ -235,6 +235,10 @@ body.grid {
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
+}
+
+a object {
+    pointer-events: none;
 }
 
 /****************************************************************************

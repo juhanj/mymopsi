@@ -27,8 +27,8 @@ function set_up_database () {
 			values (?,?,?,?,?,?,?), (?,?,?,?,?,?,?)
 			on duplicate key update username = values(username), password = values(password), email = values(email)';
 	$values = [
-		1, 'unitest-user1-ruid', 'admin', password_hash( 'password', PASSWORD_DEFAULT ), 2, 'admin@admin',true,
-		2, 'unitest-user2-ruid', 'test', password_hash( '12345678', PASSWORD_DEFAULT ), 2, 'test@test',false,
+		1, 'unitest-user1-ruid', 'admin', password_hash( 'admin', PASSWORD_DEFAULT ), 2, 'admin@admin',true,
+		2, 'unitest-user2-ruid', 'user', password_hash( 'user', PASSWORD_DEFAULT ), 2, 'user@user',false,
 	];
 	$db->query( $sql, $values );
 
