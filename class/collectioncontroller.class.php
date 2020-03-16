@@ -178,7 +178,7 @@ class CollectionController implements Controller {
 	 * @param Collection $collection
 	 * @return bool|string
 	 */
-	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ) {
+	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ) : bool {
 		$sql = "select filepath as filename, name, latitude as lat, longitude as lon 
 				from mymopsi_img 
 				where collection_id = ?
@@ -190,19 +190,24 @@ class CollectionController implements Controller {
 			return false;
 		}
 
+		// Database returns an object, not array, if there is only one result
+		if ( is_array($rows) ) {
+			$rows = [$rows];
+		}
+
 		$file_path = INI['Misc']['path_to_collections'] . "/{$collection->random_uid}/cluster-data.json";
 
 		file_put_contents( $file_path, json_encode($rows) );
 
-		return $file_path;
+		return true;
 
-//		[
-//			{
-//				"lat": "-33.1545",
-//				"lon": "-118.384",
-//				"name": "",
-//				"filename": "131009_20-03-50_899419002.jpg"
-//			},
+		//	[
+		//		{
+		//			"lat": "-33.1545",
+		//			"lon": "-118.384",
+		//			"name": "",
+		//			"filename": "131009_20-03-50_899419002.jpg"
+		//		},
 	}
 
 	/**

@@ -261,6 +261,10 @@ class ImageController implements Controller {
 			}
 		}
 
+		// Create (or update if already created) JSON for server-side clustering
+		$collContr = new CollectionController();
+		$collContr->createServerClusteringJSON( $db, $collection );
+
 		rmdir( $temp_folder );
 
 		$this->result = [
@@ -305,6 +309,10 @@ class ImageController implements Controller {
 			$this->setError( -3, 'Could not edit database, something went wrong' );
 			return false;
 		}
+
+		// Update JSON for server-side clustering
+		$collContr = new CollectionController();
+		$collContr->createServerClusteringJSON( $db, $collection );
 
 		$this->result = [
 			'success' => true,
