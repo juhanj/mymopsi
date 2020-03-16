@@ -42,7 +42,9 @@ if ( ($user->id !== $collection->owner_id) and !$collection->public ) {
 	</section>
 
 	<form class="box" method="post">
-		<label> <span class="label required"><?= $lang->NAME ?></span> <input type="text" name="name" value="<?= $image->name ?>" required> </label>
+		<label> <span class="label required"><?= $lang->NAME ?></span>
+			 <input type="text" name="name" value="<?= $image->name ?>" required>
+		</label>
 	</form>
 
 	<form class="box" method="post">
