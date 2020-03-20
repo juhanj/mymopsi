@@ -38,7 +38,8 @@ if ( ($user->id !== $collection->owner_id) and !$collection->public ) {
 <main class="main-body-container">
 
 	<section class="box image-container">
-		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>">
+		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>"
+			onerror=''>
 	</section>
 
 	<form class="box" method="post">

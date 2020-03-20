@@ -33,6 +33,13 @@ function initGoogleMap() {
 		zoom: initialZoom,
 		minZoom: 3,
 		maxZoom: 20,
+		styles: [
+	        {inst
+	            featureType: "poi",
+	            elementType: "labels",
+	            stylers: [{ visibility: "off" }]
+	        }
+    ]
 	});
 
 	google.maps.event.addListenerOnce(map, 'tilesloaded', function () {

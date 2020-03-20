@@ -310,6 +310,14 @@ class ImageController implements Controller {
 			return false;
 		}
 
+		// set GPS in file
+		// function?
+		// check file type first (if supports GPS metadata)
+		// write into file
+		//TODO: how to write to file with exiftool
+		// return true if success, return false if failure or cant write into file
+		// Carry on regardless whether success, return success in request
+
 		// Update JSON for server-side clustering
 		$collContr = new CollectionController();
 		$collContr->createServerClusteringJSON( $db, $collection );
