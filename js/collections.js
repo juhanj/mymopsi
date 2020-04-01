@@ -1,4 +1,5 @@
-let headerUserNameLink = document.getElementById( 'header-user-name' );
+let headerUserNameLink = document.getElementById( 'header-user-link' );
+let headerUserNameName = document.getElementById( 'header-user-name' );
 
-headerUserNameLink.innerText = userName;
+headerUserNameName.innerText = userName;
 headerUserNameLink.href = `edit-user.php?id=${userRUID}`;

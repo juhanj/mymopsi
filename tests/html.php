@@ -1,6 +1,12 @@
 <?php declare(strict_types=1);
 require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
+array_push(
+	$breadcrumbs_navigation,
+	['Settings', WEB_PATH . '/tests' ],
+	['Tests', WEB_PATH . '/tests' ],
+);
+
 //Utils::debug( $_POST );
 //Utils::debug( $_FILES );
 ?>

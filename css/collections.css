@@ -2,11 +2,11 @@
 /******************************************************************************
     Collections view
  *****************************************************************************/
-header #header-user-name {
+header #header-user-link {
     color: var(--text-light);
     text-decoration: underline dashed;
 }
-header #header-user-name:hover {
+header #header-user-link:hover {
     color: var(--primary-light);
     text-decoration: underline solid;
 }

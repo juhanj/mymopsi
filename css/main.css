@@ -50,7 +50,7 @@
 
     --content-box-bg: hsl(0, 0%, 100%);
 
-    --site-bg: hsl(0, 0%, 40%);
+    --site-bg: hsl(231, 0%, 50%);
 
     --success: hsl(120, 50%, 60%);
     --error: hsl(349, 80%, 40%);
@@ -249,7 +249,8 @@ form label {
     border-radius: var(--border-radius);
 }
 
-form input {
+form input,
+form textarea {
     display: block;
     padding: 1rem;
     width: 100%;
@@ -267,6 +268,10 @@ form span.required:after {
 form input:required,
 form p.required-input {
     box-shadow: -.2rem 0 0 0 var(--error);
+}
+
+form input:required:valid {
+    box-shadow: -.2rem 0 0 0 var(--success);
 }
 
 /****************************************************************************

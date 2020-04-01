@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
-error_reporting(E_ALL);
-ini_set('display_errors', "1");
+error_reporting( E_ALL );
+ini_set( 'display_errors', "1" );
 
-mb_internal_encoding("UTF-8");
+mb_internal_encoding( "UTF-8" );
 
 /**
  * For easier access. This way any includes/requires and such can be written shorter,
@@ -18,7 +18,7 @@ define(
 );
 define(
 	'CURRENT_PAGE',
-	basename( $_SERVER[ 'SCRIPT_NAME' ] , '.php' )
+	basename( $_SERVER['SCRIPT_NAME'], '.php' )
 );
 
 /*
@@ -53,10 +53,10 @@ spl_autoload_register();
  * </code>
  */
 define(
-	'INI' ,
+	'INI',
 	parse_ini_file(
-		(parse_ini_file( 'config.ini.php' )[ 'config' ]),
-		true ,
+		(parse_ini_file( 'config.ini.php' )['config']),
+		true,
 		INI_SCANNER_TYPED
 	)
 );
@@ -67,8 +67,12 @@ session_start();
  * Creating necessary objects
  */
 $db = new DBConnection();
-$lang = Language::getLanguageStrings($_COOKIE['mymopsi_lang'] ?? 'en', CURRENT_PAGE);
+$lang = Language::getLanguageStrings( $_COOKIE['mymopsi_lang'] ?? 'en', CURRENT_PAGE );
 
-$user = !empty($_SESSION['user_id'])
+$user = !empty( $_SESSION['user_id'] )
 	? User::fetchUserByID( $db, $_SESSION['user_id'] )
 	: null;
+
+$breadcrumbs_navigation = [
+	[ 'MyMopsi', WEB_PATH ]
+];

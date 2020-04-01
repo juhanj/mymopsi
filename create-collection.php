@@ -6,8 +6,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
-// TODO: Page missing language strings
-
 // If no user logged-in, we send back to front page with error message
 if ( !$user ) {
 	header( 'location: index.php' );
@@ -31,6 +29,11 @@ if ( !empty( $_POST ) ) {
 }
 
 $feedback = Utils::checkFeedbackAndPOST();
+
+array_push(
+	$breadcrumbs_navigation,
+	[ 'Collections', WEB_PATH . 'collections.php' ]
+);
 ?>
 
 <!DOCTYPE html>

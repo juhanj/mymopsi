@@ -10,8 +10,22 @@
 	background: var(--primary-darker);
 	color: var(--text-light);
 	display: flex;
-	justify-content: center;
+	justify-content: left;
+	align-items: center;
 	padding: .3rem;
+}
+
+.site-header .breadcrumbs-navigation .separator {
+	margin: 0 .5rem;
+}
+
+.site-header a {
+	color: var(--text-light);
+	text-decoration: underline dashed;
+}
+.site-header a:hover {
+	color: var(--primary-light);
+	text-decoration: underline solid;
 }
 
 /*

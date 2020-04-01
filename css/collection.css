@@ -4,11 +4,11 @@
 
     Images in a card layout
  *****************************************************************************/
-header #header-coll-name {
+header #header-coll-link {
      color: var(--text-light);
      text-decoration: underline dashed;
  }
-header #header-coll-name:hover {
+header #header-coll-link:hover {
     color: var(--primary-light);
     text-decoration: underline solid;
 }

@@ -5,8 +5,8 @@
 			"fi": "MyMopsi"
 		},
 		"HEADER_TITLE": {
-			"en": "MyMopsi",
-			"fi": "MyMopsi"
+			"en": "Current page",
+			"fi": "Sivu"
 		},
 		"REQUIRED_INPUT": {
 			"en": "Required field",
@@ -31,8 +31,8 @@
 			"fi": "MyMopsi | Etusivu"
 		},
 		"HEADER_TITLE": {
-			"en": "Welcome",
-			"fi": "Tervetuloa"
+			"en": "",
+			"fi": ""
 		},
 		"USER_LOGIN": {
 			"en": "Login to manage collections"
@@ -105,7 +105,7 @@
 			"fi": "MyMopsi | Kokoelmat"
 		},
 		"HEADER_TITLE": {
-			"en": "User | <a id='header-user-name'>Edit<object type='image/svg+xml' data='./img/edit.svg'></object></a>"
+			"en": "User | <a id='header-user-link' class='margins-off'><span id='header-user-name'></span><object type='image/svg+xml' data='./img/edit.svg'></object></a>"
 		},
 		"NEW_COLLECTION": {
 			"en": "New Collection",
@@ -118,6 +118,22 @@
 		"NRO_OF_IMGS": {
 			"en": "Images",
 			"fi": "Kuvia"
+		}
+	},
+	"collection": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Collection"
+		},
+		"HEADER_TITLE": {
+			"en": "Collection | <a id='header-coll-link' class='margins-off'><span id='header-coll-name'></span><object type='image/svg+xml' data='./img/edit.svg'></object></a>"
+		},
+		"ADD_IMG": {
+			"en": "Add new images",
+			"fi": "Lisää kuvia"
+		},
+		"TO_MAP": {
+			"en": "View on map",
+			"fi": "Näe kokoelma kartalla"
 		}
 	},
 	"create-user": {
@@ -217,38 +233,24 @@
 	},
 	"edit-collection": {
 		"HTML_TITLE": {
-			"en": "MyMopsi | New collection"
+			"en": "MyMopsi | Edit collection",
+			"fi": "MyMopsi | Muokkaa kokoelmaa"
 		},
 		"HEADER_TITLE": {
-			"en": "New collection creation"
+			"en": "Edit collection info",
+			"fi": "Muokkaa kokoelman tietoja"
 		},
 		"NAME": {
-			"en": "Name of the new collection",
-			"fi": "Uuden kokoelman nimi"
+			"en": "New name",
+			"fi": "Uusi nimi"
 		},
 		"DESCRIPTION": {
-			"en": "Description of the new collection",
-			"fi": "Uuden kokoelman kuvaus"
+			"en": "New description",
+			"fi": "Uusi kuvaus"
 		},
 		"PUBLIC": {
 			"en": "Public",
 			"fi": "Julkinen"
-		},
-		"PUBLIC_INFO": {
-			"en": "Public collections can be viewed by anyone, even without logging-in.",
-			"fi": "Kuka tahansa voi tarkastella julkista kokoelmaa."
-		},
-		"SUBMIT": {
-			"en": "Create new collection",
-			"fi": "Luo kokoelma"
-		},
-		"NEW_COLL_SUCCESS": {
-			"en": "New collection successfully created.",
-			"fi": "Uusi kokoelma luotu."
-		},
-		"COLL_FAIL": {
-			"en": "Collection creation failed for some reason. See error-message for more info.",
-			"fi": "Kokoelman luonti epäonnistui."
 		}
 	},
 	"upload": {
@@ -277,22 +279,6 @@
 		"SUBMIT": {
 			"en": "Upload new images to collection",
 			"fi": "Lataa uudet kuvat albumiin"
-		}
-	},
-	"collection": {
-		"HTML_TITLE": {
-			"en": "MyMopsi | Collection"
-		},
-		"HEADER_TITLE": {
-			"en": "Collection | <a id='header-coll-name'>Edit<object type='image/svg+xml' data='./img/edit.svg'></object></a>"
-		},
-		"ADD_IMG": {
-			"en": "Add new images",
-			"fi": "Lisää kuvia"
-		},
-		"TO_MAP": {
-			"en": "View on map",
-			"fi": "Näe kokoelma kartalla"
 		}
 	},
 	"image": {

@@ -51,23 +51,34 @@ $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
 <main class="main-body-container">
 
-	<section class="box">
-		<p>Nothing to see here yet.
-	</section>
-
 	<form class="box" method="post">
 		<label>
 			<span class="label required"><?= $lang->NAME ?></span>
-			<input type="text" name="name" value="<?= $collection->name ?>" required>
+			<input type="text" name="name" value="<?= $collection->name ?>"
+			       placeholder="Write new name here" required>
 		</label>
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="method" value="edit-name">
 	</form>
 
 	<form class="box" method="post">
-		<label> <input type="text" name="description" value="<?= $collection->description ?>"> </label>
+		<label>
+			<span class="label required"><?= $lang->DESCRIPTION ?></span>
+			<?php // No line breaks for textarea, because it shows in HTML output to user ?>
+			<textarea name="description" cols="30" rows="4"><?= $collection->description ?></textarea>
+		</label>
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="method" value="edit-description">
+	</form>
+
+	<form class="box" method="post">
+		<!-- Public -->
+		<label class="checkbox-grid margins-off">
+			<input type="checkbox" name="public">
+			<span class="label"><?= $lang->PUBLIC ?></span>
+		</label>
+		<input type="hidden" name="class" value="collection">
+		<input type="hidden" name="method" value="edit-public">
 	</form>
 
 </main>

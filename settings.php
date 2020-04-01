@@ -5,6 +5,11 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var Language $lang
  * @var User $user
  */
+
+array_push(
+	$breadcrumbs_navigation,
+	['Settings', WEB_PATH . '/tests' ]
+);
 ?>
 <!DOCTYPE html>
 <html lang="<?= $lang->lang ?>">
