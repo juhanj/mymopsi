@@ -33,6 +33,12 @@ class CollectionController implements Controller {
 			case 'delete':
 				$result = $this->requestDeleteCollection( $db, $user, $req );
 				break;
+			case 'edit_name':
+				$result = $this->requestEditName( $db, $user, $req );
+				break;
+			case 'edit_description':
+				$result = $this->requestEditDescription( $db, $user, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
@@ -178,26 +184,26 @@ class CollectionController implements Controller {
 	 * @param Collection $collection
 	 * @return bool|string
 	 */
-	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ) : bool {
+	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ): bool {
 		$sql = "select filepath as filename, name, latitude as lat, longitude as lon 
 				from mymopsi_img 
 				where collection_id = ?
 					and latitude is not null
 					and longitude is not null";
-		$rows = $db->query( $sql, [$collection->id] );
+		$rows = $db->query( $sql, [ $collection->id ] );
 
 		if ( !$rows ) {
 			return false;
 		}
 
 		// Database returns an object, not array, if there is only one result
-		if ( is_array($rows) ) {
-			$rows = [$rows];
+		if ( is_array( $rows ) ) {
+			$rows = [ $rows ];
 		}
 
 		$file_path = INI['Misc']['path_to_collections'] . "/{$collection->random_uid}/cluster-data.json";
 
-		file_put_contents( $file_path, json_encode($rows) );
+		file_put_contents( $file_path, json_encode( $rows ) );
 
 		return true;
 
@@ -299,6 +305,100 @@ class CollectionController implements Controller {
 
 		if ( !$result ) {
 			$this->setError( -5, "Collection could not be deleted." );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true
+		];
+
+		return true;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param array $options
+	 * @return bool
+	 */
+	public function requestEditName ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		$collection = (!empty( $options['collection'] ))
+			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+			: null;
+
+		if ( !$collection ) {
+			$this->setError( -2, 'Collection not valid' );
+			return false;
+		}
+
+		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
+			$this->setError( -3, "User {$user->random_uid} does not have access to this collection" );
+			return false;
+		}
+
+		$new_name = $options['name'];
+
+		if ( mb_strlen( $new_name ) < 1 or mb_strlen( $new_name ) > INI['Settings']['coll_name_max_len'] ) {
+			$this->setError( -4, "New name {$new_name} length invalid" );
+			return false;
+		}
+
+		$result = $this->setName( $db, $collection, $new_name );
+
+		if ( !$result ) {
+			$this->setError( -5, "Name could not be changed. Unknown error." );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true
+		];
+
+		return true;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param array $options
+	 * @return bool
+	 */
+	public function requestEditDescription ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		$collection = (!empty( $options['collection'] ))
+			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+			: null;
+
+		if ( !$collection ) {
+			$this->setError( -2, 'Collection not valid' );
+			return false;
+		}
+
+		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
+			$this->setError( -3, "User {$user->random_uid} does not have access to this collection" );
+			return false;
+		}
+
+		$new_descr = $options['description'] ?? '';
+
+		if ( mb_strlen( $new_descr ) < 1 or mb_strlen( $new_descr ) > INI['Settings']['coll_descr_max_len'] ) {
+			$this->setError( -4, "New description {$new_descr} length invalid" );
+			return false;
+		}
+
+		$result = $this->setDescription( $db, $collection, $new_descr );
+
+		if ( !$result ) {
+			$this->setError( -5, "Description could not be changed. Unknown database error." );
 			return false;
 		}
 

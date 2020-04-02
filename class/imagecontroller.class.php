@@ -53,7 +53,7 @@ class ImageController implements Controller {
 	 * @param $long
 	 * @return bool
 	 */
-	public function setGPSCoordinates ( DBConnection $db, Image $image, $lat, $long ) {
+	function setGPSCoordinates ( DBConnection $db, Image $image, $lat, $long ) {
 		if ( is_null( $image->id ) ) {
 			throw new InvalidArgumentException( "Image is not valid." );
 		}
@@ -136,17 +136,10 @@ class ImageController implements Controller {
 
 		// User has access to collection. Proceed to checking for errors and filetype.
 
-		// reorganise FILES array
-		$files = $this->reorganizeUploadFilesArray( $_FILES );
-
-		if ( !$files ) {
+		if ( !$_FILES ) {
 			$this->setError( -4, 'No files received' );
 			return false;
 		}
-
-		$collections = INI['Misc']['path_to_collections'];
-		$temp_folder = $collections . "/temp-{$collection->id}-" . mt_rand( 0, 10000 );
-		$final_destination = $collections . '/' . $collection->random_uid;
 
 		// Would be very bad to have this empty, since it would write to root
 		// So check just in case
@@ -154,6 +147,14 @@ class ImageController implements Controller {
 			$this->setError( -5, 'Config error' );
 			return false;
 		}
+
+		// reorganise FILES array
+		$files = $this->reorganizeUploadFilesArray( $_FILES );
+
+		$collections = INI['Misc']['path_to_collections'];
+		$temp_folder = $collections . "/temp-{$collection->id}-" . mt_rand( 0, 10000 );
+		$final_destination = $collections . '/' . $collection->random_uid;
+
 
 		if ( !file_exists( $final_destination ) ) {
 			mkdir( $final_destination );
@@ -320,6 +321,7 @@ class ImageController implements Controller {
 
 		// Update JSON for server-side clustering
 		$collContr = new CollectionController();
+		$collection = Collection::fetchCollectionByID($db,$image->collection_id);
 		$collContr->createServerClusteringJSON( $db, $collection );
 
 		$this->result = [
