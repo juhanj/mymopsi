@@ -19,6 +19,11 @@ if ( !empty( $_POST ) ) {
 }
 
 $feedback = Utils::checkFeedbackAndPOST();
+
+array_push(
+   $breadcrumbs_navigation,
+   [ 'User', WEB_PATH . '/collections.php' ],
+);
 ?>
 
 <!DOCTYPE html>
