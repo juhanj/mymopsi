@@ -64,7 +64,7 @@ array_push(
 			       placeholder="Write new name here" required>
 		</label>
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="method" value="edit-name">
+		<input type="hidden" name="method" value="edit_name">
 	</form>
 
 	<form class="box" method="post">
@@ -74,7 +74,7 @@ array_push(
 			<textarea name="description" cols="30" rows="4"><?= $collection->description ?></textarea>
 		</label>
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="method" value="edit-description">
+		<input type="hidden" name="method" value="edit_description">
 	</form>
 
 	<form class="box" method="post">
@@ -84,7 +84,7 @@ array_push(
 			<span class="label"><?= $lang->PUBLIC ?></span>
 		</label>
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="method" value="edit-public">
+		<input type="hidden" name="method" value="edit_public">
 	</form>
 
 </main>

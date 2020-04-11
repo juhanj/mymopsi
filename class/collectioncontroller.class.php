@@ -39,6 +39,9 @@ class CollectionController implements Controller {
 			case 'edit_description':
 				$result = $this->requestEditDescription( $db, $user, $req );
 				break;
+			case 'edit_public':
+				$result = $this->requestEditPublic( $db, $user, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
@@ -185,8 +188,8 @@ class CollectionController implements Controller {
 	 * @return bool|string
 	 */
 	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ): bool {
-		$sql = "select filepath as filename, name, latitude as lat, longitude as lon 
-				from mymopsi_img 
+		$sql = "select filepath as filename, name, latitude as lat, longitude as lon
+				from mymopsi_img
 				where collection_id = ?
 					and latitude is not null
 					and longitude is not null";
@@ -396,6 +399,48 @@ class CollectionController implements Controller {
 		}
 
 		$result = $this->setDescription( $db, $collection, $new_descr );
+
+		if ( !$result ) {
+			$this->setError( -5, "Description could not be changed. Unknown database error." );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true
+		];
+
+		return true;
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User $user
+	 * @param array $options
+	 * @return bool
+	 */
+	public function requestEditPublic ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		$collection = (!empty( $options['collection'] ))
+			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+			: null;
+
+		if ( !$collection ) {
+			$this->setError( -2, 'Collection not valid' );
+			return false;
+		}
+
+		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
+			$this->setError( -3, "User {$user->random_uid} does not have access to this collection" );
+			return false;
+		}
+
+		$public = $options['public'] ? boolval($options['public']) : false;
+
+		$result = $this->setPublic( $db, $collection, $public );
 
 		if ( !$result ) {
 			$this->setError( -5, "Description could not be changed. Unknown database error." );

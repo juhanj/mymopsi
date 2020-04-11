@@ -237,4 +237,20 @@ class CollectionControllerTest extends TestCase {
 			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
 		);
 	}
+
+	public function test_RequestEditPublic () {
+		$user = User::fetchUserByID( $this->db, 1 );
+		$collection = Collection::fetchCollectionByID( $this->db, 1 );
+		$post_request = [
+			'request' => 'edit_public',
+			'public' => true,
+			'collection' => $collection->random_uid
+		];
+		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
+	}
 }
