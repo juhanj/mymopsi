@@ -107,6 +107,18 @@ class ImageController implements Controller {
 		return $metadata;
 	}
 
+	function writeGPSIntoImageFile ( Image $image ) {
+		switch ( $image->mediatype ) {
+			case 'image/jpeg':
+				// code...
+				break;
+
+			default:
+				// code...
+				break;
+		}
+	}
+
 	/**
 	 * @param DBConnection $db
 	 * @param User $user
