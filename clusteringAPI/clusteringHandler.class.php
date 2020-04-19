@@ -8,7 +8,7 @@
  */
 class ClusteringHandler {
 
-	public $pathAPI = "/usr/local/www_root/mopsi/markerClustering/usage/clusteringAPI_clientServer/mccluster";
+	public $pathAPI = "./mccluster";
 	public $pathPhotos = "/paikka/mobile_photo/";
 
 	public $type;

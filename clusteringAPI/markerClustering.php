@@ -39,11 +39,13 @@ switch ( $clusteringHandler->type ?? null ) {
 	default:
 		$result = false;
 }
-
-$response = [
-	'request' => $request,
-	'response' => $result
-];
+//
+//$response = [
+//	'request' => $request,
+//	'response' => $result
+//];
+// Due to how the client-side JS works:
+$response = $result;
 
 // Some HTTP headers for the response
 // Mostly security related, but last one sets content-type to JSON
