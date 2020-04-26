@@ -37,6 +37,12 @@ if ( (!$collection->public and !$collection->editable) and ($collection->owner_i
 	header( 'location: ' . $_SERVER['HTTP_REFERER'] );
 	exit();
 }
+
+array_push(
+   $breadcrumbs_navigation,
+   ['User', WEB_PATH . '/collections.php' ],
+   ['Collection', WEB_PATH . '/collection.php?id=' . $collection->random_uid ]
+);
 ?>
 
 <!DOCTYPE html>
