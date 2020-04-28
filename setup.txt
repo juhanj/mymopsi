@@ -1,0 +1,31 @@
+Install server
+	Server (Apache), database (mariadb), PHP, Perl
+	No further instructions as actual process not important (and also differs widly from system to system (*glares at linux*))
+
+Acquire files from github
+
+Setup files
+	Files under webroot need to be in URL-root/mopsi_dev/mymopsi/[mymopsi files] structure. This is hardcoded.
+	Make a copy of config-file, and rename new copy to config.ini, and move somewhere safe (dev: same dir; prod: secure location)
+	Create a collections directory, where images will be stored (dev: anywhere; prod: secure location)
+
+Edit original config.ini.php:
+	In [Config]-section, edit config-location to where you stored the new copy
+Edit new config.ini (stored in new location)
+	In [Database]-section, change db-info needed for accessing
+	In [Misc]-section:
+		perl -> how perl is called from the command line (either just perl, or path to perl.exe)
+		path_to_collections -> directory where you created collections directory, either relative or absolute is fine
+		web_root_path -> where the website files are under the webroot (the part after top URL)
+		gmaps_api_key -> API key gor Google Maps
+	These values are not hardcoded, as they may differ for localhost/prod-env.
+
+Create database (same name as in config.ini)
+	As in, create a new database in for example phpmyadmin, with the same name
+	as in config.ini [Database]-section `name`-variable.
+
+Run database install script, under db-directory
+	./db/install.php
+	The script only creates tables, and two users. It does not create a database.
+	If needed, cleaner.php deletes all collections (files included) and removes
+	all tables. Use if needed for reset.
