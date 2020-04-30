@@ -188,7 +188,7 @@ class CollectionController implements Controller {
 	 * @return bool|string
 	 */
 	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ): bool {
-		$sql = "select filepath as filename, name, latitude as lat, longitude as lon
+		$sql = "select random_uid as filename, name, latitude as lat, longitude as lon
 				from mymopsi_img
 				where collection_id = ?
 					and latitude is not null
