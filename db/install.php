@@ -49,8 +49,8 @@ $controller = new UserController();
 $db->query(
 	"insert into mymopsi_user (random_uid,username,password) values (?,?,?),(?,?,?)",
 	[
-		Utils::createRandomUID( $db, 20, false ), 'admin', password_hash('admin',PASSWORD_DEFAULT),
-		Utils::createRandomUID( $db, 20, false ), 'user', password_hash('user',PASSWORD_DEFAULT),
+		Common::createRandomUID( $db, 20, false ), 'admin', password_hash('admin',PASSWORD_DEFAULT),
+		Common::createRandomUID( $db, 20, false ), 'user', password_hash('user',PASSWORD_DEFAULT),
 	]
 );
 
@@ -59,5 +59,5 @@ $db->query( 'update mymopsi_user set admin = true where id = 1 limit 1' );
 $admin = User::fetchUserByID( $db, 1 );
 $user = User::fetchUserByID( $db, 2 );
 
-Utils::debug( $admin );
-Utils::debug( $user );
+Common::debug( $admin );
+Common::debug( $user );

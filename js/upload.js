@@ -1,7 +1,7 @@
 "use strict";
-/**************************************************
+/* *************************************************
  * Functions
- **************************************************/
+ * *************************************************/
 /**
  * @param {Object} response
  * @param {Object} response.request
@@ -54,24 +54,31 @@ function handleRequestResponse ( response ) {
 	progressBarBits.value += totalBitsProcessed;
 }
 
-/**************************************************
+/* *************************************************
  * "Main" code
- **************************************************/
+ * *************************************************/
 let maxBatchSize = 10 * MB;
 
+// Form elements
 let uploadForm = document.getElementById( 'upload-form' );
 let fileInputpluslabel = document.getElementById( 'fileinput-label' );
 let fileInput = document.getElementById( 'file-input' );
 let submitButton = document.getElementById( 'submit-button' );
 
+// Progress bar
 let progressBars = document.getElementById( 'progress-bar-container' );
 let progressBarFiles = document.getElementById( 'progress-files' );
 let progressBarBits = document.getElementById( 'progress-bits' );
 
+// Upload files info (before / after (success&fail))
 let filesInfo = document.getElementById( 'files-info' );
 let successfulUploads = document.getElementById( 'successful-uploads' );
 let failedUploads = document.getElementById( 'failed-uploads' );
 
+/**
+ * Called when files are dropped into the file-input
+ * Hides input, shows submit-button, prints file-info, and prepares the progressbar
+ */
 fileInput.onchange = () => {
 	fileInputpluslabel.hidden = true;
 	submitButton.hidden = false;
@@ -90,6 +97,10 @@ fileInput.onchange = () => {
 	progressBarBits.max = totalFileSize;
 };
 
+/**
+ * When submit button is called, the images are sent in batches to the server
+ * @param event
+ */
 uploadForm.onsubmit = ( event ) => {
 	// Prevent default browser behaviour, in this case submitting a form normally (causing page-load)
 	event.preventDefault();
@@ -102,7 +113,7 @@ uploadForm.onsubmit = ( event ) => {
 	successfulUploads.hidden = false;
 	filesInfo.hidden = true;
 
-	/**
+	/*
 	 * while-true loop for sending files in batches
 	 * create new formdata
 	 * add to formdata as the loop goes through array.

@@ -32,7 +32,7 @@ if ( !empty( $_POST ) ) {
 	}
 }
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 
 $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 

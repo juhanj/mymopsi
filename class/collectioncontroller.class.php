@@ -76,7 +76,7 @@ class CollectionController implements Controller {
 			throw new InvalidArgumentException( "User is not valid." );
 		}
 		if ( is_null( $ruid ) ) {
-			$ruid = Utils::createRandomUID( $db );
+			$ruid = Common::createRandomUID( $db );
 		}
 
 		$db->query(

@@ -2,9 +2,9 @@
 
 .button.return {
     background-color: var(--site-bg);
-    color: var(--text-light);
+    color: var(--text-dark);
 
-    border: 1px solid var(--primary-lighter);
+    border: 1px solid var(--secondary-text);
 }
 
 #submit-button {

@@ -83,6 +83,32 @@ class Collection {
 	}
 
 	/**
+	 * Get collection's images from the database, with pagination and sorting
+	 * @param DBConnection $db
+	 * @param int[]    $pagination <p> [ipp, offset]. Items Per Page, and offset where to start.
+	 * @param int[]    $ordering <p> [column, ASC|DESC]. 1. index in hardcoded array of columns. 2. 0=ASC, 1=DESC
+	 */
+	public function getImagesWithPagination ( DBConnection $db, array $pagination, array $ordering ) {
+
+		$ipp = (int)$pagination[0]; // Items Per Page
+		$offset = (int)$pagination[1];
+
+		$orders = [
+			['name','mediatype','size','latitude,longitude','date_created','date_added'],
+			["ASC","DESC"]
+		];
+		$ordering = "{$orders[0][$ordering[0]]} {$orders[1][$ordering[1]]}";
+
+		$sql = "select id, collection_id, random_uid, hash, name, original_name, filepath, mediatype, size, latitude, longitude, date_created, date_added
+				from mymopsi_img i
+				where collection_id = ?
+				order by {$ordering} 
+				limit ? offset ?";
+
+		$this->images = $db->query( $sql, [ $this->id, $ipp, $offset ], true, 'Image' );
+	}
+
+	/**
 	 * Get collection's images from the database
 	 * @param DBConnection $db
 	 */

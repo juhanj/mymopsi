@@ -59,7 +59,7 @@ create table if not exists mymopsi_img (
 	hash          char(40)                 not null comment 'SHA1 hash for comparing files (prevent duplicates)', -- UK no_dupl
 	name          varchar(190)             not null comment 'user editable',
 	original_name varchar(190)             not null comment 'for posterity',
-	filepath      varchar(190) comment 'full real path with file extension',                                      -- UK
+	filepath      varchar(190) comment 'full real path with file extension',
 	mediatype     varchar(50)              not null comment 'File media (or MIME) type',
 	size          int                      not null comment 'in bytes',                                   -- UK no_duplicates
 	latitude      float(10, 6)             null default null comment 'in degrees',
@@ -69,7 +69,6 @@ create table if not exists mymopsi_img (
 	primary key (id),
 	unique random_uid (random_uid),
 	unique no_duplicates (collection_id, hash, size),
-	unique filepath (filepath),
 	constraint fk_img_collection foreign key (collection_id) references mymopsi_collection (id)
 )
 	default charset = utf8mb4

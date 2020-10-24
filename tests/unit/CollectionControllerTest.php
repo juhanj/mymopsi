@@ -49,7 +49,7 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_SetName () {
-		$random_string = Utils::createRandomUID( $this->db, 4, false );
+		$random_string = Common::createRandomUID( $this->db, 4, false );
 
 		$result = $this->ctrl->setName( $this->db, $this->testCollection, $random_string );
 		$coll = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
@@ -59,7 +59,7 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_SetDescription () {
-		$random_string = Utils::createRandomUID( $this->db, 4, false );
+		$random_string = Common::createRandomUID( $this->db, 4, false );
 
 		$result = $this->ctrl->setDescription( $this->db, $this->testCollection, $random_string );
 		$coll = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );

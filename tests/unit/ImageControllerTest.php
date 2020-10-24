@@ -65,7 +65,37 @@ class ImageControllerTest extends TestCase {
 			'collection' => $collection->random_uid,
 		];
 
-		$this->ctrl->requestUploadNewImages( $this->db, $this->testUser, $post );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true )
+		);
+	}
+
+
+	public function test_RequestAddMopsiPhotosFromCSV () {
+
+		set_up_database();
+		empty_database();
+		set_up_database();
+
+		$collection = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
+
+		$post = [
+			'request' => 'upload_mopsi_csv',
+			'collection' => $collection->random_uid,
+			'photos' => [
+				0 => [
+					'photo_id' => "010170_02-00-00_363192096.jpg",
+				],
+				1 => [
+					'photo_id' => "300314_12-15-10_181715815.jpg",
+				],
+			]
+		];
+
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],

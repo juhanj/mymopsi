@@ -65,7 +65,7 @@ class UserController implements Controller {
 	 */
 	function createEmptyUserRowInDatabase ( DBConnection $db, string $ruid = null ): ?User {
 		if ( is_null( $ruid ) ) {
-			$ruid = Utils::createRandomUID( $db ); // compoments/helper-functions.php
+			$ruid = Common::createRandomUID( $db ); // compoments/helper-functions.php
 		}
 
 		$db->query(

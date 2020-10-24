@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 
 $image = Image::fetchImageByRUID( $db, $_GET['id'] );
 if ( !$image ) {

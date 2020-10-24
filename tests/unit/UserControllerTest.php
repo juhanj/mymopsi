@@ -44,7 +44,7 @@ class UserControllerTest extends TestCase {
 	}
 
 	public function test_SetUsername () {
-		$random_string = Utils::createRandomUID( $this->db, 4, false );
+		$random_string = Common::createRandomUID( $this->db, 4, false );
 
 		$result = $this->ctrl->setUsername( $this->db, $this->testUser, $random_string );
 		$user = User::fetchUserByID( $this->db, $this->testUser->id );
@@ -67,7 +67,7 @@ class UserControllerTest extends TestCase {
 	}
 
 	public function test_SetEmail () {
-		$random_string = Utils::createRandomUID( $this->db, 4, false );
+		$random_string = Common::createRandomUID( $this->db, 4, false );
 
 		$result = $this->ctrl->setEmail( $this->db, $this->testUser, $random_string.'@email' );
 
@@ -89,7 +89,7 @@ class UserControllerTest extends TestCase {
 	}
 
 	public function test_RequestCreateNewUser () {
-		$username = Utils::createRandomUID( $this->db, 4, false );
+		$username = Common::createRandomUID( $this->db, 4, false );
 		$password = 'password';
 
 		$post = [

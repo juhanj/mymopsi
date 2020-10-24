@@ -12,32 +12,37 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 // feedback on button
 // coordinate formatting 12.34N 32.10E
 
-if ( empty( $_GET['id'] ) ) {
-	$_SESSION['feedback'] = "<p class='error'>{$lang->ID_MISSING}</p>";
-	header( 'location: index.php' );
-	exit();
-}
+// Valid user logged in
 if ( !$user ) {
 	$_SESSION['feedback'] = "<p class='error'>{$lang->NOT_LOGGED_IN}</p>";
 	header( 'location: index.php' );
 	exit();
 }
+// Valid collection RUID provided via GET
+if ( empty( $_GET['id'] ) ) {
+	$_SESSION['feedback'] = "<p class='error'>{$lang->ID_MISSING}</p>";
+	header( 'location: ' . $_SERVER['HTTP_REFERER'] );
+	exit();
+}
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 
 $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
+// Valid collection found with given RUID
 if ( !$collection ) {
 	$_SESSION['feedback'] = "<p class='error'>{$lang->COLLECTION_INVALID}</p>";
 	header( 'location: ' . $_SERVER['HTTP_REFERER'] );
 	exit();
 }
+// Check either collection owner, public&editable collection (not implemented), or admin user
 if ( (!$collection->public and !$collection->editable) and ($collection->owner_id !== $user->id) ) {
 	$_SESSION['feedback'] = "<p class='error'>{$lang->NOT_COLL_OWNER}</p>";
 	header( 'location: ' . $_SERVER['HTTP_REFERER'] );
 	exit();
 }
 
+// Breadcrumbs navigation for the header
 array_push(
    $breadcrumbs_navigation,
    ['User', WEB_PATH . '/collections.php' ],
@@ -71,8 +76,8 @@ array_push(
 	</div>
 
 	<!-- The form itself.
-	    Contains <input type=file>-tag, and two hidden input-tags (request and collection-ID)
-	    The submit is handled by javascript, since we send one file at a time (very large uploads).
+	    Contains <input type=file> -tag, and two hidden input-tags (request and collection-ID)
+	    The submit is handled by javascript, since we send files in batches (images can get very large).
 	-->
 	<section class="box" id="upload-form-box">
 		<!-- Form -->
@@ -113,14 +118,23 @@ array_push(
 	</section>
 
 	<!-- Successful uploads will be listed here after submitting -->
-	<div class="box" id="successful-uploads" hidden>
+	<section class="box" id="successful-uploads" hidden>
 		<h2><?= $lang->SUCCESS_UPLOAD_HEADER ?></h2>
-	</div>
+	</section>
 
 	<!-- Failed uploads will be listed here after submitting -->
-	<div class="box" id="failed-uploads" hidden>
+	<section class="box" id="failed-uploads" hidden>
 		<h2><?= $lang->FAILED_UPLOAD_HEADER ?></h2>
-	</div>
+	</section>
+
+	<hr>
+
+	<section class="box">
+		<p>
+			Upload Mopsi photos:
+		</p>
+		<a href="upload-csv.php?id=<?= $collection->random_uid ?>">Upload a CSV file with photo IDs</a>
+	</section>
 
 </main>
 

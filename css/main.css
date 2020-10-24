@@ -4,20 +4,20 @@
  * See: https://alistapart.com/article/axiomatic-css-and-lobotomized-owls
  */
 * {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 * + * {
-    margin-top: 1.5rem;
+	margin-top: 1.5rem;
 }
 
 .compact * + * {
-    margin-top: 0.65rem;
+	margin-top: 0.65rem;
 }
 
 .margins-off > * {
-    margin-top: 0; /* Note: this is for all children. */
+	margin-top: 0; /* Note: this is for all children. */
 }
 
 /**
@@ -25,7 +25,7 @@
  * the setup above
  */
 .margins-initial * {
-    margin-top: initial;
+	margin-top: initial;
 }
 
 /**
@@ -34,61 +34,65 @@
  * https://www.materialpalette.com/
  */
 :root {
-    --primary: hsl(231, 45%, 55%);
-    --primary-darker: hsl(231, 45%, 40%);
-    --primary-dark: hsl(231, 45%, 25%);
-    --primary-lighter: hsl(231, 60%, 70%);
-    --primary-light: hsl(231, 70%, 90%);
+	--primary: hsl(231, 45%, 55%);
+	--primary-darker: hsl(231, 45%, 40%);
+	--primary-dark: hsl(231, 45%, 25%);
+	--primary-lighter: hsl(231, 60%, 70%);
+	--primary-light: hsl(231, 70%, 90%);
 
-    --text-dark: hsl(0, 0%, 10%);
-    --text-light: hsl(0, 0%, 90%);
-    --secondary-text: hsl(0, 0%, 50%);
+	--text-dark: hsl(0, 0%, 10%);
+	--text-light: hsl(0, 0%, 90%);
+	--secondary-text: hsl(0, 0%, 50%);
 
-    --input-bg: hsla(0,0%,75%,.5);
+	--input-bg: hsla(0, 0%, 75%, .5);
 
 	--button-shadow: hsla(0, 0%, 10%, .5);
 
-    --content-box-bg: hsl(0, 0%, 100%);
+	--content-box-bg: hsl(0, 0%, 100%);
 
-    --site-bg: hsl(231, 0%, 50%);
+	--site-bg: hsl(0, 0%, 89%);
 
-    --success: hsl(120, 50%, 60%);
-    --error: hsl(349, 80%, 40%);
+	--success: hsl(120, 50%, 60%);
+	--error: hsl(349, 80%, 40%);
 	--error-darker: hsl(349, 85%, 30%);
-    --info: var(--primary-light);
-    --warning: hsl(35, 100%, 50%);
+	--info: var(--primary-light);
+	--warning: hsl(35, 100%, 50%);
 
-    --border-radius: .3rem;
+	--border-radius: .3rem;
 }
 
 .info {
-    background-color: var(--info);
-    color: var(--text-dark);
+	background-color: var(--info);
+	color: var(--text-dark);
 }
 
 .success {
-    background-color: var(--success);
-    color: var(--text-dark);
+	background-color: var(--success);
+	color: var(--text-dark);
 }
 
 .error {
-    background-color: var(--error);
-    color: var(--text-light);
+	background-color: var(--error);
+	color: var(--text-light);
 }
 
 .warning {
-    background-color: var(--warning);
-    color: var(--text-dark)
+	background-color: var(--warning);
+	color: var(--text-dark)
 }
 
 html, body {
-    height: 100vh; /* Problems on Android/iOS, this does not work correctly */
+	height: 100vh; /* Problems on Android/iOS, this does not work correctly */
 }
 
 body {
-    color: var(--text-light);
-    background-color: var(--site-bg);
-    min-height: 100%; /* 100% of html's 100vh */
+	color: var(--text-dark);
+	background-color: var(--site-bg);
+	min-height: 100%; /* 100% of html's 100vh */
+}
+
+.material-icons {
+	vertical-align: text-top;
 }
 
 /****************************************************************************
@@ -96,26 +100,26 @@ body {
 	Basically every page will overwrite this
 *****************************************************************************/
 body.grid {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: auto auto 1fr auto;
-    grid-template-areas: "header" "feedback" "content" "footer";
+	display: grid;
+	grid-template-columns: auto;
+	grid-template-rows: auto auto 1fr auto;
+	grid-template-areas: "header" "feedback" "content" "footer";
 }
 
 .site-header {
-    grid-area: header;
+	grid-area: header;
 }
 
 .feedback {
-    grid-area: feedback;
+	grid-area: feedback;
 }
 
 .main-body-container {
-    grid-area: content;
+	grid-area: content;
 }
 
 .site-footer {
-    grid-area: footer;
+	grid-area: footer;
 }
 
 /****************************************************************************
@@ -123,26 +127,26 @@ body.grid {
 	Content containers
 *****************************************************************************/
 .main-body-container {
-    width: 100%;
-    max-width: 50rem;
-    justify-self: center;
+	width: 100%;
+	max-width: 50rem;
+	justify-self: center;
 
-    display: flex;
-    flex-direction: column;
-    align-content: space-evenly;
-    /*justify-content: space-evenly;*/
+	display: flex;
+	flex-direction: column;
+	align-content: space-evenly;
+	/*justify-content: space-evenly;*/
 }
 
 .box {
-    color: var(--text-dark);
-    display: flex;
-    flex-direction: column;
-    align-content: space-evenly;
-    justify-content: space-evenly;
+	color: var(--text-dark);
+	display: flex;
+	flex-direction: column;
+	align-content: space-evenly;
+	justify-content: space-evenly;
 
-    background: var(--content-box-bg);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
+	background: var(--content-box-bg);
+	padding: 1.5rem;
+	border-radius: var(--border-radius);
 }
 
 /****************************************************************************
@@ -150,30 +154,30 @@ body.grid {
 *****************************************************************************/
 /* Display settings */
 .button {
-    display: flex;
-    justify-content: center; /* Horizontal align */
-    align-items: center; /* Vertical align */
+	display: flex;
+	justify-content: center; /* Horizontal align */
+	align-items: center; /* Vertical align */
 
-    padding: 1rem;
-    border: 0;
-    border-radius: var(--border-radius);
+	padding: .7rem;
+	border: 0;
+	border-radius: var(--border-radius);
 
-    box-shadow: 0 .2rem 0 0 var(--button-shadow);
+	box-shadow: 0 .2rem 0 0 var(--button-shadow);
 }
 
 /* Colours */
 .button {
-    background-color: var(--primary);
-    color: var(--text-light);
+	background-color: var(--primary);
+	color: var(--text-light);
 }
 
 .button:hover, .button.hover {
-    background-color: var(--primary-darker);
+	background-color: var(--primary-darker);
 }
 
 .button:active, .button.active {
-    background-color: var(--primary-dark);
-    box-shadow: 0 0 0 0;
+	background-color: var(--primary-dark);
+	box-shadow: 0 0 0 0;
 }
 
 /* Colours */
@@ -191,36 +195,36 @@ body.grid {
 }
 
 .button:disabled {
-    filter: grayscale(70%);
+	filter: grayscale(70%);
 }
 
 /****************************************************************************
 	Feedback
 *****************************************************************************/
 .feedback {
-    width: 100%;
-    font-weight: bold;
+	width: 100%;
+	font-weight: bold;
 }
 
 .feedback:empty {
-    display: none;
+	display: none;
 }
 
 .feedback > p {
-    padding: 1rem 5rem;
+	padding: 1rem 5rem;
 }
 
 /****************************************************************************
 	Smaller stuff
 *****************************************************************************/
 .side-note {
-    font-size: 90%;
-    font-style: oblique;
+	font-size: 90%;
+	font-style: oblique;
 }
 
 [hidden],
 .hidden {
-    display: none;
+	display: none;
 }
 
 .loading {
@@ -232,68 +236,78 @@ body.grid {
 	animation: spin 2s ease-in-out infinite;
 	margin: auto;
 }
+
 @keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 a object {
-    pointer-events: none;
+	pointer-events: none;
 }
 
 /****************************************************************************
 	Form stuff
 *****************************************************************************/
 form label {
-    display: block;
-    border-radius: var(--border-radius);
+	display: block;
+	border-radius: var(--border-radius);
 }
 
 form input,
-form textarea {
-    display: block;
-    padding: 1rem;
-    width: 100%;
+form textarea,
+form select {
+	display: block;
+	padding: 1rem;
+	width: 100%;
 
-    background-color: var(--input-bg);
-    border: 0;
-    border-radius: var(--border-radius);
+	background-color: var(--input-bg);
+	border: 0;
+	border-radius: var(--border-radius);
 }
 
 form span.required:after {
-    content: " *";
-    color: var(--error);
+	content: " *";
+	color: var(--error);
 }
 
 form input:required,
 form p.required-input {
-    box-shadow: -.2rem 0 0 0 var(--error);
+	box-shadow: -.2rem 0 0 0 var(--error);
 }
 
 form input:required:valid {
-    box-shadow: -.2rem 0 0 0 var(--success);
+	box-shadow: -.2rem 0 0 0 var(--success);
 }
 
 /****************************************************************************
 	Debug
 *****************************************************************************/
 .debug * {
-	outline: 1px dashed hsla(0,50%,50%,1);
-    background-color: hsla(0,50%,50%,.1);
+	outline: 1px dashed hsla(0, 50%, 50%, 1);
+	background-color: hsla(0, 50%, 50%, .1);
 }
+
 .debug * * {
-	outline: 1px dashed  hsla(120,50%,50%,1);
-    background-color: hsla(120,50%,50%,.1);
+	outline: 1px dashed hsla(120, 50%, 50%, 1);
+	background-color: hsla(120, 50%, 50%, .1);
 }
+
 .debug * * * {
-	outline: 1px dashed  hsla(230,50%,50%,1);
-    background-color: hsla(230,50%,50%,.1);
+	outline: 1px dashed hsla(230, 50%, 50%, 1);
+	background-color: hsla(230, 50%, 50%, .1);
 }
+
 .debug * * * * {
-	outline: 1px dashed hsla(40,50%,50%,1);
-    background-color: hsla(40,50%,50%,.1);
+	outline: 1px dashed hsla(40, 50%, 50%, 1);
+	background-color: hsla(40, 50%, 50%, .1);
 }
+
 .debug * * * * * {
-	outline: 1px dashed hsla(280,50%,50%,1);
-    background-color: hsla(280,50%,50%,.1);
+	outline: 1px dashed hsla(280, 50%, 50%, 1);
+	background-color: hsla(280, 50%, 50%, .1);
 }

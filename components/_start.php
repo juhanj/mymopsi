@@ -4,6 +4,17 @@ ini_set( 'display_errors', "1" );
 
 mb_internal_encoding( "UTF-8" );
 
+function debug ( $var, bool $var_dump = false ) {
+	echo "<br><pre>Print_r ::<br>";
+	print_r( $var );
+	echo "</pre>";
+	if ( $var_dump ) {
+		echo "<br><pre>Var_dump ::<br>";
+		var_dump( $var );
+		echo "</pre><br>";
+	}
+}
+
 /**
  * For easier access. This way any includes/requires and such can be written shorter,
  * and not be dependant on location.

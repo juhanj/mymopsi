@@ -2,7 +2,7 @@
 
 /**
  * Send a JSON request to server, receive JSON back.
- * Usage: sendJSON(params).then((jsonResponse) => {});
+ * Usage: sendJSON(params).then( function(jsonResponse) );
  * @param data Changed to JSON before sending
  * @param {string} url optional, default == ./ajax-handler.php
  * @param {boolean} returnJSON
@@ -22,7 +22,7 @@ async function sendJSON ( data, url = './ajax-handler.php', returnJSON = true ) 
 
 /**
  * Send a POST request to server, receive JSON back.
- * Usage: sendForm(formdata).then((jsonResponse) => {});
+ * Usage: sendForm(formdata).then( function(jsonResponse) );
  * @param {FormData} data Form-element, must be an FormData object
  * @param {string} url optional, default = ./ajax-handler.php
  * @param {boolean} returnJSON
