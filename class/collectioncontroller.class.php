@@ -63,8 +63,8 @@ class CollectionController implements Controller {
 	}
 
 	/**
-	 * Create an empty stub collection in the database. Only has rows marked NOT NULL.
-	 * Returns a copy of created collection.
+	 * Create an empty stub collection in the database. Only has rows 
+	 * marked NOT NULL. Returns a copy of created collection.
 	 * @param DBConnection $db
 	 * @param User $user Must have ID
 	 * @param string|null $ruid
@@ -84,7 +84,10 @@ class CollectionController implements Controller {
 			[ $user->id, $ruid ]
 		);
 
-		$collection = Collection::fetchCollectionByID( $db, (int)$db->getConnection()->lastInsertId() );
+		$collection = Collection::fetchCollectionByID( 
+			$db,
+			(int)$db->getConnection()->lastInsertId() 
+		);
 
 		return $collection;
 	}
@@ -204,7 +207,8 @@ class CollectionController implements Controller {
 			$rows = [ $rows ];
 		}
 
-		$file_path = INI['Misc']['path_to_collections'] . "/{$collection->random_uid}/cluster-data.json";
+		$file_path = INI['Misc']['path_to_collections'] 
+			. "/{$collection->random_uid}/cluster-data.json";
 
 		file_put_contents( $file_path, json_encode( $rows ) );
 
