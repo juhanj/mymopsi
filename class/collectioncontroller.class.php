@@ -297,12 +297,7 @@ class CollectionController implements Controller {
 			return false;
 		}
 
-		if ( $collection->number_of_images !== 0 ) {
-			$this->setError( -4,
-				"Collection {$collection->random_uid} has {$collection->number_of_images} images in it."
-				. " Cannot delete collections with images. Delete images first." );
-			return false;
-		}
+
 
 		$result = $this->deleteCollectionFromDatabase( $db, $collection );
 
@@ -312,7 +307,8 @@ class CollectionController implements Controller {
 		}
 
 		$this->result = [
-			'success' => true
+			'success' => true,
+			'error' => false,
 		];
 
 		return true;

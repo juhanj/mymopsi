@@ -30,28 +30,53 @@ function handleRequestResponse ( response ) {
 
 	let good = response.result.good_uploads;
 	let bad = response.result.failed_uploads;
-	let totalBitsProcessed = 0;
+	let batchBitsProcessed = 0;
 
 	if ( Array.isArray( good ) && good.length ) {
 		let temp = '';
 		good.forEach( ( image ) => {
-			temp += `<p id="${image.new_ruid}">${image.name}, ${image.size}, ${image.mime}, ${image.lastModified}</p>`;
-			totalBitsProcessed += image.size;
+			let size = image.size;
+			let lastModified = image.lastModified;
+			let location = (image.latitude) ? '<i class="material-icons" style="color: green">check</i>' : '';
+			let type = image.type.split('/',2);
+			type = (type.length > 1 && type[0] === 'image' )
+				? type[1].toUpperCase()
+				: "?!";
+
+			temp +=	`<tr>
+				<td class="text">${image.name}</td>
+				<td class="number">${size}</td>
+				<td class="center">${type}</td>
+				<td class="number">${lastModified}</td>
+				<td class="number">${location}</td>
+			</tr>`;
+			batchBitsProcessed += image.size;
+
 		} );
-		successfulUploads.insertAdjacentHTML( 'beforeend', temp );
+		successfulUploadsTableBody.innerHTML = temp;
 	}
 
 	if ( Array.isArray( bad ) && bad.length ) {
 		let temp = '';
 		bad.forEach( ( image ) => {
-			temp += `<p id="${image.name}">${image.name}, ${image.size}, ${image.mime}, ${image.hash}</p>`;
-			totalBitsProcessed += image.size;
+			let size = image.size;
+			let type = image.type.split('/',2);
+			type = (type.length > 1 && type[0] === 'image' )
+				? type[1].toUpperCase()
+				: "?!";
+
+			temp +=	`<tr>
+				<td class="text">${image.name}</td>
+				<td class="number">${size}</td>
+				<td class="center">${type}</td>
+			</tr>`;
+			batchBitsProcessed += image.size;
 		} );
-		failedUploads.insertAdjacentHTML( 'beforeend', temp );
+		failedUploadsTableBody.innerHTML = temp;
 	}
 
 	progressBarFiles.value += good.length + bad.length;
-	progressBarBits.value += totalBitsProcessed;
+	progressBarBits.value += batchBitsProcessed;
 }
 
 /* *************************************************
@@ -62,6 +87,7 @@ let maxBatchSize = 10 * MB;
 // Form elements
 let uploadForm = document.getElementById( 'upload-form' );
 let fileInputpluslabel = document.getElementById( 'fileinput-label' );
+let fileInputLabelText = document.getElementById( 'file-input-label-text' );
 let fileInput = document.getElementById( 'file-input' );
 let submitButton = document.getElementById( 'submit-button' );
 
@@ -71,27 +97,49 @@ let progressBarFiles = document.getElementById( 'progress-files' );
 let progressBarBits = document.getElementById( 'progress-bits' );
 
 // Upload files info (before / after (success&fail))
-let filesInfo = document.getElementById( 'files-info' );
-let successfulUploads = document.getElementById( 'successful-uploads' );
-let failedUploads = document.getElementById( 'failed-uploads' );
+let waitingFilesContainer = document.getElementById( 'files-info' );
+let waitingFilesTableBody = document.getElementById( 'selectedTableBody' );
+let successfulUploadsContainer = document.getElementById( 'successful-uploads' );
+let successfulUploadsTableBody = document.getElementById( 'successfulTableBody' );
+let failedUploadsContainer = document.getElementById( 'failed-uploads' );
+let failedUploadsTableBody = document.getElementById( 'failedTableBody' );
+
 
 /**
  * Called when files are dropped into the file-input
  * Hides input, shows submit-button, prints file-info, and prepares the progressbar
  */
 fileInput.onchange = () => {
-	fileInputpluslabel.hidden = true;
+	fileInputLabelText.hidden = true;
+	fileInputLabelText.style.display = 'none';
+	fileInput.style.marginTop = '0';
+	fileInput.style.height = 'auto';
 	submitButton.hidden = false;
 
 	let temp = '';
 	let totalFileSize = 0;
+	let i = 1;
 	Array.from( fileInput.files ).forEach( ( file ) => {
-		temp += `<p id="${file.name}">${file.name}, ${file.size}, ${file.type}, ${file.lastModified}</p>`;
+		let size = file.size;
+		let type = file.type.split('/',2);
+		type = (type.length > 1 && type[0] === 'image' )
+			? type[1].toUpperCase()
+			: "?!";
+		let lastModified = file.lastModified;
+
+		temp +=	`<tr id="${i}">
+				<td class="center">${i}</td>
+				<td class="text">${file.name}</td>
+				<td class="number">${size}</td>
+				<td class="center">${type}</td>
+				<td class="number">${lastModified}</td>
+			</tr>`;
 		totalFileSize += file.size;
+		file.HTMLTableRowID = i++;
 	} );
 
-	filesInfo.insertAdjacentHTML( 'beforeend', temp );
-	filesInfo.hidden = false;
+	waitingFilesTableBody.innerHTML = temp;
+	waitingFilesContainer.hidden = false;
 
 	progressBarFiles.max = fileInput.files.length;
 	progressBarBits.max = totalFileSize;
@@ -109,9 +157,9 @@ uploadForm.onsubmit = ( event ) => {
 
 	uploadForm.hidden = true;
 	progressBars.hidden = false;
-	failedUploads.hidden = false;
-	successfulUploads.hidden = false;
-	filesInfo.hidden = true;
+	failedUploadsContainer.hidden = false;
+	successfulUploadsContainer.hidden = false;
+	waitingFilesContainer.hidden = true;
 
 	/*
 	 * while-true loop for sending files in batches
@@ -141,7 +189,7 @@ uploadForm.onsubmit = ( event ) => {
 			// Current batch size is used to determine whenthe batch is full and when to leave the while-loop
 			currentBatchSize += fileInput.files[i].size;
 			// Remove element from the "Waiting uploads"-list, for some better user-feedback
-			document.getElementById( fileInput.files[i].name ).remove();
+			// document.getElementById( fileInput.files[i].name ).remove();
 			i++; // Advance for-loop, inside said for-loop
 		}
 
@@ -161,7 +209,7 @@ uploadForm.onsubmit = ( event ) => {
 			progressBarFiles.value++;
 			progressBarBytes.value += fileInput.files[i].size;
 
-			failedUploads.insertAdjacentHTML(
+			failedUploadsContainer.insertAdjacentHTML(
 				'beforeend',
 				`<p>${fileInput.files[i].name},${fileInput.files[i].size}</p>`
 			);

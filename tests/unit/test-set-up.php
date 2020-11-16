@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
 
-require $home_directory . 'class/utils.class.php';
+require $home_directory . 'class/common.class.php';
 require $home_directory . 'class/dbconnection.class.php';
 
 require $home_directory . 'class/user.class.php';

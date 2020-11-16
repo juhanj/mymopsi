@@ -204,4 +204,28 @@ class Common {
 		return $result->address;
 	}
 
+	/**
+	 * Delete all files recursively
+	 *
+	 * @param $target
+	 */
+	public static function deleteFiles ( $target ) {
+		// Check if directory (handled differently from a file)
+		if ( is_dir( $target ) ) {
+			// Get all files in directory
+			$files = glob( $target . '*', GLOB_MARK ); //GLOB_MARK adds a slash to directories returned
+
+			// Recursive call to subdirs
+			foreach ( $files as $file ) {
+				self::deleteFiles( $file );
+			}
+
+			rmdir( $target );
+		}
+		// Check if file
+		else if ( is_file( $target ) ) {
+			unlink( $target );
+		}
+	}
+
 }

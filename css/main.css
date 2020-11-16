@@ -44,7 +44,7 @@
 	--text-light: hsl(0, 0%, 90%);
 	--secondary-text: hsl(0, 0%, 50%);
 
-	--input-bg: hsla(0, 0%, 75%, .5);
+	--input-bg: hsla(0, 0%, 75%, 0.5);
 
 	--button-shadow: hsla(0, 0%, 10%, .5);
 
@@ -227,6 +227,19 @@ body.grid {
 	display: none;
 }
 
+a object {
+	pointer-events: none;
+}
+
+.center {
+	display: grid;
+	place-items: center;
+}
+
+/****************************************************************************
+	Smaller stuff
+*****************************************************************************/
+
 .loading {
 	border: .5rem solid;
 	border-color: transparent var(--primary-lighter);
@@ -236,18 +249,13 @@ body.grid {
 	animation: spin 2s ease-in-out infinite;
 	margin: auto;
 }
-
-@keyframes spin {
+.loading @keyframes spin {
 	0% {
 		transform: rotate(0deg);
 	}
 	100% {
 		transform: rotate(360deg);
 	}
-}
-
-a object {
-	pointer-events: none;
 }
 
 /****************************************************************************
@@ -282,6 +290,26 @@ form p.required-input {
 
 form input:required:valid {
 	box-shadow: -.2rem 0 0 0 var(--success);
+}
+
+/****************************************************************************
+	Tables and other tabular data
+*****************************************************************************/
+table {
+	width: 100%;
+}
+tr:hover {
+	background-color: hsla(0, 0%, 80%, 0.5);
+}
+table .text {
+	text-align: start;
+}
+table .number {
+	text-align: end;
+}
+table .center {
+	display: table-cell;
+	text-align: center;
 }
 
 /****************************************************************************

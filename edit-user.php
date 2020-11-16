@@ -86,10 +86,17 @@ array_push(
 	</section>
 
 	<section class="box">
-		<p>DANGER! Delete user and/or all collections</p>
-		<button class="button" disabled>Delete all collections</button>
-		<button class="button" disabled>Delete user and all associated information</button>
-		<p>WIP No functionality implented yet</p>
+		<p>
+			<?= $lang->DANGER_DELETE_INFO ?>
+		</p>
+		<button class="button red" id="deleteAllCollectionsButton"
+		        data-user="<?= $user->random_uid ?>">
+			<?= $lang->DELETE_COLL_BUTTON ?>
+		</button>
+		<button class="button red" id="deleteUserButton"
+		        data-user="<?= $user->random_uid ?>">
+			<?= $lang->DELETE_USER_BUTTON ?>
+		</button>
 	</section>
 </main>
 

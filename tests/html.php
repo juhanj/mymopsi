@@ -7,8 +7,8 @@ array_push(
 	[ 'Tests', WEB_PATH . '/tests' ],
 );
 
-//Utils::debug( $_POST );
-//Utils::debug( $_FILES );
+//debug( $_POST );
+//debug( $_FILES );
 ?>
 
 <!DOCTYPE html>
@@ -24,27 +24,21 @@ array_push(
 <?php require 'html-header.php'; ?>
 
 <main class="main-body-container">
-
 </main>
 
 <?php require 'html-footer.php'; ?>
 
 <script>
-	let latitude = 62.5913800;
-	let longitude = 29.7796980;
-
-	let parameters = {
-		'request_type' : 'get_address',
-		'lat' : latitude,
-		'lon' : longitude
+	async function getJSON ( url, returnJSON = true ) {
+		let response = await fetch( url );
+		return (returnJSON) ? await response.json() : await response;
 	}
 
-	let url = 'https://cs.uef.fi/mopsi/mobile/server.php?param='
-		+ encodeURIComponent(JSON.stringify( parameters ));
+	(async () => {
+		console.log(await getJSON( '../json/lang.json' ) )
+	})()
 
-	fetch( url )
-		.then(data=>{return data.json()})
-		.then(res=>{console.log(res)});
+	// let lang = getJSON( '../json/lang.json' ).then( (response) => response );
 </script>
 
 </body>

@@ -39,48 +39,6 @@ async function sendForm ( data, url = './ajax-handler.php', returnJSON = true ) 
 }
 
 /**
- * Set cookies with given name, value, and expiry date
- * @param {string} name
- * @param {string} [value='']
- * @param {int} [days=30] How long will the browser store the cookie, in days.
- */
-function setCookie ( name, value = '', days = 30 ) {
-	let date = new Date();
-	date.setTime( date.getTime() + (days * 24 * 60 * 60 * 1000) );
-	let expires = "; expires=" + date.toUTCString();
-
-	document.cookie = name + "=" + (value || "") + expires + "; path=/mopsi_dev/mymopsi";
-}
-
-/**
- * @param {string} name
- * @returns {string|null}
- */
-function getCookie ( name ) {
-	let nameEQ = name + "=";
-	let cookies_array = document.cookie.split( ';' );
-	let cookie, i;
-	for ( i = 0; i < cookies_array.length; i++ ) {
-		cookie = cookies_array[i];
-		while ( cookie.charAt( 0 ) === ' ' ) {
-			cookie = cookie.substring( 1, cookie.length );
-		}
-		if ( cookie.indexOf( nameEQ ) === 0 ) {
-			return cookie.substring( nameEQ.length, cookie.length );
-		}
-	}
-	return null;
-}
-
-/**
- * Delete the cookie by setting max-age to -1.
- * @param {string} name
- */
-function deleteCookie ( name ) {
-	document.cookie = name + '=; Max-Age=-1;';
-}
-
-/**
  * Kilobyte = 1024 bits
  * @type {number} 1024
  */
@@ -95,5 +53,3 @@ const MB = 1048576;
  * @type {number} 1 073 741 824
  */
 const GB = 1073741824;
-
-//TODO: Language thing for client side. Figure something out. This one is a big change.

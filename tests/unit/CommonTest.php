@@ -61,6 +61,17 @@ class CommonTest extends TestCase {
 
 	public function test_GetNominatimReverseGeocoding () {
 		$result = Common::getNominatimReverseGeocoding( 62.5913800, 29.7796980 );
-		self::assertIsObject( $result[0] );
+		self::assertIsObject( $result );
+	}
+
+	public function test_DeleteFiles () {
+		$file = "./test.txt";
+		file_put_contents( $file, "foo bar" );
+
+		self::assertTrue( file_exists( $file ) );
+
+		Common::deleteFiles( $file  );
+
+		self::assertFalse( file_exists( $file ) );
 	}
 }

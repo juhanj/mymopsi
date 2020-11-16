@@ -44,8 +44,7 @@ array_push(
 <main class="main-body-container">
 
 	<section class="box image-container">
-		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>"
-			onerror=''>
+		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>">
 	</section>
 
 	<form class="box" method="post">
@@ -65,6 +64,17 @@ array_push(
 		<a href="edit-gps.php?id=<?= $image->random_uid ?>" class="button">
 			<?= $lang->EDIT_GPS ?>
 		</a>
+	</section>
+
+	<section class="box">
+		<p>
+			<?= $lang->DANGER_DELETE_INFO ?>
+		</p>
+		<button class="button red" id="deleteButton"
+		        data-collection="<?= $collection->random_uid ?>"
+		        data-image="<?= $image->random_uid ?>">
+			<?= $lang->DELETE_BUTTON ?>
+		</button>
 	</section>
 
 </main>

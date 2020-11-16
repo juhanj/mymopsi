@@ -28,6 +28,9 @@ class ImageController implements Controller {
 			case 'edit_gps':
 				$result = $this->requestEditGPSCoordinate( $db, $user, $req );
 				break;
+			case 'delete_image':
+				$result = $this->requestDeleteImage( $db, $user, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
@@ -181,7 +184,6 @@ class ImageController implements Controller {
 		$collections = INI[ 'Misc' ][ 'path_to_collections' ];
 		$temp_folder = $collections . "/temp-{$collection->id}-" . mt_rand( 0, 10000 );
 		$final_destination = $collections . '/' . $collection->random_uid;
-
 
 		if ( !file_exists( $final_destination ) ) {
 			mkdir( $final_destination );
@@ -528,6 +530,60 @@ class ImageController implements Controller {
 			'error' => false,
 			'good_uploads' => $good_uploads,
 			'failed_uploads' => $bad_uploads,
+		];
+
+		return true;
+	}
+
+	public function requestDeleteImage ( DBConnection $db, User $user, array $options ): bool {
+
+		// Checking valid image
+		if ( empty( $options[ 'image' ] ) ) {
+			$this->setError( -1, 'No image ID' );
+
+			return false;
+		}
+		else {
+			$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
+			if ( !$image ) {
+				$this->setError( -2, 'Image not valid' );
+
+				return false;
+			}
+		}
+
+		$collection = (!empty( $options['collection'] ))
+			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+			: null;
+
+		if ( !$collection ) {
+			$this->setError( -3, 'Collection not valid' );
+			return false;
+		}
+
+		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
+			$this->setError( -4, "User {$user->random_uid} does not have access to this collection" );
+			return false;
+		}
+
+		if ( $image->collection_id !== $collection->id ) {
+			$this->setError( -5, "Image-collection mismatch" );
+			return false;
+		}
+
+		// Delete files
+		// Function also checks if file exists, so if it doesn't, just move on to deleting db row
+		Common::deleteFiles( $image->filepath );
+
+		// Delete database row
+		$db->query(
+			"delete from mymopsi_img where id = ?",
+			[$image->id]
+		);
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
 		];
 
 		return true;
