@@ -14,27 +14,33 @@ class ImageController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param array $req
+	 * @param User         $user
+	 * @param array        $req
 	 */
 	public function handleRequest ( DBConnection $db, User $user, array $req ) {
-		switch ( $req['request'] ?? null ) {
+		switch ( $req[ 'request' ] ?? null ) {
 			case 'upload':
 				$result = $this->requestUploadNewImages( $db, $user, $req );
 				break;
+			case 'upload_mopsi_csv':
+				$result = $this->requestAddMopsiPhotosFromCSV( $db, $user, $req );
+				break;
 			case 'edit_gps':
 				$result = $this->requestEditGPSCoordinate( $db, $user, $req );
+				break;
+			case 'delete_image':
+				$result = $this->requestDeleteImage( $db, $user, $req );
 				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
 		}
 
-		$this->result['success'] = $result;
+		$this->result[ 'success' ] = $result;
 	}
 
 	/**
-	 * @param int $id
+	 * @param int    $id
 	 * @param string $msg
 	 */
 	public function setError ( int $id, string $msg ) {
@@ -48,9 +54,10 @@ class ImageController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param Image $image
-	 * @param $lat
-	 * @param $long
+	 * @param Image        $image
+	 * @param              $lat
+	 * @param              $long
+	 *
 	 * @return bool
 	 */
 	function setGPSCoordinates ( DBConnection $db, Image $image, $lat, $long ) {
@@ -61,25 +68,29 @@ class ImageController implements Controller {
 			'update mymopsi_img set latitude = ?, longitude = ? where id = ? limit 1',
 			[ $lat, $long, $image->id ]
 		);
+
 		return boolval( $rows_changed );
 	}
 
 	/**
 	 * For organizing the global _FILES variable a bit more sensibly, and more usable.
 	 * See comment https://www.php.net/manual/en/reserved.variables.files.php#121500 in the PHP manual.
+	 *
 	 * @param array $_files _FILES global variable
+	 *
 	 * @return array re-formatted _FILES array
 	 */
 	function reorganizeUploadFilesArray ( array $_files ) {
 		$result = [];
 		foreach ( $_files as $fileArray ) {
-			if ( is_array( $fileArray['name'] ) ) {
+			if ( is_array( $fileArray[ 'name' ] ) ) {
 				foreach ( $fileArray as $attrib => $list ) {
 					foreach ( $list as $index => $value ) {
-						$result[$index][$attrib] = $value;
+						$result[ $index ][ $attrib ] = $value;
 					}
 				}
-			} else {
+			}
+			else {
 				$result[] = $fileArray;
 			}
 		}
@@ -88,8 +99,9 @@ class ImageController implements Controller {
 	}
 
 	/**
-	 * @param $folder
+	 * @param      $folder
 	 * @param null $files
+	 *
 	 * @return stdClass[]
 	 */
 	function getUploadMetadataWithExiftool ( $folder, &$files = null ) {
@@ -102,7 +114,7 @@ class ImageController implements Controller {
 			. " -ImageSize"
 			. " -c %.6f" // format for gps coordinates output
 		;
-		$metadata = Utils::runExiftool( $folder, $commandOptions );
+		$metadata = Common::runExiftool( $folder, $commandOptions );
 
 		return $metadata;
 	}
@@ -121,28 +133,32 @@ class ImageController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param $options
+	 * @param User         $user
+	 * @param              $options
+	 *
 	 * @return bool
 	 */
-	public function requestUploadNewImages ( DBConnection $db, User $user, $options ) {
+	public function requestUploadNewImages ( DBConnection $db, User $user, $options ): bool {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
+
 			return false;
 		}
 
-		$collection = (!empty( $options['collection'] ))
-			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+		$collection = (!empty( $options[ 'collection' ] ))
+			? Collection::fetchCollectionByRUID( $db, $options[ 'collection' ] )
 			: null;
 
 		if ( !$collection ) {
 			$this->setError( -2, 'Collection not valid' );
+
 			return false;
 		}
 
 		if ( $collection->owner_id !== $user->id
 			or ($collection->public and $collection->editable) ) {
 			$this->setError( -3, 'Access denied' );
+
 			return false;
 		}
 
@@ -150,23 +166,24 @@ class ImageController implements Controller {
 
 		if ( !$_FILES ) {
 			$this->setError( -4, 'No files received' );
+
 			return false;
 		}
 
 		// Would be very bad to have this empty, since it would write to root
 		// So check just in case
-		if ( strlen( INI['Misc']['path_to_collections'] ) < 20 ) {
+		if ( strlen( INI[ 'Misc' ][ 'path_to_collections' ] ) < 20 ) {
 			$this->setError( -5, 'Config error' );
+
 			return false;
 		}
 
-		// reorganise FILES array
+		// reorganise FILES array, because I don't like how PHP does it.
 		$files = $this->reorganizeUploadFilesArray( $_FILES );
 
-		$collections = INI['Misc']['path_to_collections'];
+		$collections = INI[ 'Misc' ][ 'path_to_collections' ];
 		$temp_folder = $collections . "/temp-{$collection->id}-" . mt_rand( 0, 10000 );
 		$final_destination = $collections . '/' . $collection->random_uid;
-
 
 		if ( !file_exists( $final_destination ) ) {
 			mkdir( $final_destination );
@@ -182,8 +199,8 @@ class ImageController implements Controller {
 		// Check each file for errors, duplicates, and such, and then move to temp folder
 		foreach ( $files as $index => &$upload ) {
 			// Check for PHP upload errors
-			if ( $upload['error'] ) {
-				$upload['error_msg'] = "PHP upload error";
+			if ( $upload[ 'error' ] ) {
+				$upload[ 'error_msg' ] = "PHP upload error";
 				$bad_uploads[] = $upload;
 				continue;
 			}
@@ -192,43 +209,44 @@ class ImageController implements Controller {
 			// Should be sufficiently fast, on localhost 2000 files 1,5 sec
 			$file_mimetype = finfo_file(
 				finfo_open( FILEINFO_MIME_TYPE ),
-				$upload['tmp_name']
+				$upload[ 'tmp_name' ]
 			);
 			if ( stripos( $file_mimetype, 'image/' ) === false ) {
-				$upload['error_msg'] = "{$file_mimetype} not valid file type";
+				$upload[ 'error_msg' ] = "{$file_mimetype} not valid file type";
 				$bad_uploads[] = $upload;
 				continue;
-			} else {
-				$upload['mime'] = $file_mimetype;
+			}
+			else {
+				$upload[ 'mime' ] = $file_mimetype;
 			}
 
 			// Check for duplicate already in the collection
 			// Hash calculation
-			$upload['hash'] = hash_file( 'md5', $upload['tmp_name'] );
-			$upload['size'] = filesize( $upload['tmp_name'] );
+			$upload[ 'hash' ] = hash_file( 'md5', $upload[ 'tmp_name' ] );
+			$upload[ 'size' ] = filesize( $upload[ 'tmp_name' ] );
 			$is_duplicate = $db->query(
 				'select id from mymopsi_img where collection_id = ? and hash = ? and size = ?',
-				[ $collection->id, $upload['hash'], $upload['size'] ]
+				[ $collection->id, $upload[ 'hash' ], $upload[ 'size' ] ]
 			);
 			if ( $is_duplicate ) {
-				$upload['error_msg'] = "Duplicate";
+				$upload[ 'error_msg' ] = "Duplicate";
 				$bad_uploads[] = $upload;
 				continue;
 			}
 
-			$upload['new_ruid'] = Utils::createRandomUID( $db );
+			$upload[ 'new_ruid' ] = Common::createRandomUID( $db );
 			// New file is just the RUID. Used have have original name attached but
 			// exiftool and encoding differences made that difficult.
-			$upload['new_file_name'] = $upload['new_ruid'];
+			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ];
 
 			// Move to temporary folder
-			$upload['temp_path'] = $temp_folder . '/' . $upload['new_file_name'];
+			$upload[ 'temp_path' ] = $temp_folder . '/' . $upload[ 'new_file_name' ];
 			move_uploaded_file(
-				$upload['tmp_name'],
-				$upload['temp_path']
+				$upload[ 'tmp_name' ],
+				$upload[ 'temp_path' ]
 			);
 
-			$upload['final_path'] = $final_destination . '/' . $upload['new_file_name'];
+			$upload[ 'final_path' ] = $final_destination . '/' . $upload[ 'new_file_name' ];
 
 			$good_uploads[] = $upload;
 		}
@@ -241,10 +259,10 @@ class ImageController implements Controller {
 			// What have I created?
 			foreach ( $metadata as $f ) {
 				// Go through each metadata file, and find the same one, and take results (if any)
-				if ( basename( $f->SourceFile ) === $file['new_file_name'] ) {
+				if ( basename( $f->SourceFile ) === $file[ 'new_file_name' ] ) {
 					if ( isset( $f->Main->GPSLatitude ) ) {
-						$file['latitude'] = $f->Main->GPSLatitude;
-						$file['longitude'] = $f->Main->GPSLongitude;
+						$file[ 'latitude' ] = $f->Main->GPSLatitude;
+						$file[ 'longitude' ] = $f->Main->GPSLongitude;
 					}
 				}
 			}
@@ -259,8 +277,8 @@ class ImageController implements Controller {
                          date_created )
                       values (?,?,?,?,?,?,?,?,?,?,?)',
 				[
-					$collection->id, $file['new_ruid'], $file['hash'], $file['name'], $file['name'],
-					$file['final_path'], $file['mime'], $file['size'], $file['latitude'] ?? null, $file['longitude'] ?? null,
+					$collection->id, $file[ 'new_ruid' ], $file[ 'hash' ], $file[ 'name' ], $file[ 'name' ],
+					$file[ 'final_path' ], $file[ 'mime' ], $file[ 'size' ], $file[ 'latitude' ] ?? null, $file[ 'longitude' ] ?? null,
 					null /*filectime( $file['final_path'] )*/
 				]
 			);
@@ -268,8 +286,8 @@ class ImageController implements Controller {
 			if ( $result ) {
 				// Move file to final destination
 				rename(
-					$file['temp_path'],
-					$file['final_path']
+					$file[ 'temp_path' ],
+					$file[ 'final_path' ]
 				);
 			}
 		}
@@ -293,33 +311,39 @@ class ImageController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param array $options POST request
+	 * @param User         $user
+	 * @param array        $options POST request
+	 *
 	 * @return bool
 	 */
-	public function requestEditGPSCoordinate ( DBConnection $db, User $user, $options ) {
+	public function requestEditGPSCoordinate ( DBConnection $db, User $user, $options ): bool {
 		// LAT & LONG need to be valid
-		if ( empty( $options['lat'] ) or empty( $options['long'] ) ) {
+		if ( empty( $options[ 'lat' ] ) or empty( $options[ 'long' ] ) ) {
 			$this->setError( -1, 'Coordinate not given' );
+
 			return false;
 		}
 
 		// image ID needs to be valid
-		if ( empty( $options['image'] ) ) {
+		if ( empty( $options[ 'image' ] ) ) {
 			$this->setError( -2, 'No image ID' );
+
 			return false;
-		} else {
-			$image = Image::fetchImageByRUID( $db, $options['image'] );
+		}
+		else {
+			$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
 			if ( !$image ) {
 				$this->setError( -3, 'Image not valid' );
+
 				return false;
 			}
 		}
 
-		$result = $this->setGPSCoordinates( $db, $image, $options['lat'], $options['long'] );
+		$result = $this->setGPSCoordinates( $db, $image, $options[ 'lat' ], $options[ 'long' ] );
 
 		if ( !$result ) {
 			$this->setError( -3, 'Could not edit database, something went wrong' );
+
 			return false;
 		}
 
@@ -333,16 +357,236 @@ class ImageController implements Controller {
 
 		// Update JSON for server-side clustering
 		$collContr = new CollectionController();
-		$collection = Collection::fetchCollectionByID($db,$image->collection_id);
+		$collection = Collection::fetchCollectionByID( $db, $image->collection_id );
 		$collContr->createServerClusteringJSON( $db, $collection );
 
 		$this->result = [
 			'success' => true,
 			'error' => false,
 			'old_gps' => [ $image->latitude, $image->longitude ],
-			'new_gps' => [ $options['lat'], $options['long'] ]
+			'new_gps' => [ $options[ 'lat' ], $options[ 'long' ] ],
 		];
 
 		return true;
 	}
+
+	/**
+	 * @param \DBConnection $db
+	 * @param \User         $user
+	 * @param               $options
+	 *
+	 * @return bool
+	 */
+	public function requestAddMopsiPhotosFromCSV ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+
+			return false;
+		}
+
+		$collection = (!empty( $options[ 'collection' ] ))
+			? Collection::fetchCollectionByRUID( $db, $options[ 'collection' ] )
+			: null;
+
+		if ( !$collection ) {
+			$this->setError( -2, 'Collection not valid' );
+
+			return false;
+		}
+
+		if ( $collection->owner_id !== $user->id
+			or ($collection->public and $collection->editable) ) {
+			$this->setError( -3, 'Access to collection denied' );
+
+			return false;
+		}
+
+		$photos = $options[ 'photos' ];
+		$good_uploads = [];
+		$bad_uploads = [];
+
+		// Values for prepared statement
+		$ids = array_map( function ( $photo ) {
+			return $photo[ 'photo_id' ];
+		}, $photos );
+		// Question marks for prepared statement
+		$inQuestionMarksString = str_repeat( '?,', count( $ids ) - 1 ) . '?';
+
+		$sql = "SELECT po.id as photo_id
+					, po.id as point_id
+					, po.name
+					, po.description
+					, po.latitude
+					, po.longitude
+					, po.timestamp
+					, ph.photo_id as filename
+					, ph.format
+					, ph.userid
+				FROM Point po
+					JOIN Photo ph on po.id = ph.point_id
+				WHERE ph.photo_id IN ({$inQuestionMarksString})";
+
+		$rows = $db->query( $sql, $ids, true );
+
+		//
+		$final_destination = INI[ 'Misc' ][ 'path_to_collections' ] . '/' . $collection->random_uid;
+		$mopsi_images_dir = INI[ 'Misc' ][ 'path_to_mopsi_photos' ];
+
+		if ( !file_exists( $final_destination ) ) {
+			mkdir( $final_destination );
+		}
+
+		//
+		foreach ( $rows as $photo ) {
+			$photo->filepath = $mopsi_images_dir . '/' . $photo->filename;
+
+			/*
+			 * Duplicate check for already uploaded images
+			 */
+			$sql = 'select 1
+					from mymopsi_img
+					where collection_id = ?
+						and hash = ?
+						and size = ?';
+			$values = [
+				$collection->id,
+				$photo->hash = hash_file( 'md5', $photo->filepath ),
+				$photo->size = filesize( $photo->filepath ),
+			];
+
+			$is_duplicate = $db->query( $sql, $values );
+
+			if ( $is_duplicate ) {
+				$photo->error_msg = "Duplicate";
+				$bad_uploads[] = $photo;
+				unset( $photo );
+				continue;
+			}
+
+			/*
+			 * Duplicate check for images in current upload batch
+			 */
+			foreach ( $rows as $other_photo ) {
+				if ( $other_photo->photo_id === $photo->photo_id ) {
+					continue;
+				}
+
+				if ( isset( $other_photo->hash ) and ($photo->hash === $other_photo->hash) ) {
+					$photo->error_msg = "Duplicate";
+					$bad_uploads[] = $photo;
+					break;
+				}
+			}
+
+			if ( isset( $other_photo->error_msg ) and ($photo->error_msg === 'Duplicate') ) {
+				unset( $photo );
+				continue;
+			}
+
+			/*
+			 * Creating random unique identifier (RUID)
+			 */
+			$photo->new_ruid = Common::createRandomUID( $db );
+
+			$good_uploads[] = $photo;
+		}
+
+		foreach ( $good_uploads as $photo ) {
+			$sql = 'insert ignore into mymopsi_img (
+						collection_id, random_uid, hash, name, original_name,
+						filepath, mediatype, size, latitude, longitude,
+						date_created )
+				  values (?,?,?,?,?,?,?,?,?,?,?)';
+			$values = [
+				$collection->id,
+				$photo->new_ruid,
+				$photo->hash,
+				$photo->name,
+				$photo->name,
+				$photo->filepath,
+				'image/jpeg',
+				$photo->size,
+				$photo->latitude,
+				$photo->longitude,
+				$photo->timestamp,
+			];
+
+			$result = $db->query( $sql, $values );
+
+			if ( $result ) {
+				$good_uploads[] = $photo;
+			}
+			else {
+				$bad_uploads[] = $photo;
+			}
+		}
+
+		// Create (or update if already created) JSON for server-side clustering
+		$collContr = new CollectionController();
+		$collContr->createServerClusteringJSON( $db, $collection );
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
+			'good_uploads' => $good_uploads,
+			'failed_uploads' => $bad_uploads,
+		];
+
+		return true;
+	}
+
+	public function requestDeleteImage ( DBConnection $db, User $user, array $options ): bool {
+
+		// Checking valid image
+		if ( empty( $options[ 'image' ] ) ) {
+			$this->setError( -1, 'No image ID' );
+
+			return false;
+		}
+		else {
+			$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
+			if ( !$image ) {
+				$this->setError( -2, 'Image not valid' );
+
+				return false;
+			}
+		}
+
+		$collection = (!empty( $options['collection'] ))
+			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
+			: null;
+
+		if ( !$collection ) {
+			$this->setError( -3, 'Collection not valid' );
+			return false;
+		}
+
+		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
+			$this->setError( -4, "User {$user->random_uid} does not have access to this collection" );
+			return false;
+		}
+
+		if ( $image->collection_id !== $collection->id ) {
+			$this->setError( -5, "Image-collection mismatch" );
+			return false;
+		}
+
+		// Delete files
+		// Function also checks if file exists, so if it doesn't, just move on to deleting db row
+		Common::deleteFiles( $image->filepath );
+
+		// Delete database row
+		$db->query(
+			"delete from mymopsi_img where id = ?",
+			[$image->id]
+		);
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
+		];
+
+		return true;
+	}
+
 }

@@ -1,10 +1,13 @@
 "use strict";
 
+import Cookies from './class/cookies.class.js';
+
 document.querySelectorAll("input[name='lang']").forEach((input) => {
 	// Add a listener for user made changes
 	// Changes lang
 	input.addEventListener('click', (element) => {
-		setCookie(
+		console.log( element.target.value );
+		Cookies.setCookie(
 			'mymopsi_lang',
 			element.target.value,
 			999

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * This class handles the database connection. A wrapper for PDO, if you will.
+ * This class handles the database connection.
  *
  * Link for more info on PDO: {@link https://phpdelusions.net/pdo}<br>
  *
@@ -16,12 +16,12 @@ class DBConnection {
 	 * @var string
 	 */
 	protected $pdo_dsn = '';
+
 	/**
-	 * Optional options for the PDO connection, given at new PDO(...).
-	 * ATTR_* : attributes<br>
-	 *    _ERRMODE : How errors are handled.<br>
-	 *    _DEF_FETCH_M : Default return type<br>
-	 *    _EMUL_PREP : {@link https://phpdelusions.net/pdo#emulation}
+	 * Optional options for the PDO connection, given to new PDO constructor.<br>
+	 * ATTR_ERRMODE : How errors are handled.<br>
+	 * ATTR_DEF_FETCH_M : Default return type<br>
+	 * ATTR_EMUL_PREP : {@link https://phpdelusions.net/pdo#emulation}<br>
 	 * MYSQL_ATTR_FOUND_ROWS : Returns number of found rows
 	 * @var array
 	 */
@@ -31,11 +31,12 @@ class DBConnection {
 		PDO::ATTR_EMULATE_PREPARES => false,
 		PDO::MYSQL_ATTR_FOUND_ROWS => true,
 	];
+
 	/**
-	 * Connection, that all methods use
 	 * @var PDO object
 	 */
 	protected $connection = null;
+
 	/**
 	 * PDO statement, for use in prepared statements.
 	 * This variable is used by: prepare_stmt(), run_prepared_stmt(),
@@ -46,7 +47,9 @@ class DBConnection {
 	protected $prepared_stmt = null;
 
 	/**
-	 * Reads necessary information directly from config.ini -file.
+	 * Reads necessary information directly from config.ini -file (INI['Database'] -global variable),
+	 * if no params provided.
+	 *
 	 * @param array $config [optional] <p> Order of fields: <br>
 	 *                      - If enum: host, name, user, pass (same as in config.ini)<br>
 	 *                      - If assoc: Doesn't matter, but field names must be the same as in config.ini -file.
@@ -59,98 +62,71 @@ class DBConnection {
 			$config = [ 'host' => $config[ 0 ], 'name' => $config[ 1 ], 'user' => $config[ 2 ], 'pass' => $config[ 3 ] ];
 		}
 		$this->pdo_dsn = "mysql:host={$config[ 'host' ]};dbname={$config[ 'name' ]};charset=utf8";
-		$this->connection = new PDO( $this->pdo_dsn, $config[ 'user' ], $config[ 'pass' ], $this->pdo_options );
+		//
+		//
+		try {
+			$this->connection = new PDO( $this->pdo_dsn, $config[ 'user' ], $config[ 'pass' ], $this->pdo_options );
+		} catch ( PDOException $e ) {
+			echo "PDO connection failed. Please check connection to database, and credentials.";
+			die();
+		}
+
 	}
 
 	/**
-	 * Suorittaa SQl-koodin prepared stmt:ia käytttäen. Palauttaa haetut rivit (SELECT),
-	 * tai muutettujen rivien määrän muussa tapauksessa. <br>
-	 * Defaultina palauttaa yhden rivin. Jos tarvitset useamman, huom. kolmas parametri.<p><p>
-	 * Huom. Liian suurilla tuloksilla saattaa kaatua. Älä käytä FetchAll:ia jos odotat kymmeniä tuhansia tuloksia.<p>
-	 * Ilman neljättä parametria palauttaa tuloksen geneerisenä objektina.
+	 * Execute SQL-query using prepared statement. Returns found rows if SELECT, or row count otherwise.
+	 * By default returns a generic object (stdClass). If a specific class is wanted, note 4th param.
+	 * Note: May not work if too many found rows. So keep in mind if expecting tens of thousands of results.
 	 *
 	 * @param string $query
 	 * @param array  $values         [optional], default = null <p>
-	 *                               Muuttujien tyypilla ei ole väliä. PDO muuttaa ne stringiksi, jotka sitten
-	 *                               lähetetään tietokannalle.
-	 * @param bool   $fetchAllRows   [optional], default = false <p>
-	 *                               Haetaanko kaikki rivit, vai vain yksi.
-	 * @param string $className      [optional] <p> Jos haluat jonkin tietyn luokan olion. <p>
-	 *                               Huom: haun muuttujien nimet pitää olla samat kuin luokan muuttujat.
+	 *                               Type doesn't matter. PDO casts them to string all the same.
+	 * @param bool   $fetchAllRows   [optional], default = true
+	 * @param string $className      [optional], default generic object <p>
+	 *                               IF you want some specific class. Note: returned columns need
+	 *                               to have same name as class variables.
 	 *
-	 * @return array|int|bool|stdClass <p> Palauttaa stdClass[], jos SELECT ja fetchAllRows==true.
-	 *                               Palauttaa stdClass-objektin, jos haetaan vain yksi.<br>
-	 *                               Palauttaa <code>$stmt->rowCount</code> (muutettujen rivien määrä), jos esim.
-	 *                               INSERT tai DELETE.<br>
+	 * @return array|int|bool|stdClass <p> Returns stdClass[], if SELECT and fetchAllRows == true.
+	 *                                 Returns row count if e.g. INSERT or DELETE
 	 */
-	public function query( string $query, array $values = [], bool $fetchAllRows = false, string $className = '' ) {
-		// Katsotaan mikä hakutyyppi kyseessä, jotta voidaan palauttaa hyödyllinen vastaus tyypin mukaan.
-		// Kaikki haku-tyypit ovat 6 merkkiä pitkiä. Todella käytännöllistä.
+	public function query( string $query, array $values = [], bool $fetchAllRows = true, string $className = '' ) {
+		// Check query type, which determines what is returned
+		// Trim spaces, take first six characters, all lower characters.
+		// Because SELECT is six characters, and we only care about that one (though they are all six char long)
 		$query_type = strtolower( substr( ltrim( $query ), 0, 6 ) );
-		// Valmistellaan query
+
+		// Prepare query
 		$stmt = $this->connection->prepare( $query );
-		//Toteutetaan query varsinaisilla arvoilla
+
+		// Execute with given values
 		$stmt->execute( $values );
 
+		// Returning results
 		if ( $query_type === "select" ) {
+			// If SELECT, return found rows
 			if ( $fetchAllRows ) {
 				if ( empty( $className ) ) {
 					return $stmt->fetchAll();
 				}
 				else {
-					// Palautetaan tietyn luokan olioina
+					// Return a specific object
 					return $stmt->fetchAll( PDO::FETCH_CLASS, $className );
 				}
 			}
-			// Haetaan vain yksi rivi
 			else {
-
+				//TODO: deprecate / remove
 				if ( empty( $className ) ) {
 					return $stmt->fetch();
 				}
 				else {
-					// Palautetaan tietyn luokan oliona
 					return $stmt->fetchObject( $className );
 				}
 			}
 		}
-		// Palautetaan vain muutettujen rivien määrän.
+		// Otherwise just return count of matched rows (not necessarily changed rows, just matched)
 		else {
 			return $stmt->rowCount();
 		}
-	}
-
-	/**
-	 * Valmistelee erillisen haun, jota voi sitten käyttää {@see run_prep_stmt()}-metodilla.
-	 * @param string $query
-	 */
-	public function prepare_stmt( string $query ) {
-		$this->prepared_stmt = $this->connection->prepare( $query );
-	}
-
-	/**
-	 * Suorittaa valmistellun sql-queryn (valmistelu {@see prepare_stmt()}-metodissa).
-	 * Hae tulos {@see get_next_row()}-metodilla.
-	 * @param array $values [optional], default=NULL<p>
-	 *                      queryyn upotettavat arvot
-	 * @return bool
-	 */
-	public function run_prepared_stmt( array $values = [] ) : bool {
-		return $this->prepared_stmt->execute( $values );
-	}
-
-	/**
-	 * Palauttaa seuraavan rivin viimeksi tehdystä hausta.
-	 * Huom. ei toimi query()-metodin kanssa. Käytä vain prep.stmt -metodien kanssa.<br>
-	 * Lisäksi, toisen haun tekeminen millä tahansa muulla metodilla nollaa tulokset.
-	 * @param string $className  [optional] <p> Jos haluat jonkin tietyn luokan olion. <p>
-	 *                           Huom: haun muuttujien nimet pitää olla samat kuin luokan muuttujat.
-	 * @return mixed|stdClass
-	 */
-	public function get_next_row( string $className = '' ) {
-		return (empty( $className ))
-			? $this->prepared_stmt->fetch()
-			: $this->prepared_stmt->fetchObject( $className ) ;
 	}
 
 	/**

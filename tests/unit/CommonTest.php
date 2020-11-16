@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class helperFunctionsTest
  */
-class UtilsTest extends TestCase {
+class CommonTest extends TestCase {
 
 	protected $db;
 
@@ -27,29 +27,51 @@ class UtilsTest extends TestCase {
 	}
 
 	public function test_CheckRandomUIDAvailable () {
-		$true = Utils::checkRandomUIDAvailable( $this->db, 0 );
+		$true = Common::checkRandomUIDAvailable( $this->db, 0 );
 
 		self::assertTrue( $true );
 
 		$user = User::fetchUserByID( $this->db, 1 );
-		$false = Utils::checkRandomUIDAvailable( $this->db, $user->random_uid );
+		$false = Common::checkRandomUIDAvailable( $this->db, $user->random_uid );
 
 		self::assertFalse( $false );
 	}
 
 	public function test_CreateRandomUID () {
-		$ruid = Utils::createRandomUID( $this->db );
+		$ruid = Common::createRandomUID( $this->db );
 		self::assertIsString( $ruid );
 		self::assertEquals( 20, strlen( $ruid ) );
 
-		$ruid = Utils::createRandomUID( $this->db, 10 );
+		$ruid = Common::createRandomUID( $this->db, 10 );
 		self::assertIsString( $ruid );
 		self::assertEquals( 10, strlen( $ruid ) );
 
-		$ruid = Utils::createRandomUID( $this->db, 4, false );
+		$ruid = Common::createRandomUID( $this->db, 4, false );
 		self::assertIsString( $ruid );
 		self::assertEquals( 4, strlen( $ruid ) );
 
 		// Always returns even number, so testing odd numbers hard
+	}
+
+	public function test_RunExiftool () {
+		$directory = 'D:\juhanj\Documents\mymopsi\mopsi_photos';
+		$result = Common::runExiftool( $directory );
+		self::assertIsObject( $result[0] );
+	}
+
+	public function test_GetNominatimReverseGeocoding () {
+		$result = Common::getNominatimReverseGeocoding( 62.5913800, 29.7796980 );
+		self::assertIsObject( $result );
+	}
+
+	public function test_DeleteFiles () {
+		$file = "./test.txt";
+		file_put_contents( $file, "foo bar" );
+
+		self::assertTrue( file_exists( $file ) );
+
+		Common::deleteFiles( $file  );
+
+		self::assertFalse( file_exists( $file ) );
 	}
 }

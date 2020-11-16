@@ -18,7 +18,7 @@ if ( !empty( $_POST ) ) {
 	}
 }
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 
 array_push(
    $breadcrumbs_navigation,
@@ -68,6 +68,7 @@ array_push(
 					minlength="<?= INI['Settings']['password_min_len'] ?>"
 					maxlength="<?= INI['Settings']['password_max_len'] ?>">
 			</label>
+
 			<!-- Password confirm (client-side check only) -->
 			<!--<label for="password-confirm">
 				<span class="label required"><?/*= $lang->CONFIRM_PASSWORD */?></span>
@@ -75,6 +76,7 @@ array_push(
 					minlength="<?/*= INI['Settings']['password_min_len'] */?>"
 					maxlength="<?/*= INI['Settings']['password_max_len'] */?>">
 			</label>-->
+
 			<!-- Server-side stuff -->
 			<input type="hidden" name="class" value="user">
 			<input type="hidden" name="request" value="edit_password">
@@ -83,6 +85,19 @@ array_push(
 		</form>
 	</section>
 
+	<section class="box">
+		<p>
+			<?= $lang->DANGER_DELETE_INFO ?>
+		</p>
+		<button class="button red" id="deleteAllCollectionsButton"
+		        data-user="<?= $user->random_uid ?>">
+			<?= $lang->DELETE_COLL_BUTTON ?>
+		</button>
+		<button class="button red" id="deleteUserButton"
+		        data-user="<?= $user->random_uid ?>">
+			<?= $lang->DELETE_USER_BUTTON ?>
+		</button>
+	</section>
 </main>
 
 <?php require 'html-footer.php'; ?>

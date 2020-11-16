@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
 
-require $home_directory . 'class/utils.class.php';
+require $home_directory . 'class/common.class.php';
 require $home_directory . 'class/dbconnection.class.php';
 
 require $home_directory . 'class/user.class.php';
@@ -62,6 +62,28 @@ function set_up_database () {
 	$db->query( $sql, $values );
 }
 
+function empty_database () {
+	$db = new DBConnection();
+
+	$sql = "SET FOREIGN_KEY_CHECKS=0";
+	$db->query( $sql );
+
+	$sql = 'TRUNCATE TABLE mymopsi_img';
+	$db->query( $sql );
+	$sql = 'TRUNCATE TABLE mymopsi_collection';
+	$db->query( $sql );
+	$sql = 'TRUNCATE TABLE mymopsi_user_third_party_link';
+	$db->query( $sql );
+	$sql = 'TRUNCATE TABLE mymopsi_user';
+	$db->query( $sql );
+
+	$sql = "SET FOREIGN_KEY_CHECKS=1";
+	$db->query( $sql );
+
+	shell_exec( 'rmdir /q /s D:\juhanj\Documents\mymopsi\unit\collections' );
+	mkdir("D:\juhanj\Documents\mymopsi\unit\collections");
+}
+
 $database_configs = [
 	"host" => "localhost",
 	"name" => "mymopsi_unittest",
@@ -78,7 +100,8 @@ $settings = [
 ];
 $misc = [
 	'perl' => "C:/xampp/perl/bin/perl.exe",
-	'path_to_collections' => "D:\juhanj\Documents\mymopsi\collections",
+	'path_to_collections' => "D:\juhanj\Documents\mymopsi\unit\collections",
+	'path_to_mopsi_photos' => "D:\juhanj\Documents\mymopsi\unit\mopsi_photos",
 ];
 
 define(

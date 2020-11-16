@@ -67,6 +67,9 @@
 		"VIEW_USER_COLLECTIONS": {
 			"en": "View your own collections"
 		},
+		"VIEW_PUBLIC_COLLECTIONS": {
+			"en": "View public collections from all users"
+		},
 		"PUBLIC_COLLECTIONS": {
 			"en": "Public collections"
 		},
@@ -134,6 +137,10 @@
 		"TO_MAP": {
 			"en": "View on map",
 			"fi": "Näe kokoelma kartalla"
+		},
+		"NO_IMAGES": {
+			"en": "Collection has no images. Have you tried adding one, or a thousand?",
+			"fi": "Ei yhtään kuvaa kokoelmassa. Oletko kokeillut lisätä yhden, tai tuhat?"
 		}
 	},
 	"create-user": {
@@ -279,6 +286,26 @@
 		"SUBMIT": {
 			"en": "Upload new images to collection",
 			"fi": "Lataa uudet kuvat albumiin"
+		},
+		"SELECTED_FILES_HEADER": {
+			"en": "Selected files (waiting for confimation)",
+			"fi": "Valitut kuvat (odottaa vahvistusta)"
+		},
+		"PROGRESS_FILES": {
+			"en": "Files finished",
+			"fi": "Valmiit kuvat"
+		},
+		"PROGRESS_BITS": {
+			"en": "Total file size uploaded, in bytes",
+			"fi": "Valmiit bitit"
+		},
+		"SUCCESS_UPLOAD_HEADER": {
+			"en": "Successful uploads",
+			"fi": "Onnistuneet lataukset"
+		},
+		"FAILED_UPLOAD_HEADER": {
+			"en": "Failed uploads",
+			"fi": "Epäonnistuneet lataukset"
 		}
 	},
 	"image": {
@@ -297,6 +324,10 @@
 		"DESCRIPTION": {
 			"en": "Description",
 			"fi": "Kuvaus"
+		},
+		"EDIT_GPS": {
+			"en": "Edit GPS data (where image was taken)",
+			"fi": "Muokaa kuvan GPS-data (missä kuva on otettu)"
 		}
 	}
 }

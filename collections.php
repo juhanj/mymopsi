@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
  * @var User $user
  */
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 
 // For now, we only care if there are any public collections.
 $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection where public = true limit 1" );

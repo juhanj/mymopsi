@@ -26,7 +26,8 @@ class DatabaseTest extends TestCase {
 	public function test_GetOneRowFromDatabase () {
 		$row = $this->db->query(
 			'select id from mymopsi_user where id = ? limit 1',
-			[1]
+			[1],
+			false
 		);
 
 		self::assertTrue( boolval($row->id) );

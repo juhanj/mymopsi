@@ -28,7 +28,7 @@ if ( !empty( $_POST ) ) {
 	}
 }
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 ?>
 
 <!DOCTYPE html>

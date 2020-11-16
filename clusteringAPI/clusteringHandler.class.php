@@ -9,7 +9,7 @@
 class ClusteringHandler {
 
 	public $pathAPI = "./mccluster";
-	public $pathPhotos = "/paikka/mobile_photo/";
+	public $pathPhotos = "./img/img.php?id=";
 
 	public $type;
 
@@ -88,7 +88,7 @@ class ClusteringHandler {
 				'lon' => $photoinfo[1],
 				// Check if name is dummy, if yes replace with empty string instead
 				'name' => ($photoinfo[2] === 'zxcv') ? $photoinfo[2] : '',
-				'thumburl' => trim( $this->pathPhotos . "thumb-" . $photoinfo[3] ),
+				'thumburl' => trim( $this->pathPhotos . $photoinfo[3] . "&thumb" ),
 				'photourl' => trim( $this->pathPhotos . $photoinfo[3] ),
 			]
 		];
@@ -99,7 +99,7 @@ class ClusteringHandler {
 	/**
 	 * Read the clusters info written to the file: temp/clusters_info.txt by C code
 	 */
-	public function getClustersInfoFromFile () {
+	public function getClustersInfoFromFile ( array $output ) {
 		// get clusters' info from file
 		$clusterInfo = trim( file_get_contents( 'temp/clusters_info.txt' ) );
 		$clusterInfo = explode( "\n", $clusterInfo );
@@ -119,7 +119,7 @@ class ClusteringHandler {
 				'latMax' => $cluster[4],
 				'lonMin' => $cluster[5],
 				'lonMax' => $cluster[6],
-				'thumburl' => trim( $this->pathPhotos . "thumb-" . $cluster[7] ),
+				'thumburl' => trim( $this->pathPhotos . $cluster[7] . "&thumb" ),
 				'photourl' => trim( $this->pathPhotos . $cluster[7] ),
 				'id' => $i+1,
 			];
@@ -145,22 +145,22 @@ class ClusteringHandler {
 			. " -n {$this->dataSize} -e {$this->minLat} -f {$this->maxLat} -u {$this->minLon} -v {$this->maxLon}";
 
 		// run command line execution to run the C-code which does the actual clustering
-		exec( $arg );
+		exec( $arg, $output );
 		// results are written to `/temp/clusters_info.txt`
 		//TODO: Wait, why doesn't it just return the info immediately?
 		//TODO: Wait, what happens if there's multiple requests?
 
-		return getClustersInfoFromFile( $this->pathPhotos );
+		return $this->getClustersInfoFromFile( $output );
 	}
 
 	public function nonSpatialQuery () {
 		$arg = "{$this->pathAPI} -t 2 -w {$this->cellW} -h {$this->cellH} -d {$this->minDist} -a {$this->minX}"
 			. " -b {$this->maxX} -p {$this->minY} -q {$this->maxY} -z {$this->zoomLevel} -r {$this->reverseX}"
 			. " -n {$this->dataSize}";
-		exec( $arg );
+		exec( $arg, $output );
 		// results are written to `/temp/clusters_info.txt`
 		//TODO: Wait, why doesn't it just return the info immediately?
 		//TODO: Wait, what happens if there's multiple requests?
-		return getClustersInfoFromFile( $this->pathPhotos );
+		return $this->getClustersInfoFromFile( $output );
 	}
 }

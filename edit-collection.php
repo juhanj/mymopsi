@@ -32,7 +32,7 @@ if ( !empty( $_POST ) ) {
 	}
 }
 
-$feedback = Utils::checkFeedbackAndPOST();
+$feedback = Common::checkFeedbackAndPOST();
 
 $collection = Collection::fetchCollectionByRUID( $db, $_GET['id'] );
 
@@ -86,6 +86,16 @@ array_push(
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="method" value="edit_public">
 	</form>
+
+	<section class="box">
+		<p>
+			<?= $lang->DANGER_DELETE_INFO ?>
+		</p>
+		<button class="button red" id="deleteButton"
+		        data-collection="<?= $collection->random_uid ?>">
+			<?= $lang->DELETE_BUTTON ?>
+		</button>
+	</section>
 
 </main>
 

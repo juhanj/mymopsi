@@ -1,5 +1,9 @@
 <?php declare(strict_types=1);
 
+/**
+ * For fetching data from database, and easier handling in code. Modifying
+ * database is done only in controller-class, this is only for getting/viewing data.
+ */
 class Image {
 
 	public $id;
@@ -10,8 +14,9 @@ class Image {
 
 	public $name;
 	public $original_name;
-	public $filepath;
+	public $description;
 
+	public $filepath;
 	public $mediatype;
 	public $size;
 
@@ -22,6 +27,9 @@ class Image {
 	public $date_added;
 
 	/**
+	 * Fetch image by database ID (auto-incremenent primary key)
+	 * Can be used on the server-side when database obfuscation is not needed.
+	 *
 	 * @param DBConnection $db
 	 * @param int $id
 	 * @return Image|null
@@ -40,11 +48,13 @@ class Image {
 	}
 
 	/**
+	 * Fetch image object by RUID (for when anonymity/database obscufaction is important, e.g. UI)
+	 *
 	 * @param DBConnection $db
 	 * @param string $ruid Random Unique ID
 	 * @return Image|null
 	 */
-	public static function fetchImageByRUID ( DBConnection $db, $ruid ): ?Image {
+	public static function fetchImageByRUID ( DBConnection $db, string $ruid ): ?Image {
 		$sql = 'select *
 				from mymopsi_img
 				where random_uid = ?

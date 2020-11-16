@@ -76,7 +76,7 @@ class CollectionController implements Controller {
 			throw new InvalidArgumentException( "User is not valid." );
 		}
 		if ( is_null( $ruid ) ) {
-			$ruid = Utils::createRandomUID( $db );
+			$ruid = Common::createRandomUID( $db );
 		}
 
 		$db->query(
@@ -191,7 +191,7 @@ class CollectionController implements Controller {
 	 * @return bool|string
 	 */
 	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ): bool {
-		$sql = "select filepath as filename, name, latitude as lat, longitude as lon
+		$sql = "select random_uid as filename, name, latitude as lat, longitude as lon
 				from mymopsi_img
 				where collection_id = ?
 					and latitude is not null
@@ -301,12 +301,7 @@ class CollectionController implements Controller {
 			return false;
 		}
 
-		if ( $collection->number_of_images !== 0 ) {
-			$this->setError( -4,
-				"Collection {$collection->random_uid} has {$collection->number_of_images} images in it."
-				. " Cannot delete collections with images. Delete images first." );
-			return false;
-		}
+
 
 		$result = $this->deleteCollectionFromDatabase( $db, $collection );
 
@@ -316,7 +311,8 @@ class CollectionController implements Controller {
 		}
 
 		$this->result = [
-			'success' => true
+			'success' => true,
+			'error' => false,
 		];
 
 		return true;
