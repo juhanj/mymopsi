@@ -26,6 +26,48 @@ class CommonTest extends TestCase {
 			: $this->db;
 	}
 
+	public function test_fNumber () {
+		$number = 1234.5678;
+		$result = Common::fNumber( $number );
+
+		self::assertEquals( '1 234,57', $result );
+	}
+
+	public function test_fDistance () {
+		// meters
+		$number = 123.456;
+		$result = Common::fDistance( $number );
+		self::assertEquals( '123 m', $result );
+		// kilometers with decimal
+		$number = 1234.567;
+		$result = Common::fDistance( $number );
+		self::assertEquals( '1,2 km', $result );
+		// kilometers without decimal, with rounding
+		$number = 12900;
+		$result = Common::fDistance( $number );
+		self::assertEquals( '13 km', $result );
+	}
+
+
+	public function test_fTime () {
+		// seconds
+		$number = 59;
+		$result = Common::fTime( $number );
+		self::assertEquals( '59 s', $result );
+		// minutes
+		$number = 61;
+		$result = Common::fTime( $number );
+		self::assertEquals( '1 m', $result );
+		// hours < 10 (with decimal)
+		$number = 60*60*9.4;
+		$result = Common::fTime( $number );
+		self::assertEquals( '9,4 h', $result );
+		// hours > 10
+		$number = 60*60*12;
+		$result = Common::fTime( $number );
+		self::assertEquals( '12 h', $result );
+	}
+
 	public function test_CheckRandomUIDAvailable () {
 		$true = Common::checkRandomUIDAvailable( $this->db, 0 );
 
@@ -65,12 +107,9 @@ class CommonTest extends TestCase {
 	}
 
 	public function test_DeleteFiles () {
-		$file = "./test.txt";
-		file_put_contents( $file, "foo bar" );
+		$file = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid";
 
-		self::assertTrue( file_exists( $file ) );
-
-		Common::deleteFiles( $file  );
+		Common::deleteFiles( $file );
 
 		self::assertFalse( file_exists( $file ) );
 	}

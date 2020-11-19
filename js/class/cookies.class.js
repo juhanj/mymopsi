@@ -2,7 +2,8 @@
 
 export default class Cookies {
 	/**
-	 * Set cookies with given name, value, and expiry date
+	 * Set cookies with given name, value, and expiry date.
+	 * path = /mopsi_dev/mymopsi  &  SameSite = Strict
 	 * @param {string} name
 	 * @param {string} [value='']
 	 * @param {int} [days=30] How long will the browser store the cookie, in days.
@@ -14,7 +15,7 @@ export default class Cookies {
 		let cookieValue = `${name}=${value||''}`;
 		let cookieExpire = `expires=${date.toUTCString()}`;
 		let cookiePath = 'path=/mopsi_dev/mymopsi';
-		let cookieSameSite = ''; //'SameSite=Lax';
+		let cookieSameSite = 'SameSite=Strict';
 
 		document.cookie = `${cookieValue}; ${cookieExpire}; ${cookiePath}; ${cookieSameSite};`;
 	}
@@ -38,7 +39,6 @@ export default class Cookies {
 		}
 		return null;
 	}
-
 
 	/**
 	 * Delete the cookie by setting max-age to -1.

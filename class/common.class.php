@@ -7,7 +7,7 @@ declare(strict_types=1);
 class Common {
 
 	/**
-	 * Returns formatted number: 1.000[,00]
+	 * Returns formatted number: 1 000[,00]
 	 *
 	 * @param mixed $number
 	 * @param int   $dec_count [optional] default=2 <p> Number of decimals.
@@ -52,7 +52,7 @@ class Common {
 	 * > 60 s => minutes, no decimal
 	 * > 60 min => hours with minutes
 	 * > 10 hours => hours, no minutes, no decimals
-	 * TODO days months years
+	 * //TODO days months years
 	 *
 	 * @param int|float $time in seconds
 	 *
@@ -70,7 +70,7 @@ class Common {
 			$time /= 60;
 
 			if ( $time < 60 ) {
-				$formatted = "{$time} m";
+				$formatted = round($time) . " m";
 			}
 		}
 
@@ -210,6 +210,9 @@ class Common {
 	 * @param $target
 	 */
 	public static function deleteFiles ( $target ) {
+		// Sanity checks
+		if ( !$target or $target == '' or $target == '/' or $target == '\\' ) return;
+
 		// Check if directory (handled differently from a file)
 		if ( is_dir( $target ) ) {
 			// Get all files in directory

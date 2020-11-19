@@ -52,14 +52,18 @@ function set_up_database () {
 	 * unit image
 	 * 1 (all ones, collection:1)
 	 */
-	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size, latitude, longitude)
-				values (?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?)
+	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size, latitude, longitude, filepath)
+				values (?,?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?,?)
 				on duplicate key update name=values(name)';
+	$filename1 = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid";
+	$filename2 = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image2-ruid";
 	$values = [
-		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1','1','1',
-		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2','2','2',
+		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1','1','1',$filename1,
+		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2','2','2',$filename2,
 	];
 	$db->query( $sql, $values );
+	@file_put_contents( INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid", "empty" );
+	@file_put_contents( INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image2-ruid", "empty" );
 }
 
 function empty_database () {
