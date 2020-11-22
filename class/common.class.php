@@ -6,6 +6,57 @@ declare(strict_types=1);
  */
 class Common {
 
+	public static function isIntegerPowerOfTwo ( int $number ): bool {
+		return ($number != 0) && (($number & ($number - 1)) == 0);
+	}
+		
+	/**
+	 * Round given number (float or int) to nearest given number (float or int)
+	 *
+	 * @param int|float $number
+	 * @param int|float $roundTo The nearest number to round to. (uses round())
+	 *
+	 * @return int|float The original number rounded up to the nearest rounding number.
+	 */
+	public static function fancyRound ( $number, $roundTo ) {
+		// If rounding to a decimal place, first multiply both parameters
+		// by number of decimal places (the rounding below doesn't work with decimals)
+		if ( is_float( $roundTo ) ) {
+			// How many decimal places
+			$decimals = strlen( (string)$roundTo ) - 2;
+			// Multiplier to get input without decimals
+			// e.g. roundTo: 0.05 => decimals: 2 => multiplier: 100 (1 + two zeroes)
+			$multiplier = (int)('1' . (str_repeat( '0', $decimals )));
+
+			// e.g.
+			// number: 12.3456 & roundTo: 0.05
+			// => 1234.56      & => 5
+			$number = $multiplier * $number;
+			$roundTo = $multiplier * $roundTo;
+		}
+
+		// If the original number is an integer and is a multiple of
+		// the "nearest rounding number", return it without change.
+		if ( (intval( $number ) == $number) && (!is_float( intval( $number ) / $roundTo )) ) {
+			$return = intval( $number );
+		}
+
+		// If the original number is a float or if this integer is
+		// not a multiple of the "nearest rounding number", do the
+		// rounding up.
+		else {
+			$return = round( ($number + $roundTo / 2) / $roundTo ) * $roundTo;
+		}
+
+		// If original roundTo was a decimal, need to get number back to same precision
+		if ( isset( $multiplier ) ) {
+			// e.g. 12.3456 => 1234.56 => 1235 => 12.35
+			$return = $return / $multiplier;
+		}
+
+		return $return;
+	}
+
 	/**
 	 * Returns formatted number: 1 000[,00]
 	 *
