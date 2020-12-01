@@ -56,7 +56,7 @@ array_push(
 	<form class="box" method="post">
 		<label>
 			<span class="label required"><?= $lang->DESCRIPTION ?></span>
-			<input type="text" name="description" value="<?= $image->description ?>" required>
+			<input type="text" name="description" value="<?= $imaghe->description ?>" required>
 		</label>
 	</form>
 
@@ -66,12 +66,11 @@ array_push(
 		</a>
 	</section>
 
-	<section class="box">
+	<section class="box warning">
 		<p>
 			<?= $lang->DANGER_DELETE_INFO ?>
 		</p>
 		<button class="button red" id="deleteButton"
-		        data-collection="<?= $collection->random_uid ?>"
 		        data-image="<?= $image->random_uid ?>">
 			<?= $lang->DELETE_BUTTON ?>
 		</button>

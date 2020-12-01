@@ -10,3 +10,7 @@
     max-height: 100%;
     object-fit: contain;
 }
+
+.box.warning {
+    border-color: var(--error);
+}
