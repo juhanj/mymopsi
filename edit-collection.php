@@ -87,7 +87,7 @@ array_push(
 		<input type="hidden" name="method" value="edit_public">
 	</form>
 
-	<section class="box">
+	<section class="box warning">
 		<p>
 			<?= $lang->DANGER_DELETE_INFO ?>
 		</p>

@@ -25,3 +25,7 @@
 .checkbox-grid span.label-info {
     grid-area: info;
 }
+
+.box.warning {
+    border-color: var(--error);
+}
