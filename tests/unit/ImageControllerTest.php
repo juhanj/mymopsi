@@ -27,12 +27,12 @@ class ImageControllerTest extends TestCase {
 		parent::setUp();
 		$this->db = (!$this->db) ? new DBConnection() : $this->db;
 		$this->ctrl = new ImageController();
-		$this->testImage = new Image();
-		$this->testImage->id = 1;
-		$this->testCollection = new Collection();
-		$this->testCollection->id = 1;
 		$this->testUser = new User();
 		$this->testUser->id = 1;
+		$this->testCollection = new Collection();
+		$this->testCollection->id = 1;
+		$this->testImage = new Image();
+		$this->testImage->id = 1;
 	}
 
 	public function test_RequestUploadNewImages () {
@@ -106,21 +106,22 @@ class ImageControllerTest extends TestCase {
 	}
 
 	public function test_RequestDeleteImage () {
-		$collection = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
-		$image = Image::fetchImageByID( $this->db, $this->testCollection->id );
+		$image = Image::fetchImageByID( $this->db, 2 );
 
 		$post = [
 			'request' => 'delete_image',
-			'collection' => $collection->random_uid,
 			'image' => $image->random_uid,
 		];
 
-		self::assertTrue( file_exists( INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid" ) );
+		self::assertTrue( file_exists( $image->filepath ) );
+
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
-		self::assertFalse(
-			file_exists( INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid" ),
-			print_r($this->ctrl->result,true)
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true )
 		);
+
+		self::assertFalse( file_exists( $image->filepath ) );
 	}
 }

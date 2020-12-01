@@ -27,10 +27,10 @@ class CollectionController implements Controller {
 	 */
 	public function handleRequest ( DBConnection $db, User $user, array $req ) {
 		switch ( $req['request'] ?? null ) {
-			case 'new':
+			case 'new_collection':
 				$result = $this->requestCreateNewCollection( $db, $user, $req );
 				break;
-			case 'delete':
+			case 'delete_collection':
 				$result = $this->requestDeleteCollection( $db, $user, $req );
 				break;
 			case 'edit_name':
@@ -93,12 +93,36 @@ class CollectionController implements Controller {
 	}
 
 	/**
+	 * Delete all images in the collection. Deletes the collection directory, and
+	 * all image rows in database that belong to given collection.
+	 * @param \DBConnection $db
+	 * @param \Collection   $collection
+	 *
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
+	 */
+	function deleteAllImagesInCollection ( DBConnection $db, Collection $collection ): bool {
+		if ( is_null( $collection->id ) ) {
+			throw new InvalidArgumentException( "Collection is not valid." );
+		}
+
+		Common::deleteFiles( INI['Misc']['path_to_collections'] . '/' . $collection->random_uid );
+
+		$rows_changed = $db->query(
+			'delete from mymopsi_img where collection_id = ? limit ?',
+			[ $collection->id, $collection->number_of_images ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
 	 * @param DBConnection $db
 	 * @param Collection $collection
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function deleteCollectionFromDatabase ( DBConnection $db, Collection $collection ): bool {
+	function deleteCollectionFromDatabase ( DBConnection $db, Collection $collection ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -117,7 +141,7 @@ class CollectionController implements Controller {
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function setName ( DBConnection $db, Collection $collection, string $name ): bool {
+	function setName ( DBConnection $db, Collection $collection, string $name ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -136,7 +160,7 @@ class CollectionController implements Controller {
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
 	 */
-	public function setDescription ( DBConnection $db, Collection $collection, string $description ): bool {
+	function setDescription ( DBConnection $db, Collection $collection, string $description ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -154,7 +178,7 @@ class CollectionController implements Controller {
 	 * @param bool $value
 	 * @return bool
 	 */
-	public function setPublic ( DBConnection $db, Collection $collection, bool $value ): bool {
+	function setPublic ( DBConnection $db, Collection $collection, bool $value ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -172,7 +196,7 @@ class CollectionController implements Controller {
 	 * @param bool $value
 	 * @return bool
 	 */
-	public function setEditable ( DBConnection $db, Collection $collection, bool $value ): bool {
+	function setEditable ( DBConnection $db, Collection $collection, bool $value ): bool {
 		if ( is_null( $collection->id ) ) {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
@@ -190,7 +214,7 @@ class CollectionController implements Controller {
 	 * @param Collection $collection
 	 * @return bool|string
 	 */
-	public function createServerClusteringJSON ( DBConnection $db, Collection $collection ): bool {
+	function createServerClusteringJSON ( DBConnection $db, Collection $collection ): bool {
 		$sql = "select random_uid as filename, name, latitude as lat, longitude as lon
 				from mymopsi_img
 				where collection_id = ?
@@ -297,11 +321,16 @@ class CollectionController implements Controller {
 		}
 
 		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
-			$this->setError( -3, "User {$user->random_uid} does not own this collection" );
+			$this->setError( -3, "Authorization error" );
 			return false;
 		}
 
+		$result = $this->deleteAllImagesInCollection( $db, $collection );
 
+		if ( !$result ) {
+			$this->setError( -4, "Could not delete images" );
+			return false;
+		}
 
 		$result = $this->deleteCollectionFromDatabase( $db, $collection );
 

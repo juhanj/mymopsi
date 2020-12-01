@@ -106,8 +106,18 @@ class CommonTest extends TestCase {
 		self::assertIsObject( $result );
 	}
 
-	public function test_DeleteFiles () {
+	public function test_DeleteFiles_singleFile () {
 		$file = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid";
+
+		Common::deleteFiles( $file );
+
+		self::assertFalse( file_exists( $file ) );
+	}
+
+	public function test_DeleteFiles_directoryRecursively () {
+		$file = INI['Misc']['path_to_collections'] . "/unitest-collec2-ruid";
+
+		self::assertTrue( file_exists( $file ) );
 
 		Common::deleteFiles( $file );
 

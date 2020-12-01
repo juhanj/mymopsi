@@ -13,6 +13,7 @@ class CollectionControllerTest extends TestCase {
 
 	protected $db;
 	protected $ctrl;
+	protected $testUser;
 	protected $testCollection;
 
 	public static function setUpBeforeClass (): void {
@@ -25,23 +26,32 @@ class CollectionControllerTest extends TestCase {
 		parent::setUp();
 		$this->db = (!$this->db) ? new DBConnection() : $this->db;
 		$this->ctrl = new CollectionController();
+		$this->testUser = new User();
+		$this->testUser->id = 1;
 		$this->testCollection = new Collection();
 		$this->testCollection->id = 1;
 	}
 
 	public function test_CreateEmptyCollectionRowInDatabase () {
-		$user = new User();
-		$user->id = 1;
-
-		$result = $this->ctrl->createEmptyCollectionRowInDatabase( $this->db, $user );
+		$result = $this->ctrl->createEmptyCollectionRowInDatabase( $this->db, $this->testUser );
 
 		self::assertInstanceOf( Collection::class, $result );
 	}
 
+	public function test_DeleteAllImagesInCollection () {
+		$collection = Collection::fetchCollectionByID( $this->db, 2 );
+
+		self::assertTrue( file_exists(INI['Misc']['path_to_collections'] . '/' . $collection->random_uid));
+
+		$result = $this->ctrl->deleteAllImagesInCollection( $this->db, $collection );
+
+		self::assertFalse( file_exists(INI['Misc']['path_to_collections'] . '/' . $collection->random_uid));
+
+		self::assertTrue( $result );
+	}
+
 	public function test_DeleteCollectionFromDatabase () {
-		$user = new User();
-		$user->id = 1;
-		$new_coll = $this->ctrl->createEmptyCollectionRowInDatabase( $this->db, $user );
+		$new_coll = $this->ctrl->createEmptyCollectionRowInDatabase( $this->db, $this->testUser );
 
 		$result = $this->ctrl->deleteCollectionFromDatabase( $this->db, $new_coll );
 
@@ -97,11 +107,10 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_requestCreateNewCollection () {
-		$user = User::fetchUserByID( $this->db, 1 );
 		$post_request = [
-			'request' => 'new',
+			'request' => 'new_collection',
 		];
-		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],
@@ -110,15 +119,14 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_requestCreateNewCollection_WithOptions () {
-		$user = User::fetchUserByID( $this->db, 1 );
 		$post_request = [
-			'request' => 'new',
+			'request' => 'new_collection',
 			'name' => 'Foo',
 			'description' => 'Bar',
 			'public' => 'on',
 			'editable' => 'on',
 		];
-		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],
@@ -127,15 +135,13 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_RequestDeleteCollection () {
-		$user = new User();
-		$user->id = 1;
 		$collection = Collection::fetchCollectionByID( $this->db, 2 );
 
 		$post_request = [
+			'request' => 'delete_collection',
 			'collection' => $collection->random_uid,
-			'request' => 'delete',
 		];
-		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],
@@ -143,78 +149,14 @@ class CollectionControllerTest extends TestCase {
 		);
 	}
 
-	public function test_RequestDeleteCollection_Fail_InvalidUser () {
-		$user = new User();
-		$post = [
-			'request' => 'delete'
-		];
-		$this->ctrl->handleRequest( $this->db, $user, $post );
-
-		self::assertEquals(
-			-1,
-			$this->ctrl->result['err'],
-			print_r( $this->ctrl->result, true )
-		);
-	}
-
-	public function test_RequestDeleteCollection_Fail_InvalidCollection () {
-		$user = new User();
-		$user->id = 1;
-		$post = [
-			'request' => 'delete',
-			'collection' => '1' // random uid expected
-		];
-		$this->ctrl->handleRequest( $this->db, $user, $post );
-
-		self::assertEquals(
-			-2,
-			$this->ctrl->result['err'],
-			print_r( $this->ctrl->result, true )
-		);
-	}
-
-	public function test_RequestDeleteCollection_Fail_InvalidOwner () {
-		$user = User::fetchUserByID( $this->db, 2 );
-		$collection = Collection::fetchCollectionByID( $this->db, 1 );
-		$post = [
-			'request' => 'delete',
-			'collection' => $collection->random_uid
-		];
-		$this->ctrl->handleRequest( $this->db, $user, $post );
-
-		self::assertEquals(
-			-3,
-			$this->ctrl->result['err'],
-			print_r( $this->ctrl->result, true )
-		);
-	}
-
-	public function test_RequestDeleteCollection_Fail_WithImages () {
-		$user = new User();
-		$user->id = 1;
-		$collection = Collection::fetchCollectionByID( $this->db, 1 );
-		$post = [
-			'request' => 'delete',
-			'collection' => $collection->random_uid
-		];
-		$this->ctrl->handleRequest( $this->db, $user, $post );
-
-		self::assertEquals(
-			-4,
-			$this->ctrl->result['err'],
-			print_r( $this->ctrl->result, true )
-		);
-	}
-
 	public function test_RequestEditName () {
-		$user = User::fetchUserByID( $this->db, 1 );
 		$collection = Collection::fetchCollectionByID( $this->db, 1 );
 		$post_request = [
 			'request' => 'edit_name',
 			'name' => 'New name',
 			'collection' => $collection->random_uid
 		];
-		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],
@@ -223,14 +165,13 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_RequestEditDescription () {
-		$user = User::fetchUserByID( $this->db, 1 );
 		$collection = Collection::fetchCollectionByID( $this->db, 1 );
 		$post_request = [
 			'request' => 'edit_description',
 			'description' => 'New description',
 			'collection' => $collection->random_uid
 		];
-		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],
@@ -239,14 +180,13 @@ class CollectionControllerTest extends TestCase {
 	}
 
 	public function test_RequestEditPublic () {
-		$user = User::fetchUserByID( $this->db, 1 );
 		$collection = Collection::fetchCollectionByID( $this->db, 1 );
 		$post_request = [
 			'request' => 'edit_public',
 			'public' => true,
 			'collection' => $collection->random_uid
 		];
-		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
 
 		self::assertTrue(
 			$this->ctrl->result['success'],

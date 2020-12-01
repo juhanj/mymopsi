@@ -536,6 +536,10 @@ class ImageController implements Controller {
 	}
 
 	public function requestDeleteImage ( DBConnection $db, User $user, array $options ): bool {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
 
 		// Checking valid image
 		if ( empty( $options[ 'image' ] ) ) {
@@ -552,22 +556,10 @@ class ImageController implements Controller {
 			}
 		}
 
-		$collection = (!empty( $options['collection'] ))
-			? Collection::fetchCollectionByRUID( $db, $options['collection'] )
-			: null;
-
-		if ( !$collection ) {
-			$this->setError( -3, 'Collection not valid' );
-			return false;
-		}
+		$collection = Collection::fetchCollectionByID( $db, $image->collection_id );
 
 		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
-			$this->setError( -4, "User {$user->random_uid} does not have access to this collection" );
-			return false;
-		}
-
-		if ( $image->collection_id !== $collection->id ) {
-			$this->setError( -5, "Image-collection mismatch" );
+			$this->setError( -3, "No access" );
 			return false;
 		}
 

@@ -9,7 +9,7 @@ class Common {
 	public static function isIntegerPowerOfTwo ( int $number ): bool {
 		return ($number != 0) && (($number & ($number - 1)) == 0);
 	}
-		
+
 	/**
 	 * Round given number (float or int) to nearest given number (float or int)
 	 *
@@ -256,25 +256,30 @@ class Common {
 	}
 
 	/**
-	 * Delete all files recursively
+	 * Delete all files recursively. Deletes hidden files. Checks for empty or
+	 * "/" (or root) $target, so that it doesn't accidentally delete the whole server.
 	 *
 	 * @param $target
 	 */
 	public static function deleteFiles ( $target ) {
-		// Sanity checks
-		if ( !$target or $target == '' or $target == '/' or $target == '\\' ) return;
+		// Sanity checks (for not accidentally deleting the server root directory)
+		if ( !$target or $target === '' or $target == '/' or $target == '\\' ) return;
 
 		// Check if directory (handled differently from a file)
-		if ( is_dir( $target ) ) {
-			// Get all files in directory
-			$files = glob( $target . '*', GLOB_MARK ); //GLOB_MARK adds a slash to directories returned
+		// Will ignore symbolic links, because rmdir can't delete symlinks
+		if ( !is_link($target) && is_dir($target) ) {
+			// it's a directory; recursively delete everything in it
+			// array_diff() removes the ., .. entries, which would cause the code to recurse forever
+			$files = array_diff(
+				scandir($target),
+				[ '.', '..' ]
+			);
 
-			// Recursive call to subdirs
-			foreach ( $files as $file ) {
-				self::deleteFiles( $file );
+			foreach( $files as $file ) {
+				self::deleteFiles("$target/$file");
 			}
 
-			rmdir( $target );
+			rmdir($target);
 		}
 		// Check if file
 		else if ( is_file( $target ) ) {
