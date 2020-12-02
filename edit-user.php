@@ -85,14 +85,10 @@ array_push(
 		</form>
 	</section>
 
-	<section class="box">
+	<section class="box warning">
 		<p>
 			<?= $lang->DANGER_DELETE_INFO ?>
 		</p>
-		<button class="button red" id="deleteAllCollectionsButton"
-		        data-user="<?= $user->random_uid ?>">
-			<?= $lang->DELETE_COLL_BUTTON ?>
-		</button>
 		<button class="button red" id="deleteUserButton"
 		        data-user="<?= $user->random_uid ?>">
 			<?= $lang->DELETE_USER_BUTTON ?>

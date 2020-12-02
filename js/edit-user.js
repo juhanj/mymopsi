@@ -13,7 +13,7 @@ deleteButton.onclick = () => {
 			.then( (response) => {
 				// Send back to previous page
 				// This could be done better? But I dunno how for now.
-				history.back();
+				window.location.href = "./index.php";
 			} )
 	}
 }
