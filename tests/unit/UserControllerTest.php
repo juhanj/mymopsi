@@ -26,7 +26,7 @@ class UserControllerTest extends TestCase {
 		$this->db = (!$this->db) ? new DBConnection() : $this->db;
 		$this->ctrl = new UserController();
 		$this->testUser = new User();
-		$this->testUser->id = 2;
+		$this->testUser->id = 1;
 	}
 
 	public function test_CreateEmptyUserRowInDatabase () {
@@ -41,6 +41,13 @@ class UserControllerTest extends TestCase {
 		$result = $this->ctrl->deleteUserRowFromDatabase( $this->db, $temp_user );
 
 		self::assertTrue( $result );
+	}
+
+	public function test_deleteAllCollectionsFromUser () {
+		$this->ctrl->deleteAllCollectionsFromUser( $this->db, $this->testUser );
+		$this->testUser->getCollections( $this->db );
+
+		self::assertEmpty( $this->testUser->collections );
 	}
 
 	public function test_SetUsername () {
@@ -174,5 +181,17 @@ class UserControllerTest extends TestCase {
 			$this->ctrl->result['success'],
 			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
 		);
+	}
+
+	public function test_RequestDeleteUser () {
+		$user = User::fetchUserByID( $this->db, $this->testUser->id );
+		$post_request = [
+			'request' => 'delete_user',
+			'user' => $user->random_uid
+		];
+		$this->ctrl->handleRequest( $this->db, $user, $post_request );
+
+		$user = User::fetchUserByID( $this->db, $this->testUser->id );
+		self::assertNull( $user );
 	}
 }

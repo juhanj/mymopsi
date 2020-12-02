@@ -5,11 +5,11 @@
  */
 class UserController implements Controller {
 
-	const MIN_USERNAME_LENGTH = INI['Settings']['username_min_len'];
-	const MAX_USERNAME_LENGTH = INI['Settings']['username_max_len'];
+	const MIN_USERNAME_LENGTH = INI[ 'Settings' ][ 'username_min_len' ];
+	const MAX_USERNAME_LENGTH = INI[ 'Settings' ][ 'username_max_len' ];
 
-	const MIN_PASSWORD_LENGTH = INI['Settings']['password_min_len'];
-	const MAX_PASSWORD_LENGTH = INI['Settings']['password_max_len'];
+	const MIN_PASSWORD_LENGTH = INI[ 'Settings' ][ 'password_min_len' ];
+	const MAX_PASSWORD_LENGTH = INI[ 'Settings' ][ 'password_max_len' ];
 
 	/**
 	 * @var array Used for returning results to Ajax-requests.
@@ -18,25 +18,28 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User|null $user
-	 * @param array $req
+	 * @param User|null    $user
+	 * @param array        $req
 	 */
 	public function handleRequest ( DBConnection $db, $user, array $req ) {
-		switch ( $req['request'] ) {
-			case 'new':
-				$this->requestCreateNewUser( $db, $req['username'], $req['password'] );
+		switch ( $req[ 'request' ] ) {
+			case 'new_user':
+				$this->requestCreateNewUser( $db, $req[ 'username' ], $req[ 'password' ] );
 				break;
 			case 'unified_login':
 				$this->requestUnifiedLogin( $db, $req );
 				break;
 			case 'edit_username':
-				$this->requestChangeUsername( $db, $user, $req['username'] );
+				$this->requestChangeUsername( $db, $user, $req[ 'username' ] );
 				break;
 			case 'edit_password':
-				$this->requestChangePassword( $db, $user, $req['password'] );
+				$this->requestChangePassword( $db, $user, $req[ 'password' ] );
 				break;
 			case 'edit_email':
-				$this->requestChangePassword( $db, $user, $req['email'] );
+				$this->requestChangePassword( $db, $user, $req[ 'email' ] );
+				break;
+			case 'delete_user':
+				$this->requestDeleteUser( $db, $user, $req );
 				break;
 			default:
 				$this->setError( -99, 'Invalid Request' );
@@ -44,23 +47,25 @@ class UserController implements Controller {
 	}
 
 	/**
-	 * @param int $id
+	 * @param int    $id
 	 * @param string $msg
 	 */
 	public function setError ( int $id, string $msg ) {
-		$this->result['success'] = false;
+		$this->result[ 'success' ] = false;
 
-		$this->result['errors'][] = [
+		$this->result[ 'errors' ][] = [
 			'id' => $id,
-			'msg' => $msg
+			'msg' => $msg,
 		];
 
 	}
 
 	/**
 	 * Create an empty stub user in the database. Only has rows marked NOT NULL.
+	 *
 	 * @param DBConnection $db
-	 * @param string|null $ruid
+	 * @param string|null  $ruid
+	 *
 	 * @return User|null
 	 */
 	function createEmptyUserRowInDatabase ( DBConnection $db, string $ruid = null ): ?User {
@@ -78,7 +83,8 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
+	 * @param User         $user
+	 *
 	 * @return bool
 	 */
 	function deleteUserRowFromDatabase ( DBConnection $db, User $user ): bool {
@@ -89,13 +95,34 @@ class UserController implements Controller {
 			'delete from mymopsi_user where id = ? limit 1',
 			[ $user->id ]
 		);
+
 		return boolval( $rows_changed );
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param string|null $newName
+	 * @param User         $user
+	 */
+	function deleteAllCollectionsFromUser ( DBConnection $db, User $user ) {
+		if ( is_null( $user->id ) ) {
+			throw new InvalidArgumentException( "User is not valid." );
+		}
+
+		$collectionController = new CollectionController();
+
+		$user->getCollections( $db );
+
+		foreach ( $user->collections as $collection ) {
+			$collectionController->deleteAllImagesInCollection( $db, $collection );
+			$collectionController->deleteCollectionFromDatabase( $db, $collection );
+		}
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param User         $user
+	 * @param string|null  $newName
+	 *
 	 * @return boolean
 	 */
 	function setUsername ( DBConnection $db, User $user, $newName ): bool {
@@ -106,14 +133,17 @@ class UserController implements Controller {
 			'update mymopsi_user set username = ? where id = ? limit 1',
 			[ $newName, $user->id ]
 		);
+
 		return boolval( $rows_changed );
 	}
 
 	/**
 	 * Updated password in the database. Returns false if user not found or password not valid hash.
+	 *
 	 * @param DBConnection $db
-	 * @param User $user - Must have ID
-	 * @param string $hashed_password Must be hashed by password_hash, and be up to date by password_needs_rehash.
+	 * @param User         $user            - Must have ID
+	 * @param string       $hashed_password Must be hashed by password_hash, and be up to date by password_needs_rehash.
+	 *
 	 * @return bool Returns false if no rows changed (Either user not found, or password needs updating)
 	 */
 	function setPassword ( DBConnection $db, User $user, string $hashed_password ) {
@@ -130,8 +160,9 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param string $newEmail
+	 * @param User         $user
+	 * @param string       $newEmail
+	 *
 	 * @return bool
 	 */
 	function setEmail ( DBConnection $db, User $user, string $newEmail ): bool {
@@ -142,12 +173,14 @@ class UserController implements Controller {
 			'update mymopsi_user set email = ? where id = ? limit 1',
 			[ $newEmail, $user->id ]
 		);
+
 		return boolval( $rows_changed );
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param $username
+	 * @param              $username
+	 *
 	 * @return bool true if available
 	 */
 	function checkUsernameAvailable ( DBConnection $db, string $username ): bool {
@@ -155,13 +188,15 @@ class UserController implements Controller {
 			'select 1 from mymopsi_user where username = ? limit 1',
 			[ $username ]
 		);
+
 		return !boolval( $rows_changed );
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user Must have type and hashed password
-	 * @param string $password Clear text password, from form POST
+	 * @param User         $user     Must have type and hashed password
+	 * @param string       $password Clear text password, from form POST
+	 *
 	 * @return bool
 	 */
 	function checkPasswordOnLogin ( DBConnection $db, User $user, string $password ): bool {
@@ -179,14 +214,16 @@ class UserController implements Controller {
 			//}
 			return false;
 
-		} elseif ( $user->type === 2 ) {
+		}
+		else if ( $user->type === 2 ) {
 			$password_correct = password_verify( $password, $user->password );
 
 			if ( $password_correct and password_needs_rehash( $user->password, PASSWORD_DEFAULT ) ) {
 				$hashed_password = password_hash( $password, PASSWORD_DEFAULT );
 				$this->setPassword( $db, $user, $hashed_password );
 			}
-		} else {
+		}
+		else {
 			$password_correct = false;
 		}
 
@@ -195,9 +232,11 @@ class UserController implements Controller {
 
 	/**
 	 * Add a link between mopsi and mymopsi accounts in the database. Will update on duplicate key.
+	 *
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param int $mopsiID
+	 * @param User         $user
+	 * @param int          $mopsiID
+	 *
 	 * @return bool
 	 */
 	function addMopsiLinkToUser ( DBConnection $db, User $user, int $mopsiID ): bool {
@@ -210,13 +249,15 @@ class UserController implements Controller {
 				on duplicate key update mopsi_id = values(mopsi_id)',
 			[ $user->id, $mopsiID ]
 		);
+
 		return boolval( $result );
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param string $username
-	 * @param string $password
+	 * @param string       $username
+	 * @param string       $password
+	 *
 	 * @return User|null
 	 */
 	function normalLogin ( DBConnection $db, string $username, string $password ): ?User {
@@ -225,6 +266,7 @@ class UserController implements Controller {
 			or strlen( $password ) < 1
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
 			$this->setError( -1, 'Username or password length wrong' );
+
 			return null;
 		}
 
@@ -233,19 +275,24 @@ class UserController implements Controller {
 		if ( $user ) {
 			if ( !$this->checkPasswordOnLogin( $db, $user, $password ) ) {
 				$this->setError( -3, 'Password wrong' );
+
 				return null;
 			}
-		} else {
+		}
+		else {
 			$this->setError( -2, "No MyMopsi user found in database" );
+
 			return null;
 		}
+
 		return $user;
 	}
 
 	/**
 	 * @param DBConnection $db
-	 * @param string $username
-	 * @param string $password
+	 * @param string       $username
+	 * @param string       $password
+	 *
 	 * @return User|null
 	 */
 	function mopsiLogin ( DBConnection $db, string $username, string $password ): ?User {
@@ -253,6 +300,7 @@ class UserController implements Controller {
 			or strlen( $password ) < 1
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
 			$this->setError( -1, 'Username or password length wrong' );
+
 			return null;
 		}
 
@@ -288,6 +336,7 @@ class UserController implements Controller {
 			and $response->id === -1
 			and $response->error !== null ) {
 			$this->setError( -2, "Mopsi server error, no user found probably" );
+
 			return null;
 		}
 
@@ -309,7 +358,8 @@ class UserController implements Controller {
 			$this->setUsername( $db, $user, $new_username );
 
 			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
-		} else {
+		}
+		else {
 			$user = User::fetchUserByID( $db, $row->user_id );
 		}
 
@@ -318,8 +368,9 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param string $username From form POST
-	 * @param string $password Clear text password, from form POST
+	 * @param string       $username From form POST
+	 * @param string       $password Clear text password, from form POST
+	 *
 	 * @return bool
 	 */
 	public function requestCreateNewUser ( DBConnection $db, string $username, string $password ) {
@@ -331,11 +382,13 @@ class UserController implements Controller {
 			or $passwordLength < self::MIN_PASSWORD_LENGTH
 			or $passwordLength > self::MAX_PASSWORD_LENGTH ) {
 			$this->setError( -1, 'Username or password length wrong' );
+
 			return false;
 		}
 
 		if ( !$this->checkUsernameAvailable( $db, $username ) ) {
 			$this->setError( -2, "Username '{$username}' not available" );
+
 			return false;
 		}
 
@@ -344,6 +397,7 @@ class UserController implements Controller {
 
 		if ( !$user ) {
 			$this->setError( -3, 'Could not add user to database' );
+
 			return false;
 		}
 
@@ -353,7 +407,7 @@ class UserController implements Controller {
 		$this->result = [
 			'success' => true,
 			'error' => false,
-			'user_uid' => $user->random_uid
+			'user_uid' => $user->random_uid,
 		];
 
 		return true;
@@ -361,32 +415,35 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param array $options
+	 * @param array        $options
+	 *
 	 * @return bool
 	 */
 	public function requestUnifiedLogin ( DBConnection $db, array $options ) {
 		// Check $options
-		if ( empty( $options['username'] ) or empty( $options['password'] ) ) {
+		if ( empty( $options[ 'username' ] ) or empty( $options[ 'password' ] ) ) {
 			$this->setError( -1, "Invalid param" );
+
 			return false;
 		}
 
-		$options['username'] = trim( $options['username'] );
+		$options[ 'username' ] = trim( $options[ 'username' ] );
 
 		// Check if either login returns a valid user.
-		$user = $this->normalLogin( $db, $options['username'], $options['password'] )
-			?? $this->mopsiLogin( $db, $options['username'], $options['password'] );
+		$user = $this->normalLogin( $db, $options[ 'username' ], $options[ 'password' ] )
+			?? $this->mopsiLogin( $db, $options[ 'username' ], $options[ 'password' ] );
 
 		// if both above fail return error
 		if ( !$user ) {
 			$this->setError( -2, "No MyMopsi or Mopsi user found" );
+
 			return false;
 		}
 
 		$this->result = [
 			'success' => true,
 			'error' => false,
-			'user_id' => $user->id
+			'user_id' => $user->id,
 		];
 
 		return true;
@@ -394,13 +451,15 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param string $new_name
+	 * @param User         $user
+	 * @param string       $new_name
+	 *
 	 * @return bool
 	 */
 	public function requestChangeUsername ( DBConnection $db, User $user, string $new_name ) {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
+
 			return false;
 		}
 
@@ -409,11 +468,13 @@ class UserController implements Controller {
 		if ( $usernameLength < self::MIN_USERNAME_LENGTH
 			or $usernameLength > self::MAX_USERNAME_LENGTH ) {
 			$this->setError( -2, 'Username length wrong' );
+
 			return false;
 		}
 
 		if ( !$this->checkUsernameAvailable( $db, $new_name ) ) {
 			$this->setError( -3, "Username '{$new_name}' not available" );
+
 			return false;
 		}
 
@@ -421,6 +482,7 @@ class UserController implements Controller {
 
 		if ( !$result ) {
 			$this->setError( -3, 'Something went wrong, could not edit DB' );
+
 			return false;
 		}
 
@@ -434,19 +496,22 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param string $new_password
+	 * @param User         $user
+	 * @param string       $new_password
+	 *
 	 * @return bool
 	 */
 	public function requestChangePassword ( DBConnection $db, User $user, string $new_password ) {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
+
 			return false;
 		}
 
 		if ( strlen( $new_password ) < self::MIN_USERNAME_LENGTH
 			or strlen( $new_password ) > self::MAX_USERNAME_LENGTH ) {
 			$this->setError( -2, 'Password length wrong' );
+
 			return false;
 		}
 
@@ -454,6 +519,7 @@ class UserController implements Controller {
 
 		if ( !$result ) {
 			$this->setError( -3, 'Something went wrong, could not edit DB' );
+
 			return false;
 		}
 
@@ -467,13 +533,15 @@ class UserController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User $user
-	 * @param string $new_email
+	 * @param User         $user
+	 * @param string       $new_email
+	 *
 	 * @return bool
 	 */
 	public function requestChangeEmail ( DBConnection $db, User $user, string $new_email ) {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
+
 			return false;
 		}
 
@@ -483,6 +551,7 @@ class UserController implements Controller {
 
 		if ( !$result ) {
 			$this->setError( -2, 'Something went wrong, could not edit DB' );
+
 			return false;
 		}
 
@@ -493,4 +562,30 @@ class UserController implements Controller {
 
 		return true;
 	}
+
+	/**
+	 * @param \DBConnection $db
+	 * @param \User         $user
+	 * @param               $options
+	 *
+	 * @return bool
+	 */
+	public function requestDeleteUser ( DBConnection $db, User $user, $options ) {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+			return false;
+		}
+
+		$this->deleteAllCollectionsFromUser( $db, $user );
+
+		$this->deleteUserRowFromDatabase( $db, $user );
+
+		$this->result = [
+			'success' => true,
+			'error' => false,
+		];
+
+		return true;
+	}
+
 }
