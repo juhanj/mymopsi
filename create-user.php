@@ -82,7 +82,9 @@ $feedback = Common::checkFeedbackAndPOST();
 			<span class="required"></span> = <?= $lang->REQUIRED_INPUT ?>
 		</p>
 
-		<input type="hidden" name="request" value="new">
+		<!-- Hidden stuff for server-side handler -->
+		<input type="hidden" name="class" value="user">
+		<input type="hidden" name="request" value="new_user">
 
 		<!-- Save -->
 		<input type="submit" value="<?= $lang->SUBMIT ?>" class="button">
