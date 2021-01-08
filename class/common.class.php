@@ -76,17 +76,21 @@ class Common {
 	 * > 10k meters => 10 km (no decimal)
 	 *
 	 * @param int|float $distance in meters
+	 * @param string    $unit     'm'||'km' ; If given unit is KM, skip meter formatting
+	 * @param int[]     $bounds   At what point switch from m to km, and km without decimals
 	 *
 	 * @return string
 	 */
-	public static function fDistance ( $distance ) {
+	public static function fDistance ( $distance, $unit = 'm', $bounds = [ 1000, 10 ] ) {
 		$distance = round( $distance );
-		if ( $distance < 1000 ) {
+		if ( $distance < ($bounds[ 0 ] ?? 1000) and $unit === 'm' ) {
 			$formatted = self::fNumber( $distance, 0 ) . " m";
 		}
 		else {
-			$distance /= 1000;
-			if ( $distance < 10 ) {
+			if ( $unit === 'm' ) {
+				$distance /= 1000;
+			}
+			if ( $distance < ($bounds[ 1 ] ?? 10) ) {
 				$formatted = self::fNumber( $distance, 1 ) . " km";
 			}
 			else {
@@ -105,34 +109,47 @@ class Common {
 	 * > 10 hours => hours, no minutes, no decimals
 	 * //TODO days months years
 	 *
-	 * @param int|float $time in seconds
+	 * @param int|float $time      in seconds
+	 * @param string    $unit      s || m || h ;
+	 *                             Skip to correct formatting level
+	 * @param int[]     $bounds    Bounds between different levels of formatting
+	 *                             Default: [ 60 (s), 60*60 (m), 60*60*10 (h) ]
 	 *
 	 * @return string
 	 */
-	public static function fTime ( $time ) {
+	public static function fTime ( $time, $unit = 's', $bounds = [ 60, 60 * 60, 60 * 60 * 10 ] ) {
+		// If number not second, convert to second
+		if ( $unit === 'm' ) {
+			$time *= 60;
+		}
+		else if ( $unit === 'h') {
+			$time *= (60 * 60);
+		}
+
 		$time = round( $time );
+
 		// seconds
-		if ( $time < 60 ) {
+		if ( $time < $bounds[0] ) {
 			$formatted = "{$time} s";
 		}
 
 		// minutes
-		else if ( $time < (60*60) ) {
+		else if ( $time < $bounds[1] ) {
 			$time /= 60;
 
 			if ( $time < 60 ) {
-				$formatted = round($time) . " m";
+				$formatted = round( $time ) . " m";
 			}
 		}
 
 		// hours < 10h
-		else if ( $time < 60*60*10 ) {
-			$time /= 60*60;
+		else if ( $time < 60 * 60 * 10 ) {
+			$time /= 60 * 60;
 			$formatted = self::fNumber( $time, 1 ) . " h";
 		}
 
 		else {
-			$time /= 60*60;
+			$time /= 60 * 60;
 			$formatted = self::fNumber( $time, 0 ) . " h";
 		}
 
@@ -178,7 +195,6 @@ class Common {
 
 		return !$result->found;
 	}
-
 
 	/**
 	 * Returns a unique, random N character string
@@ -230,7 +246,6 @@ class Common {
 		return json_decode( implode( "", $output ) );
 	}
 
-
 	/**
 	 * Reverse geocode a lat-long coordinate. Fetches address using Mopsi API, which uses nominatim.
 	 *
@@ -263,23 +278,25 @@ class Common {
 	 */
 	public static function deleteFiles ( $target ) {
 		// Sanity checks (for not accidentally deleting the server root directory)
-		if ( !$target or $target === '' or $target == '/' or $target == '\\' ) return;
+		if ( !$target or $target === '' or $target == '/' or $target == '\\' ) {
+			return;
+		}
 
 		// Check if directory (handled differently from a file)
 		// Will ignore symbolic links, because rmdir can't delete symlinks
-		if ( !is_link($target) && is_dir($target) ) {
+		if ( !is_link( $target ) && is_dir( $target ) ) {
 			// it's a directory; recursively delete everything in it
 			// array_diff() removes the ., .. entries, which would cause the code to recurse forever
 			$files = array_diff(
-				scandir($target),
+				scandir( $target ),
 				[ '.', '..' ]
 			);
 
-			foreach( $files as $file ) {
-				self::deleteFiles("$target/$file");
+			foreach ( $files as $file ) {
+				self::deleteFiles( "$target/$file" );
 			}
 
-			rmdir($target);
+			rmdir( $target );
 		}
 		// Check if file
 		else if ( is_file( $target ) ) {
