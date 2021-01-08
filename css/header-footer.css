@@ -10,10 +10,21 @@
 	background: var(--primary-darker);
 	color: var(--text-light);
 	display: flex;
-	justify-content: left;
+	justify-content: flex-start;
 	align-items: center;
 	padding: .3rem;
 }
+
+.breadcrumbs-navigation * {
+	display: inline-block;
+	margin: auto 0;
+}
+
+.site-header .breadcrumbs-navigation .breadcrumbs-navigation-mopsi-logo {
+	margin: auto;
+	max-height: 1.5rem;
+}
+
 
 .site-header .breadcrumbs-navigation .separator {
 	margin: 0 .5rem;
@@ -42,8 +53,8 @@
 	display: flex;
 	flex: 1 0;
 
-	background: var(--primary);
-	color: var(--text-light);
+	/*background: var(--primary);*/
+	/*color: var(--text-light);*/
 
 	justify-content: space-between;
 	align-items: center;
@@ -52,7 +63,6 @@
 }
 
 .site-footer .settings-link {
-	padding: 0 2rem;
 }
 
 
