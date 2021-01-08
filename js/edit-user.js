@@ -4,7 +4,7 @@ let deleteButton = document.getElementById( 'deleteButton' );
 
 deleteButton.onclick = () => {
 	let userID = deleteButton.dataset.user;
-	if ( confirm( "Delete? Action irreversible." ) ) {
+	if ( prompt( "Type 'delete' to cofirm",'' ) === 'delete' ) {
 		let request = {
 			'request' : 'delete_user',
 			'user' : userID

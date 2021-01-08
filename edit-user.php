@@ -38,7 +38,7 @@ array_push(
 <!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 <div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
-<main class="main-body-container">
+<main class="main-body-container medium-width">
 
 	<!-- Username edit container -->
 	<section class="box">
@@ -54,7 +54,7 @@ array_push(
 			<input type="hidden" name="class" value="user">
 			<input type="hidden" name="request" value="edit_username">
 			<!-- Submit -->
-			<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+			<input type="submit" class="button" value="<?= $lang->CHANGE_UN ?>">
 		</form>
 	</section>
 
@@ -70,6 +70,8 @@ array_push(
 			</label>
 
 			<!-- Password confirm (client-side check only) -->
+			<!-- There was a reason why this is commented out, can't remember why
+			    Something about this being useless? -->
 			<!--<label for="password-confirm">
 				<span class="label required"><?/*= $lang->CONFIRM_PASSWORD */?></span>
 				<input type="password" name="password-confirm" value="" required
@@ -81,15 +83,17 @@ array_push(
 			<input type="hidden" name="class" value="user">
 			<input type="hidden" name="request" value="edit_password">
 			<!-- Submit button -->
-			<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+			<input type="submit" class="button" value="<?= $lang->CHANGE_PW ?>">
 		</form>
 	</section>
+
+	<hr>
 
 	<section class="box warning">
 		<p>
 			<?= $lang->DANGER_DELETE_INFO ?>
 		</p>
-		<button class="button red" id="deleteUserButton"
+		<button class="button red" id="deleteButton"
 		        data-user="<?= $user->random_uid ?>">
 			<?= $lang->DELETE_USER_BUTTON ?>
 		</button>
