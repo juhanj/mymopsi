@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
-require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var DBConnection $db
- * @var Language $lang
- * @var User $user
+ * @var Language     $lang
+ * @var User         $user
  */
 
 // If no user logged-in, we send back to front page with error message
 if ( !$user ) {
 	header( 'location: index.php' );
-	$_SESSION['feedback'] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
+	$_SESSION[ 'feedback' ] = "<p class='warning'>{$lang->LOGIN_REQUIRED}</p>";
 	exit();
 }
 
@@ -18,13 +18,14 @@ if ( !empty( $_POST ) ) {
 	$controller = new CollectionController();
 	$controller->handleRequest( $db, $user, $_POST );
 
-	if ( $controller->result['success'] ) {
-		$_SESSION['feedback'] .= "<p class='success'>{$lang->NEW_COLL_SUCCESS}</p>";
+	if ( $controller->result[ 'success' ] ) {
+		$_SESSION[ 'feedback' ] .= "<p class='success'>{$lang->NEW_COLL_SUCCESS}</p>";
 		header( "Location:./collection.php?id={$controller->result['collection_uid']}" );
 		exit;
-	} else {
-		$_SESSION['feedback'] .= "<p class='error'>{$lang->COLL_FAIL}</p>";
-		$_SESSION['feedback'] .= "<p class='error'>{$controller->result['errMsg']}</p>";
+	}
+	else {
+		$_SESSION[ 'feedback' ] .= "<p class='error'>{$lang->COLL_FAIL}</p>";
+		$_SESSION[ 'feedback' ] .= "<p class='error'>{$controller->result['errMsg']}</p>";
 	}
 }
 
@@ -48,7 +49,7 @@ array_push(
 <!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 <div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
-<main class="main-body-container">
+<main class="main-body-container medium-width">
 
 	<!-- One single <form> -->
 	<form method="post" class="box">
@@ -61,7 +62,7 @@ array_push(
 		<!-- Description -->
 		<label>
 			<span class="label"><?= $lang->DESCRIPTION ?></span>
-			<input type="text" name="description">
+			<textarea name="description" rows="3"></textarea>
 		</label>
 
 		<!-- Public -->
@@ -80,7 +81,7 @@ array_push(
 
 		<!-- Hidden stuff for server-side handler -->
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="request" value="new">
+		<input type="hidden" name="request" value="new_collection">
 
 
 		<p class="required-input side-note">
