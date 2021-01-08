@@ -18,11 +18,11 @@ array_push(
 
 <body class="grid">
 
-<?php require 'html-header.php'; ?>
+<?php //require 'html-header.php'; ?>
 
 <section class="feedback" id="feedback"></section>
 
-<main class="main-body-container">
+<main class="main-body-container narrow">
 
 	<a href="javascript:history.go(-1)" class="button return">
 		<?= $lang->RETURN ?>

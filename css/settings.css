@@ -3,11 +3,6 @@
 	SETTINGS STYLINGS
 *************************************************************/
 
-.main-body-container {
-	/* Default max-width set in main.css is a bit much here, hence 30rem set here */
-	max-width: 30rem;
-}
-
 label {
 	padding: 1rem;
 	background-color: var(--input-bg);
