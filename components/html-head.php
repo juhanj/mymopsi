@@ -6,6 +6,19 @@
 
 	<title><?= $lang->HTML_TITLE ?></title>
 
+	<link rel="icon" href="<?= WEB_PATH ?>/img/mopsi.ico">
+
+	<!-- Serious icon business -->
+	<link rel="apple-touch-icon" sizes="180x180" href="<?= WEB_PATH ?>/img/icon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="<?= WEB_PATH ?>/img/icon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="<?= WEB_PATH ?>/img/icon/favicon-16x16.png">
+	<link rel="manifest" href="<?= WEB_PATH ?>/img/icon/site.webmanifest">
+	<link rel="mask-icon" href="<?= WEB_PATH ?>/img/icon/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="shortcut icon" href="<?= WEB_PATH ?>/img/icon/favicon.ico">
+	<meta name="msapplication-TileColor" content="#ffc40d">
+	<meta name="msapplication-config" content="<?= WEB_PATH ?>/img/icon/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+
 	<!-- Material icons CSS -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
