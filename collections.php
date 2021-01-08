@@ -16,6 +16,7 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
  */
 $collections = [];
 
+// If use is admin, get whatever is wanted
 if ( $user and $user->admin and !empty($_GET['user']) ) {
 	$temp_user = User::fetchUserByRUID( $db, $_GET['user'] );
 
@@ -23,10 +24,12 @@ if ( $user and $user->admin and !empty($_GET['user']) ) {
 
 	$collections = $temp_user->collections;
 }
+// Logged in user, get own collections
 elseif ( $user and !isset($_GET['public']) ) {
 	$user->getCollections( $db );
 	$collections = $user->collections;
 }
+// Public collections (if wanted or not if not logged in)
 elseif ( isset($_GET['public']) or !$user ) {
 	$collections = $db->query(
 		"select * from mymopsi_collection where public = true",
@@ -49,16 +52,17 @@ elseif ( isset($_GET['public']) or !$user ) {
 <!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 <div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
-<main class="main-body-container">
+<main class="main-body-container medium-width">
+
+	<section class="buttons">
+		<a href="create-collection.php" class="button collection-link">
+			<?= $lang->NEW_COLLECTION ?>
+			<span class="material-icons">create_new_folder</span>
+		</a>
+	</section>
 
 	<article>
 		<ol class="collections-list margins-off">
-			<li class="collection box">
-				<a href="create-collection.php" class="collection-link">
-					<?= $lang->NEW_COLLECTION ?>
-					<?= file_get_contents('./img/folder-plus.svg') ?>
-				</a>
-			</li>
 			<?php foreach ( $collections as $c ) : ?>
 				<li class="collection box" data-id="<?= $c->random_uid ?>">
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
@@ -71,6 +75,10 @@ elseif ( isset($_GET['public']) or !$user ) {
 				</li>
 			<?php endforeach; ?>
 		</ol>
+
+		<?php if ( !$collections ) : ?>
+		<p><?= $lang->NO_COLLECTIONS ?></p>
+		<?php endif; ?>
 	</article>
 
 </main>
