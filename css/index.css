@@ -1,7 +1,20 @@
 @CHARSET "UTF-8";
 
-.title{
+.main-body-container {
+	max-width: 40rem;
+}
+
+.title {
 	font-size: 4rem;
 	color: var(--text-dark);
 	text-align: center;
+}
+
+.fancy-title-img {
+	height: 2rem;
+}
+
+
+.box-header {
+	margin: auto;
 }
