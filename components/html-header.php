@@ -1,10 +1,13 @@
 <?php declare(strict_types=1); ?>
 
 <header class="site-header margins-off" id="site-header">
-	<nav class="breadcrumbs-navigation">
-		<?php foreach ( $breadcrumbs_navigation as $breadcrumb ) :
-			?><a href="<?= $breadcrumb[1] ?>"><?= $breadcrumb[0] ?></a><span class="separator">»</span><?php
-		endforeach; ?>
+	<nav class="breadcrumbs-navigation margins-off">
+		<span><img src="./img/mopsi128.png" alt="MyMopsi logo" style="height: 1rem"></span>
+		<span class="separator">•</span>
+		<?php foreach ( $breadcrumbs_navigation as $breadcrumb ) : ?>
+			<a href="<?= $breadcrumb[1] ?>"><?= $breadcrumb[0] ?></a>
+			<span class="separator"><span class="material-icons">arrow_right</span></span>
+		<?php endforeach; ?>
 	</nav>
 	<h1 class="page-title margins-off">
 		<?= $lang->HEADER_TITLE ?>

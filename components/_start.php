@@ -85,5 +85,4 @@ $user = !empty( $_SESSION['user_id'] )
 	: null;
 
 $breadcrumbs_navigation = [
-	[ 'MyMopsi', WEB_PATH ]
 ];
