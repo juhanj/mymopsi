@@ -6,6 +6,7 @@ deleteButton.onclick = () => {
 	let userID = deleteButton.dataset.user;
 	if ( prompt( "Type 'delete' to cofirm",'' ) === 'delete' ) {
 		let request = {
+			'class' : 'user',
 			'request' : 'delete_user',
 			'user' : userID
 		};

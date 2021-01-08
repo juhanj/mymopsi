@@ -4,8 +4,9 @@ let deleteButton = document.getElementById( 'deleteButton' );
 
 deleteButton.onclick = () => {
 	let imageID = deleteButton.dataset.image;
-	if ( confirm( "Delete? Action irreversible." ) ) {
+	if ( prompt( "Type 'delete' to cofirm",'' ) === 'delete' ) {
 		let request = {
+			'class' : 'image',
 			'request' : 'delete_image',
 			'image' : imageID,
 		};
