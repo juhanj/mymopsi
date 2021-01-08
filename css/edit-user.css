@@ -9,7 +9,3 @@ form div.buttons * {
 	flex-grow: 1;
 	max-width: 40%;
 }
-
-.box.warning {
-	border-color: var(--error);
-}
