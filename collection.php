@@ -160,7 +160,7 @@ $orders = [
 		<ul class="image-list">
 			<?php foreach ( $collection->images as $img ) : ?>
 				<li class="image">
-					<a href="./image.php?id=<?= $img->random_uid ?>" class="link">
+					<a href="./edit-image.php?id=<?= $img->random_uid ?>" class="link">
 						<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
 						     class="img" alt="<?= $img->name ?>">
 					</a>
