@@ -52,6 +52,7 @@ class UserController implements Controller {
 	 */
 	public function setError ( int $id, string $msg ) {
 		$this->result[ 'success' ] = false;
+		$this->result[ 'error' ] = true;
 
 		$this->result[ 'errors' ][] = [
 			'id' => $id,
