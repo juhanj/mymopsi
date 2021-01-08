@@ -46,8 +46,16 @@ class CommonTest extends TestCase {
 		$number = 12900;
 		$result = Common::fDistance( $number );
 		self::assertEquals( '13 km', $result );
-	}
 
+		// unitGiven param testing:
+		$number = 4;
+		$result = Common::fDistance( $number, 'km' );
+		self::assertEquals( '4,0 km', $result );
+		// bounds param testing:
+		$number = 800;
+		$result = Common::fDistance( $number, 'm', [500, 3] );
+		self::assertEquals( '0,8 km', $result );
+	}
 
 	public function test_fTime () {
 		// seconds
@@ -66,6 +74,15 @@ class CommonTest extends TestCase {
 		$number = 60*60*12;
 		$result = Common::fTime( $number );
 		self::assertEquals( '12 h', $result );
+
+		// unit param testing:
+		$number = 4;
+		$result = Common::fTime( $number, 'h' );
+		self::assertEquals( '4,0 h', $result );
+		// bounds param testing:
+		$number = 90;
+		$result = Common::fTime( $number, 's', [ 120 ] );
+		self::assertEquals( '90 s', $result );
 	}
 
 	public function test_CheckRandomUIDAvailable () {
