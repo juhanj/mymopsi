@@ -93,7 +93,7 @@ array_push(
 
 		<button type="submit" class="button" id="submit-button" hidden>
 			<?= $lang->SUBMIT ?>
-			<?= file_get_contents( './img/upload.svg' ) ?>
+			<span class="material-icons">publish</span>
 		</button>
 
 	</form>
