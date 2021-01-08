@@ -22,7 +22,7 @@
 			"en": "Login required to use this feature."
 		},
 		"RETURN": {
-			"en": "Return"
+			"en": "<span class='material-icons'>arrow_back</span>Return"
 		}
 	},
 	"index": {
@@ -35,7 +35,7 @@
 			"fi": ""
 		},
 		"USER_LOGIN": {
-			"en": "Login to manage collections"
+			"en": "Log in"
 		},
 		"USERNAME_LABEL": {
 			"en": "User (MyMopsi / Mopsi)"
@@ -50,28 +50,19 @@
 			"en": "Super secret password here"
 		},
 		"LOGIN_SUBMIT": {
-			"en": "Login to MyMopsi"
+			"en": "Log in to MyMopsi"
 		},
 		"CREATE_USER_HEADER": {
-			"en": "Create new user"
+			"en": "Register"
 		},
 		"CREATE_NEW_USER_LINK": {
-			"en": "Click to create a new user"
+			"en": "Register a new user"
 		},
-		"NEW_COLLECTION": {
-			"en": "Create a new collection"
-		},
-		"USER_COLLECTIONS": {
-			"en": "Your collections"
-		},
-		"VIEW_USER_COLLECTIONS": {
-			"en": "View your own collections"
+		"PUBLIC_COLLECTIONS_HEADER": {
+			"en": "Public collections"
 		},
 		"VIEW_PUBLIC_COLLECTIONS": {
 			"en": "View public collections from all users"
-		},
-		"PUBLIC_COLLECTIONS": {
-			"en": "Public collections"
 		},
 		"NO_PUBLIC_COLL_AVAILABLE": {
 			"en": "No public collections available."
@@ -121,6 +112,10 @@
 		"NRO_OF_IMGS": {
 			"en": "Images",
 			"fi": "Kuvia"
+		},
+		"NO_COLLECTIONS": {
+			"en": "No collections found.",
+			"fi": "Sinulla ei ole yhtään kokoelmaa."
 		}
 	},
 	"collection": {
@@ -193,13 +188,29 @@
 			"en": "Username",
 			"fi": "Käyttäjänimi"
 		},
+		"CHANGE_UN": {
+			"en": "Change username",
+			"fi": "Vaihda käyttäjätunnus"
+		},
 		"PASSWORD": {
 			"en": "Password",
 			"fi": "Salasana"
 		},
+		"CHANGE_PW": {
+			"en": "Change password",
+			"fi": "Vaihda salasana"
+		},
 		"CONFIRM_PASSWORD": {
 			"en": "Confirm password",
 			"fi": "Vahvista salasana"
+		},
+		"DANGER_DELETE_INFO": {
+			"en": "DANGER! Delete user and all related data?<p>Deletes all user collections and images permanently.",
+			"fi": "VAARA! Poista käyttäjä ja kaikki käyttäjän tiedot?<p>Poistaa myös kokoelmat ja kuvat pysyvästi."
+		},
+		"DELETE_USER_BUTTON": {
+			"en": "DELETE USER and all data/information",
+			"fi": "POISTA KÄYTTÄJÄ ja kaikki käyttäjän tiedot"
 		}
 	},
 	"create-collection": {
