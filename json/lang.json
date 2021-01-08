@@ -189,16 +189,16 @@
 			"fi": "Käyttäjänimi"
 		},
 		"CHANGE_UN": {
-			"en": "Change username",
-			"fi": "Vaihda käyttäjätunnus"
+			"en": "Save",
+			"fi": "Tallenna"
 		},
 		"PASSWORD": {
 			"en": "Password",
 			"fi": "Salasana"
 		},
 		"CHANGE_PW": {
-			"en": "Change password",
-			"fi": "Vaihda salasana"
+			"en": "Save",
+			"fi": "Tallenna"
 		},
 		"CONFIRM_PASSWORD": {
 			"en": "Confirm password",
@@ -295,8 +295,8 @@
 			"fi": "Klikkaa, tai drag&drop halutut tiedostot laatikkoon."
 		},
 		"SUBMIT": {
-			"en": "Upload new images to collection",
-			"fi": "Lataa uudet kuvat albumiin"
+			"en": "Upload",
+			"fi": "Lataa kuvat"
 		},
 		"SELECTED_FILES_HEADER": {
 			"en": "Selected files (waiting for confimation)",
