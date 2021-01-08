@@ -99,7 +99,7 @@
 			"fi": "MyMopsi | Kokoelmat"
 		},
 		"HEADER_TITLE": {
-			"en": "User | <a id='header-user-link' class='margins-off'><span id='header-user-name'></span><object type='image/svg+xml' data='./img/edit.svg'></object></a>"
+			"en": "User | <a id='header-user-link' class='margins-off'><span id='header-user-name'></span><span class='material-icons'>edit</span></a>"
 		},
 		"NEW_COLLECTION": {
 			"en": "New Collection",
@@ -123,15 +123,15 @@
 			"en": "MyMopsi | Collection"
 		},
 		"HEADER_TITLE": {
-			"en": "Collection | <a id='header-coll-link' class='margins-off'><span id='header-coll-name'></span><object type='image/svg+xml' data='./img/edit.svg'></object></a>"
+			"en": "Collection | <a id='header-coll-link' class='margins-off'><span id='header-coll-name'></span><span class='material-icons'>edit</span></a>"
 		},
 		"ADD_IMG": {
-			"en": "Add new images",
+			"en": "Add images",
 			"fi": "Lisää kuvia"
 		},
 		"TO_MAP": {
-			"en": "View on map",
-			"fi": "Näe kokoelma kartalla"
+			"en": "Map",
+			"fi": "Kartta"
 		},
 		"NO_IMAGES": {
 			"en": "Collection has no images. Have you tried adding one, or a thousand?",

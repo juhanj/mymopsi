@@ -16,6 +16,9 @@ if ( !$collection ) {
 	exit();
 }
 
+/*
+ * Pagination code:
+ */
 $page = (int)($_GET[ 'page' ] ?? 1); // Page number
 $items_per_page = (int)($_GET[ 'ipp' ] ?? 50); // Items Per Page
 $order_column = (int)($_GET[ 'col' ] ?? 0);
@@ -77,12 +80,12 @@ $orders = [
 	<div class="buttons margins-off">
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->ADD_IMG ?>
-			<?= file_get_contents( './img/file-plus.svg' ) ?>
+			<span class="material-icons">add_photo_alternate</span>
 		</a>
 
 		<a href="map.php?cid=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->TO_MAP ?>
-			<?= file_get_contents( './img/map.svg' ) ?>
+			<span class="material-icons">map</span>
 		</a>
 	</div>
 

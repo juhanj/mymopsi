@@ -113,7 +113,7 @@ array_push(
 	</section>
 
 	<!-- Selected files by the user will be shown here before uploading -->
-	<div class="box" id="files-info">
+	<div class="box" id="files-info" hidden>
 		<h2 class="center"><?= $lang->SELECTED_FILES_HEADER ?></h2>
 		<table>
 			<thead>
@@ -138,7 +138,7 @@ array_push(
 	</div>
 
 	<!-- Successful uploads will be listed here after submitting -->
-	<section class="box" id="successful-uploads">
+	<section class="box" id="successful-uploads" hidden>
 		<h2><?= $lang->SUCCESS_UPLOAD_HEADER ?></h2>
 		<table>
 			<thead>
@@ -188,7 +188,7 @@ array_push(
 
 	<section class="box">
 		<p>
-			Upload Mopsi photos:
+			Other means of uploading:
 		</p>
 		<a href="upload-csv.php?id=<?= $collection->random_uid ?>">Upload a CSV file with photo IDs</a>
 	</section>
