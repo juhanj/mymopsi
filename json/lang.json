@@ -23,6 +23,10 @@
 		},
 		"RETURN": {
 			"en": "<span class='material-icons'>arrow_back</span>Return"
+		},
+		"EDIT_SUCCESS": {
+			"en": "Changes saved.",
+			"fi": "Muutokset tallennettu."
 		}
 	},
 	"index": {
@@ -136,6 +140,14 @@
 		"NO_IMAGES": {
 			"en": "Collection has no images. Have you tried adding one, or a thousand?",
 			"fi": "Ei yhtään kuvaa kokoelmassa. Oletko kokeillut lisätä yhden, tai tuhat?"
+		},
+		"EDIT": {
+			"en": "Edit",
+			"fi": "Muokkaa"
+		},
+		"MAP": {
+			"en": "Map",
+			"fi": "Kartta"
 		}
 	},
 	"create-user": {
@@ -269,6 +281,21 @@
 		"PUBLIC": {
 			"en": "Public",
 			"fi": "Julkinen"
+		},
+		"SUBMIT": {
+			"en": "Save",
+			"fi": "Tallenna"
+		},
+		"EDIT_SUCCESS": {
+			"en": "Changes saved successfully"
+		},
+		"DANGER_DELETE_INFO": {
+			"en": "DANGER! Delete collection and all it's images?<p>Changes are permanent.",
+			"fi": "VAARA! Poista kokoelma ja kaikki kokoelman kuvat?<p>Poistoa ei voi peruuttaa."
+		},
+		"DELETE_BUTTON": {
+			"en": "DELETE COLLECTION and all images",
+			"fi": "POISTA KOKOELMA ja kaikki sen kuvat"
 		}
 	},
 	"upload": {
@@ -319,7 +346,7 @@
 			"fi": "Epäonnistuneet lataukset"
 		}
 	},
-	"image": {
+	"edit-image": {
 		"HTML_TITLE": {
 			"en": "MyMopsi | Image",
 			"fi": "MyMopsi | Kuva"
@@ -336,9 +363,24 @@
 			"en": "Description",
 			"fi": "Kuvaus"
 		},
+		"SUBMIT": {
+			"en": "Save",
+			"fi": "Tallenna"
+		},
 		"EDIT_GPS": {
 			"en": "Edit GPS data (where image was taken)",
 			"fi": "Muokaa kuvan GPS-data (missä kuva on otettu)"
+		},
+		"EDIT_SUCCESS": {
+			"en": "Changes saved successfully"
+		},
+		"DANGER_DELETE_INFO": {
+			"en": "DANGER! Delete image?<p>Deletion is permanent.",
+			"fi": "VAARA! Poista kuva?<p>Poistoa ei voi peruuttaa."
+		},
+		"DELETE_BUTTON": {
+			"en": "DELETE IMAGE",
+			"fi": "POISTA KUVA"
 		}
 	}
 }
