@@ -27,12 +27,13 @@ $order_direction = (int)($_GET[ 'dir' ] ?? 1); // ASC || DESC
 if ( $page < 1 ) {
 	$page = 1;
 }
-if ( $items_per_page < 1 || $items_per_page > 100 ) {
+// Check that the IPP is valid
+if ( $items_per_page < 1 || $items_per_page > 1000 ) {
 	$items_per_page = 50;
 }
 $offset = ($page - 1) * $items_per_page;
 
-$collection->getImagesWithPagination( $db, [$items_per_page,$offset], [$order_column, $order_direction] );
+$collection->getImagesWithPagination( $db, [ $items_per_page, $offset ], [ $order_column, $order_direction ] );
 
 array_push(
 	$breadcrumbs_navigation,
@@ -130,14 +131,14 @@ $orders = [
 			<!-- Page navigation (prev / current / next) -->
 			<nav class="page-navigation margins-off">
 				<!-- Backwards navigation (previous / first page) -->
-				<div class="buttons backward margins-off">
-					<a class="button" href="<?= $first_page ?>"> <i class="material-icons">first_page</i> </a>
-					<a class="button" href="<?= $prev_page ?>"> <i class="material-icons">navigate_before</i> </a>
-				</div>
+				<!--				<div class="buttons backward margins-off">-->
+				<a class="button first-page" href="<?= $first_page ?>"> <i class="material-icons">first_page</i> </a>
+				<a class="button" href="<?= $prev_page ?>"> <i class="material-icons">navigate_before</i> </a>
+				<!--				</div>-->
 
 				<!-- Page select -->
 				<div class="current">
-					<input type="number" min="1" max="<?= $total_pages ?>" value="<?= $page ?>"
+					<input type="number" value="<?= $page ?>" step="1"
 					       name="page" form="pagination-form" title="Page input" class="page-input"
 					       onclick="this.select();">
 					<span class="separator">/</span>
@@ -145,14 +146,14 @@ $orders = [
 				</div>
 
 				<!-- Forwards navigation (next / last page) -->
-				<div class="buttons forward margins-off">
-					<a class="button" href="<?= $next_page ?>"> <i class="material-icons">navigate_next</i> </a>
-					<a class="button" href="<?= $last_page ?>"> <i class="material-icons">last_page</i> </a>
-				</div>
+				<!--				<div class="buttons forward margins-off">-->
+				<a class="button" href="<?= $next_page ?>"> <i class="material-icons">navigate_next</i> </a>
+				<a class="button last-page" href="<?= $last_page ?>"> <i class="material-icons">last_page</i> </a>
+				<!--				</div>-->
 			</nav>
 
 			<p class="current-ipp-value">
-				<?= $offset ?>&ndash;<?= $offset + $items_per_page ?> / <?= $collection->number_of_images ?>
+				<?= $offset + 1 ?>&ndash;<?= $offset + $items_per_page ?> / <?= $collection->number_of_images ?>
 			</p>
 		</div>
 
@@ -169,8 +170,8 @@ $orders = [
 		</ul>
 
 	<?php else : ?>
-		<!-- If there are no images in collection, print a short, polite messages telling the user that -->
-		<!-- Because apparently the empty page isn't enough of a message... -->
+		<!-- If there are no images in collection, print a short, polite message telling
+			the user that, because apparently the empty page isn't enough of a message... -->
 		<section>
 			<?= $lang->NO_IMAGES ?>
 		</section>

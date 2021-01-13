@@ -9,11 +9,8 @@
 }
 
 .options {
-	display: grid;
-	grid: "selectIPP sortBy sortOrder" auto
-            / 30% 35% 30%;
-	gap: .5rem 0;
-	justify-items: center;
+	display: flex;
+	justify-content: space-between;
 }
 
 .options select {
@@ -21,64 +18,18 @@
 	display: inline;
 	padding: .5rem;
 }
-
-.options .items-per-page {
-	grid-area: selectIPP;
-}
-
-.options .sort-by {
-	grid-area: sortBy;
-}
-
-.options .sort-order {
-	grid-area: sortOrder;
+.options select option {
+	background-color: white;
 }
 
 .page-navigation {
-	display: grid;
-	grid: "prev current next" auto
-            / auto 1fr auto;
+	display: flex;
 	justify-content: space-between;
-}
-
-.page-navigation .backward {
-	grid-area: prev;
-	white-space: nowrap;
-}
-
-.page-navigation .current {
-	grid-area: current;
-	margin: auto;
-	white-space: nowrap;
-}
-
-.page-navigation .forward {
-	grid-area: next;
 }
 
 .page-navigation .buttons {
 	display: flex;
 	flex-direction: row;
-}
-
-.page-navigation .buttons > * + * {
-	margin-left: 10px;
-}
-
-.page-navigation .backward :first-child {
-	border-radius: 45% 0 0 45%;
-}
-
-.page-navigation .backward :last-child {
-	border-radius: 0 var(--border-radius) var(--border-radius) 0;
-}
-
-.page-navigation .forward :first-child {
-	border-radius: var(--border-radius) 0 0 var(--border-radius);
-}
-
-.page-navigation .forward :last-child {
-	border-radius: 0 45% 45% 0;
 }
 
 .page-navigation .buttons a {
@@ -87,12 +38,22 @@
 	margin: 0;
 }
 
+.page-navigation .button {
+	color: var(--primary-darker);
+	background-color: var(--site-bg);
+	border: var(--primary) 1px solid;
+}
+
+.page-navigation .current {
+	margin: 0 2rem;
+}
+
 .page-navigation .current .page-input {
 	padding: .7rem;
 	text-align: right;
 	appearance: textfield;
 	width: 100%;
-	max-width: 5rem;
+	max-width: 4rem;
 	background-color: var(--site-bg);
 	border: 0;
 	border-bottom: 1px var(--text-dark) solid;
