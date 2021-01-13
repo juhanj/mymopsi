@@ -1,11 +1,8 @@
 'use strict';
 
-let latInput = document.getElementById( 'lat' );
-let longInput = document.getElementById( 'long' );
-
-let mapDiv = document.getElementById( "googleMap" );
-let map;
-let marker;
+/********************************************
+ * Functions
+ ********************************************/
 
 function getClickCoordinate ( event ) {
 	let latitude = event.latLng.lat();
@@ -37,5 +34,17 @@ function initGoogleMap () {
 	}
 
 	google.maps.event.addListener( map, "click", getClickCoordinate );
-
 }
+
+/********************************************
+ * Main code
+ ********************************************/
+
+let latInput = document.getElementById( 'lat' );
+let longInput = document.getElementById( 'long' );
+
+let mapDiv = document.getElementById( "googleMap" );
+let map;
+let marker;
+
+initGoogleMap();

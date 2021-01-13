@@ -12,19 +12,19 @@ if ( !empty($_POST) ) {
 
 	if ( $controller->result['success'] ) {
 		$_SESSION['feedback'] = "<p class='success'>{$lang->EDIT_SUCCESS}</p>";
-		header( "Location: ./image.php?id={$_POST['image']}" );
-		exit();
 	}
 	elseif ( $controller->result['error'] ) {
 		$_SESSION['feedback'] = "<p class='error'>{$controller->result['errMsg']}</p>";
-		header( "Location: ./image.php?id={$_POST['image']}" );
-		exit();
 	}
+
+	header( "Location: ./edit-image.php?id={$_POST['image']}" );
+	exit();
 }
 
 //$feedback = Utils::checkFeedbackAndPOST();
 
 $image = Image::fetchImageByRUID( $db, $_GET['id'] );
+$collection = Collection::fetchCollectionByID( $db, $image->collection_id );
 if ( !$image ) {
 	$_SESSION['feedback'] = "<p class='error'>GPS-edit: invalid ID.</p>";
 	header( "Location:index.php" );
@@ -35,7 +35,7 @@ array_push(
    $breadcrumbs_navigation,
    [ 'User', WEB_PATH . '/collections.php' ],
    [ 'Collection', WEB_PATH . '/collection.php?id=' . $collection->random_uid ],
-   [ 'Info', WEB_PATH . '/edit-collection.php?id=' . $collection->random_uid ]
+   [ 'Image', WEB_PATH . '/edit-image.php?id=' . $image->random_uid ]
 );
 ?>
 
@@ -54,13 +54,13 @@ array_push(
 	<section class="form-section">
 		<form method="post" class="coordinate-form margins-off">
 			<!-- Latitude coordinate -->
-			<label id="lat-label">
+			<label class="margins-off" id="lat-label">
 				<span class="label required">Lat:</span>
 				<input type="text" value="<?= $image->latitude ?>" id="lat" name="lat" required readonly>
 			</label>
 
 			<!-- Longitude coordinate -->
-			<label id="long-label">
+			<label class="margins-off" id="long-label">
 				<span class="label required">Lng:</span>
 				<input type="text" value="<?= $image->longitude ?>" id="long" name="long" required readonly>
 			</label>
@@ -97,9 +97,7 @@ array_push(
 	<?php endif; ?>
 </script>
 
-<script defer
-        src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>&callback=initGoogleMap">
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>"></script>
 
 </body>
 </html>
