@@ -82,19 +82,22 @@ if ( !empty( $_GET['iid'] ) ) {
 	<?php endif; ?>
 </script>
 
+
+<!-- Google maps API (init is done in map.js, hence no callback) -->
+<script src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>">
+</script>
+
+<!-- jQuery is used by clustering API -->
 <script
 	src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
 	integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
 	crossorigin="anonymous"></script>
 
-<script defer
-        src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>&callback=initGoogleMap">
-</script>
-
-<script defer src="./clusteringAPI/clusteringInterface.js" type="text/javascript"></script>
-<script defer src="./clusteringAPI/clusteringLogic.js" type="text/javascript"></script>
-<script defer src="./clusteringAPI/mapFunctions.js" type="text/javascript"></script>
-<script defer src="./clusteringAPI/markerFunctions.js" type="text/javascript"></script>
+<!-- Clustering API files -->
+<script src="./clusteringAPI/clusteringInterface.js" type="text/javascript"></script>
+<script src="./clusteringAPI/clusteringLogic.js" type="text/javascript"></script>
+<script src="./clusteringAPI/mapFunctions.js" type="text/javascript"></script>
+<script src="./clusteringAPI/markerFunctions.js" type="text/javascript"></script>
 
 </body>
 </html>

@@ -1,5 +1,9 @@
 'use strict';
-function initMopsiClustering() {
+
+/* **************************************
+	Functions
+ * **************************************/
+function initMopsiClustering () {
 	let options = {
 		clusteringMethod: "gridBased",
 		serverClient: "client", // client | server
@@ -16,7 +20,7 @@ function initMopsiClustering() {
 		thumbPosition: 'top-left'
 	};
 
-	let clusteringObj = new mopsiMarkerClustering(map, options, mapDiv);
+	let clusteringObj = new mopsiMarkerClustering( map, options, mapDiv );
 
 	// location points with the strict format {id, Lat, Lng}
 	clusteringObj.addLocations( points );
@@ -27,29 +31,28 @@ function initMopsiClustering() {
 	clusteringObj.cluster();
 }
 
-function initGoogleMap() {
-	map = new google.maps.Map(document.getElementById('googleMap'), {
+function initGoogleMap () {
+	map = new google.maps.Map( document.getElementById( 'googleMap' ), {
 		center: mapCentre,
 		zoom: initialZoom,
 		minZoom: 3,
 		maxZoom: 20,
 		styles: [
-	        {
-	            featureType: "poi",
-	            elementType: "labels",
-	            stylers: [{ visibility: "off" }]
-	        }
-    ]
-	});
+			{
+				featureType: "poi",
+				elementType: "labels",
+				stylers: [ { visibility: "off" } ]
+			}
+		]
+	} );
 
-	google.maps.event.addListenerOnce(map, 'tilesloaded', function () {
+	google.maps.event.addListenerOnce( map, 'tilesloaded', function () {
 		initMopsiClustering();
-	});
+	} );
 
-
-	document.addEventListener("clustering_done", function (event) {
+	document.addEventListener( "clustering_done", function ( event ) {
 		event.clusteringObj.display();
-	});
+	} );
 
 	// the following listeners returns these objects.
 	// These information can be used for whatever purpose you need it for.
@@ -63,23 +66,31 @@ function initGoogleMap() {
 	 *      .clusterSize
 	 *      .id - the ID of the single data point object
 	 */
-	document.addEventListener("click_single", function (event) {
-		alert("You clicked a single image.");
-		console.log(event);
-	});
-	document.addEventListener("rightclick_single", function (event) {
-		alert("A right click has happened!");
-		console.log(event);
-	});
+	document.addEventListener( "click_single", function ( event ) {
+		alert( "You clicked a single image." );
+		console.log( event );
+	} );
+	document.addEventListener( "rightclick_single", function ( event ) {
+		alert( "A right click has happened!" );
+		console.log( event );
+	} );
 
-	document.addEventListener("click_cluster", function (event) {
-		alert("A CLUSTER!");
-		console.log(event);
-	});
-	document.addEventListener("rightclick_cluster", function (event) {
-		console.log(event);
-	});
+	document.addEventListener( "click_cluster", function ( event ) {
+		alert( "A CLUSTER!" );
+		console.log( event );
+	} );
+	document.addEventListener( "rightclick_cluster", function ( event ) {
+		console.log( event );
+	} );
 }
 
+/* **************************************
+	Main code
+ * **************************************/
+
 let map;
-let mapDiv = document.getElementById("googleMap");
+let mapDiv = document.getElementById( "googleMap" );
+
+window.onload = () => {
+	initGoogleMap();
+}
