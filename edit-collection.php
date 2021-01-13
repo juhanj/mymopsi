@@ -55,37 +55,52 @@ array_push(
 <!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 <div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
-<main class="main-body-container">
+<main class="main-body-container medium-width">
 
+	<!-- Edit name -->
 	<form class="box" method="post">
+		<!-- Input field -->
 		<label>
 			<span class="label required"><?= $lang->NAME ?></span>
 			<input type="text" name="name" value="<?= $collection->name ?>"
 			       placeholder="Write new name here" required>
 		</label>
+		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="method" value="edit_name">
+		<input type="hidden" name="request" value="edit_name">
+		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
+		<!-- Submit -->
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 	</form>
 
+	<!-- Edit description -->
 	<form class="box" method="post">
+		<!-- Input field -->
 		<label>
 			<span class="label required"><?= $lang->DESCRIPTION ?></span>
 			<?php // No line breaks for textarea, because it shows in HTML output to user ?>
 			<textarea name="description" cols="30" rows="4"><?= $collection->description ?></textarea>
 		</label>
+		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="method" value="edit_description">
+		<input type="hidden" name="request" value="edit_description">
+		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
+		<!-- Submit -->
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 	</form>
 
 	<form class="box" method="post">
 		<!-- Public -->
 		<label class="checkbox-grid margins-off">
-			<input type="checkbox" name="public">
+			<input type="checkbox" name="public" onchange="this.form.submit()">
 			<span class="label"><?= $lang->PUBLIC ?></span>
 		</label>
 		<input type="hidden" name="class" value="collection">
-		<input type="hidden" name="method" value="edit_public">
+		<input type="hidden" name="request" value="edit_public">
+		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
 	</form>
+
+	<hr>
 
 	<section class="box warning">
 		<p>
