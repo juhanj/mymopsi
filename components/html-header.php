@@ -2,7 +2,7 @@
 
 <header class="site-header margins-off" id="site-header">
 	<nav class="breadcrumbs-navigation margins-off">
-		<span><img src="./img/mopsi128.png" alt="MyMopsi logo" style="height: 1rem"></span>
+		<span><img src="./img/mopsi128.png" alt="MyMopsi" style="height: 1rem"></span>
 		<span class="separator">•</span>
 		<?php foreach ( $breadcrumbs_navigation as $breadcrumb ) : ?>
 			<a href="<?= $breadcrumb[1] ?>"><?= $breadcrumb[0] ?></a>
