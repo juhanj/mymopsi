@@ -16,14 +16,21 @@ if ( !$collection ) {
 	exit();
 }
 
+array_push(
+	$breadcrumbs_navigation,
+	[ 'User', WEB_PATH . '/collections.php' ]
+);
+
 /*
  * Pagination code:
  */
+// Get the GET parameter values:
 $page = (int)($_GET[ 'page' ] ?? 1); // Page number
 $items_per_page = (int)($_GET[ 'ipp' ] ?? 50); // Items Per Page
 $order_column = (int)($_GET[ 'col' ] ?? 0);
 $order_direction = (int)($_GET[ 'dir' ] ?? 1); // ASC || DESC
 
+// Check that the page number is valid (max page number is checked later)
 if ( $page < 1 ) {
 	$page = 1;
 }
@@ -31,16 +38,12 @@ if ( $page < 1 ) {
 if ( $items_per_page < 1 || $items_per_page > 1000 ) {
 	$items_per_page = 50;
 }
+// Calculate offset (where to start returning images on a list) based on numbers above
 $offset = ($page - 1) * $items_per_page;
 
 $collection->getImagesWithPagination( $db, [ $items_per_page, $offset ], [ $order_column, $order_direction ] );
 
-array_push(
-	$breadcrumbs_navigation,
-	[ 'User', WEB_PATH . '/collections.php' ]
-);
-
-// In case there are fewer images than wanted on page
+// In case there are fewer images than wanted on page, set IPP to total nro images
 if ( $collection->number_of_images < $items_per_page ) {
 	$items_per_page = $collection->number_of_images;
 }
@@ -49,6 +52,7 @@ $total_pages = ($collection->number_of_images !== 0)
 	? ceil( $collection->number_of_images / $items_per_page )
 	: 1;
 
+// If current page is larger than total pages possible, redirect to max page count
 if ( $page > $total_pages ) {
 	header( "Location:collection.php?id={$collection->random_uid}&page={$total_pages}&ipp={$items_per_page}&col={$order_column}&dir={$order_direction}" );
 	exit();
@@ -158,13 +162,15 @@ $orders = [
 		</div>
 
 		<!-- Images list -->
-		<ul class="image-list">
-			<?php foreach ( $collection->images as $img ) : ?>
-				<li class="image">
-					<a href="./edit-image.php?id=<?= $img->random_uid ?>" class="link">
-						<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
-						     class="img" alt="<?= $img->name ?>">
-					</a>
+		<ul class="image-list" id="imageList">
+			<?php foreach ( $collection->images as $index => $img ) : ?>
+				<li class="image-list-item openOverlay" data-id="<?= $img->random_uid ?>">
+					<!--					<span class="openOverlay">-->
+					<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
+					     class="img-thumb" alt="<?= $img->name ?>"
+					     data-id="<?= $img->random_uid ?>"
+					     data-name="<?= $img->name ?>">
+					<!--					</span>-->
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -180,6 +186,29 @@ $orders = [
 </main>
 
 <?php require 'html-footer.php'; ?>
+
+<div id="overlay" class="dark-overlay-bg hidden" hidden>
+	<div class="overlay-container">
+		<section class="overlay-header-container center margins-off">
+			<a href="" class="button" id="imageEditLink">
+				<?= $lang->EDIT ?>
+				<span class="material-icons">edit</span>
+			</a>
+			<span id="imageName"></span>
+			<a href="" class="button" id="imageMapLink">
+				<?= $lang->MAP ?>
+				<span class="material-icons">place</span>
+			</a>
+			<button class="button" id="closeOverlay">
+				<span class="material-icons">close</span>
+			</button>
+		</section>
+
+		<section class="overlay-image-container">
+			<img src="" class="image-full" id="imageFull" alt="">
+		</section>
+	</div>
+</div>
 
 <script>
 	// These are used in page-specific JS-file, for header-link.
