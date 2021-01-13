@@ -47,17 +47,33 @@ array_push(
 		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>">
 	</section>
 
+	<!-- Name -->
 	<form class="box" method="post">
-		<label> <span class="label required"><?= $lang->NAME ?></span>
+		<!-- Input -->
+		<label> <span class="label"><?= $lang->NAME ?></span>
 			 <input type="text" name="name" value="<?= $image->name ?>" required>
 		</label>
+		<!-- Server stuff for PHP request handling -->
+		<input type="hidden" name="class" value="image">
+		<input type="hidden" name="request" value="edit_name">
+		<input type="hidden" name="collection" value="<?= $image->random_uid ?>">
+		<!-- Submit -->
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 	</form>
 
+	<!-- Description -->
 	<form class="box" method="post">
+		<!-- Image -->
 		<label>
-			<span class="label required"><?= $lang->DESCRIPTION ?></span>
-			<input type="text" name="description" value="<?= $imaghe->description ?>" required>
+			<span class="label"><?= $lang->DESCRIPTION ?></span>
+			<textarea name="description" cols="30" rows="4" required><?= $image->description ?></textarea>
 		</label>
+		<!-- Server stuff for PHP request handling -->
+		<input type="hidden" name="class" value="image">
+		<input type="hidden" name="request" value="edit_description">
+		<input type="hidden" name="collection" value="<?= $image->random_uid ?>">
+		<!-- Submit -->
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 	</form>
 
 	<section class="box">
@@ -65,6 +81,8 @@ array_push(
 			<?= $lang->EDIT_GPS ?>
 		</a>
 	</section>
+
+	<hr>
 
 	<section class="box warning">
 		<p>
