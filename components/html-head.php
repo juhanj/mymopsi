@@ -40,6 +40,6 @@
 	<!-- Main javascript file -->
 	<script defer src="<?= WEB_PATH ?>/js/main.js"></script>
 	<!-- Page specific javascript file -->
-	<script defer src="<?= WEB_PATH ?>/js/<?= CURRENT_PAGE ?>.js"></script>
+	<script type="module" defer src="<?= WEB_PATH ?>/js/<?= CURRENT_PAGE ?>.js"></script>
 
 </head>
