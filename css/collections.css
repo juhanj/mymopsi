@@ -12,7 +12,7 @@ header #header-user-link:hover {
 }
 
 /******************************************************************************
-    Collections Card layout
+    Collections list
  *****************************************************************************/
 .collections-list {
     display: flex;
@@ -36,4 +36,44 @@ header #header-user-link:hover {
     text-decoration: none;
     color: inherit;
     padding: 1.5rem;
+}
+
+/******************************************************************************
+    List single card layout
+ *****************************************************************************/
+.collection-link {
+    display: grid;
+    grid: 'name image' auto
+        'description image' auto
+        / 1fr auto;
+}
+
+.name {
+    grid-area: name;
+}
+.description {
+    grid-area: description;
+}
+.image {
+    grid-area: image;
+    margin: auto;
+    min-width: 5rem;
+    min-height: 5rem;
+    height: 5rem;
+    width: auto;
+}
+.count {
+    grid-area: image;
+    display: flex;
+    margin: auto;
+    background-color: hsl(0, 0%, 100%, .8);
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    font-weight: bold;
 }

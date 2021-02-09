@@ -55,7 +55,7 @@ elseif ( isset($_GET['public']) or !$user ) {
 <main class="main-body-container medium-width">
 
 	<section class="buttons">
-		<a href="create-collection.php" class="button collection-link">
+		<a href="create-collection.php" class="button">
 			<?= $lang->NEW_COLLECTION ?>
 			<span class="material-icons">create_new_folder</span>
 		</a>
@@ -66,11 +66,13 @@ elseif ( isset($_GET['public']) or !$user ) {
 			<?php foreach ( $collections as $c ) : ?>
 				<li class="collection box" data-id="<?= $c->random_uid ?>">
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
-						<h3><?= $c->name ?: substr($c->random_uid, 0, 5) ?></h3>
-						<?php if ( $c->description ) : ?>
-							<p class="description"><?= $c->description ?></p>
-						<?php endif; ?>
-						<p><?= $lang->NRO_OF_IMGS ?>: <?= $c->number_of_images ?></p>
+						<h3 class="name">
+							<?= $c->name ?: substr($c->random_uid, 0, 5) ?> &mdash;
+							<span><span class="material-icons">photo_library</span> <?= $c->number_of_images ?></span>
+						</h3>
+						<p class="description"><?= $c->description ?? '' ?></p>
+						<img class="image" src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb">
+						<span class="count"><?= $c->number_of_images ?></span>
 					</a>
 				</li>
 			<?php endforeach; ?>
