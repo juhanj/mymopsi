@@ -22,7 +22,8 @@
 			"en": "Login required to use this feature."
 		},
 		"RETURN": {
-			"en": "<span class='material-icons'>arrow_back</span>Return"
+			"en": "<span class='material-icons'>arrow_back</span>Return",
+			"fi": "<span class='material-icons'>arrow_back</span>Takaisin"
 		},
 		"EDIT_SUCCESS": {
 			"en": "Changes saved.",
@@ -77,16 +78,12 @@
 	},
 	"settings": {
 		"HTML_TITLE": {
-			"en": "MyMopsi | Settings"
-		},
-		"HEADER_TITLE": {
-			"en": "Settings"
+			"en": "MyMopsi | Settings",
+			"fi": "MyMopsi | Asetukset"
 		},
 		"SETT_LANG_HEAD": {
-			"en": "Select language"
-		},
-		"SETT_LANG_INFO": {
-			"en": "Refresh page to apply selected language."
+			"en": "Select language",
+			"fi": "Valitse kieli"
 		}
 	},
 	"login-handler": {
@@ -103,7 +100,8 @@
 			"fi": "MyMopsi | Kokoelmat"
 		},
 		"HEADER_TITLE": {
-			"en": "User | <a id='header-user-link' class='margins-off'><span id='header-user-name'></span><span class='material-icons'>edit</span></a>"
+			"en": "User | <a id='header-user-link' class='margins-off'><span id='header-user-name'></span><span class='material-icons'>edit</span></a>",
+			"fi": "Käyttäjä | <a id='header-user-link' class='margins-off'><span id='header-user-name'></span><span class='material-icons'>edit</span></a>"
 		},
 		"NEW_COLLECTION": {
 			"en": "New Collection",
