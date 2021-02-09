@@ -1,6 +1,9 @@
 'use strict';
 
-export default class Cookies {
+// DAY is needed in setCookie for expiry date
+import {DAY} from "./constants.js";
+
+export class Cookies {
 	/**
 	 * Set cookies with given name, value, and expiry date.
 	 * path = /mopsi_dev/mymopsi  &  SameSite = Strict
@@ -10,7 +13,7 @@ export default class Cookies {
 	 */
 	static setCookie ( name, value = '', days = 30 ) {
 		let date = new Date();
-		date.setTime( date.getTime() + (days * 24 * 60 * 60 * 1000) );
+		date.setTime( date.getTime() + (days * DAY * 1000) );
 
 		let cookieValue = `${name}=${value||''}`;
 		let cookieExpire = `expires=${date.toUTCString()}`;
