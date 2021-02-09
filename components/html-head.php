@@ -38,7 +38,7 @@
 	<script defer src="https://unpkg.com/dayjs"></script>
 
 	<!-- Main javascript file -->
-	<script defer src="<?= WEB_PATH ?>/js/main.js"></script>
+	<script type="module" defer src="<?= WEB_PATH ?>/js/main.js"></script>
 	<!-- Page specific javascript file -->
 	<script type="module" defer src="<?= WEB_PATH ?>/js/<?= CURRENT_PAGE ?>.js"></script>
 

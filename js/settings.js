@@ -1,6 +1,6 @@
 "use strict";
 
-import Cookies from './class/cookies.class.js';
+import {Cookies} from './modules/cookies.class.js';
 
 document.querySelectorAll("input[name='lang']").forEach((input) => {
 	// Add a listener for user made changes
