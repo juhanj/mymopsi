@@ -89,15 +89,19 @@ array_push(
 		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 	</form>
 
+	<!-- Edit visibiblity (public / private)-->
 	<form class="box" method="post">
-		<!-- Public -->
+		<!-- Input field -->
 		<label class="checkbox-grid margins-off">
-			<input type="checkbox" name="public" onchange="this.form.submit()">
+			<input type="checkbox" name="public" <?= ($collection->public) ? 'checked' : '' ?>
+			       onchange="this.form.submit()">
 			<span class="label"><?= $lang->PUBLIC ?></span>
 		</label>
+		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="request" value="edit_public">
 		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
+		<!-- Submit is done automatically when input changed -->
 	</form>
 
 	<hr>
