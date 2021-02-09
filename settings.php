@@ -30,7 +30,6 @@ array_push(
 
 	<article class="box settings">
 		<h2 class="settings-head"><?= $lang->SETT_LANG_HEAD ?></h2>
-		<p><?= $lang->SETT_LANG_INFO ?></p>
 
 		<label for="english">
 			<input type="radio" name="lang" value="en" id="english"

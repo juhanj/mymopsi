@@ -9,6 +9,7 @@ array_push(
 
 //debug( $_POST );
 //debug( $_FILES );
+//debug( $_COOKIE );
 ?>
 
 <!DOCTYPE html>
@@ -24,21 +25,14 @@ array_push(
 <?php require 'html-header.php'; ?>
 
 <main class="main-body-container">
+	<div class="box">
+		<button class="button" id="button">Press here!</button>
+	</div>
 </main>
 
 <?php require 'html-footer.php'; ?>
 
-<script>
-	async function getJSON ( url, returnJSON = true ) {
-		let response = await fetch( url );
-		return (returnJSON) ? await response.json() : await response;
-	}
-
-	(async () => {
-		console.log(await getJSON( '../json/lang.json' ) )
-	})()
-
-	// let lang = getJSON( '../json/lang.json' ).then( (response) => response );
+<script type="module">
 </script>
 
 </body>
