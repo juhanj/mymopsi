@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
-require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var DBConnection $db
- * @var Language $lang
- * @var User $user
+ * @var Language     $lang
+ * @var User         $user
  */
 
 $feedback = Common::checkFeedbackAndPOST();
@@ -17,20 +17,20 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 $collections = [];
 
 // If use is admin, get whatever is wanted
-if ( $user and $user->admin and !empty($_GET['user']) ) {
-	$temp_user = User::fetchUserByRUID( $db, $_GET['user'] );
+if ( $user and $user->admin and !empty( $_GET[ 'user' ] ) ) {
+	$temp_user = User::fetchUserByRUID( $db, $_GET[ 'user' ] );
 
 	$temp_user->getCollections( $db );
 
 	$collections = $temp_user->collections;
 }
 // Logged in user, get own collections
-elseif ( $user and !isset($_GET['public']) ) {
+else if ( $user and !isset( $_GET[ 'public' ] ) ) {
 	$user->getCollections( $db );
 	$collections = $user->collections;
 }
 // Public collections (if wanted or not if not logged in)
-elseif ( isset($_GET['public']) or !$user ) {
+else if ( isset( $_GET[ 'public' ] ) or !$user ) {
 	$collections = $db->query(
 		"select * from mymopsi_collection where public = true",
 		[],
@@ -66,9 +66,12 @@ elseif ( isset($_GET['public']) or !$user ) {
 			<?php foreach ( $collections as $c ) : ?>
 				<li class="collection box" data-id="<?= $c->random_uid ?>">
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
-						<h3 class="name">
-							<?= $c->name ?: substr($c->random_uid, 0, 5) ?> &mdash;
-							<span><span class="material-icons">photo_library</span> <?= $c->number_of_images ?></span>
+						<h3 class="name margins-off">
+							<span><?= $c->name ?: substr( $c->random_uid, 0, 5 ) ?></span>
+							<span>
+								<?= $c->number_of_images ?>
+								<span class="material-icons">photo_library</span>
+							</span>
 						</h3>
 						<p class="description"><?= $c->description ?? '' ?></p>
 						<img class="image" src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb">
@@ -79,7 +82,7 @@ elseif ( isset($_GET['public']) or !$user ) {
 		</ol>
 
 		<?php if ( !$collections ) : ?>
-		<p><?= $lang->NO_COLLECTIONS ?></p>
+			<p><?= $lang->NO_COLLECTIONS ?></p>
 		<?php endif; ?>
 	</article>
 

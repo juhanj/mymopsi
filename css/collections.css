@@ -3,77 +3,84 @@
     Collections view
  *****************************************************************************/
 header #header-user-link {
-    color: var(--text-light);
-    text-decoration: underline dashed;
+	color: var(--text-light);
+	text-decoration: underline dashed;
 }
+
 header #header-user-link:hover {
-    color: var(--primary-light);
-    text-decoration: underline solid;
+	color: var(--primary-light);
+	text-decoration: underline solid;
 }
 
 /******************************************************************************
     Collections list
  *****************************************************************************/
 .collections-list {
-    display: flex;
-    flex-flow: column;
-    justify-content: space-evenly;
-    align-content: space-around;
+	display: flex;
+	flex-flow: column;
+	justify-content: space-evenly;
+	align-content: space-around;
 }
 
 .collections-list .collection {
-    margin: .5rem;
-    padding: 0;
+	margin: .5rem;
+	padding: 0;
 }
 
 .collections-list .collection:hover,
 .collections-list .collection:focus {
-    top: -10px;
-    box-shadow: 0 0.3rem 0.3rem 0.1rem var(--button-shadow);
+	top: -10px;
+	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--button-shadow);
 }
 
 .collections-list .collection .collection-link {
-    text-decoration: none;
-    color: inherit;
-    padding: 1.5rem;
+	text-decoration: none;
+	color: inherit;
+	padding: 1.5rem;
 }
 
 /******************************************************************************
     List single card layout
  *****************************************************************************/
 .collection-link {
-    display: grid;
-    grid: 'name image' auto
+	display: grid;
+	grid: 'name image' auto
         'description image' auto
         / 1fr auto;
 }
 
 .name {
-    grid-area: name;
+	grid-area: name;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
-.description {
-    grid-area: description;
-}
-.image {
-    grid-area: image;
-    margin: auto;
-    min-width: 5rem;
-    min-height: 5rem;
-    height: 5rem;
-    width: auto;
-}
-.count {
-    grid-area: image;
-    display: flex;
-    margin: auto;
-    background-color: hsl(0, 0%, 100%, .8);
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-    justify-items: center;
 
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    font-weight: bold;
+.description {
+	grid-area: description;
+}
+
+.image {
+	grid-area: image;
+	margin: auto;
+	min-height: 5rem;
+	height: 5rem;
+	width: auto;
+}
+
+.count {
+	grid-area: image;
+	display: flex;
+	margin: auto;
+	background-color: hsl(0, 0%, 100%, .9);
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	justify-items: center;
+
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	font-weight: bold;
+	border: 1px black solid;
 }
