@@ -9,11 +9,11 @@ function openOverlay ( listItem ) {
 	overlay.hidden = false;
 	overlay.classList.remove( 'hidden' );
 
-	imageEditLink.href = `./edit-image.php?id=${listItem.dataset.id}`;
-	imageNameTitle.innerText = listItem.dataset.name;
-	imageMapLocationLink.href = `./map.php?cid=${collectionRUID}&iid=${listItem.dataset.id}`;
+	overlayImageEditLink.href = `./edit-image.php?id=${listItem.dataset.id}`;
+	overlayImageNameTitle.innerText = listItem.dataset.name;
+	overlayImageMapLocationLink.href = `./map.php?cid=${collectionRUID}&iid=${listItem.dataset.id}`;
 
-	imageElement.src = `./img/img.php?id=${listItem.dataset.id}&full`;
+	overlayImageElement.src = `./img/img.php?id=${listItem.dataset.id}&full`;
 }
 
 /* **************************************
@@ -26,15 +26,19 @@ let headerCollectionNameName = document.getElementById( 'header-coll-name' );
 headerCollectionNameName.innerText = collectionName;
 headerCollectionNameLink.href = `edit-collection.php?id=${collectionRUID}`;
 
-// Overlay code:
+// Image list elements
 let imageList = document.getElementById( 'imageList' );
-let overlay = document.getElementById( 'overlay' );
-let imageEditLink = document.getElementById( 'imageEditLink' );
-let imageNameTitle = document.getElementById( 'imageName' );
-let imageMapLocationLink = document.getElementById( 'imageMapLink' );
-let overlayClose = document.getElementById( 'closeOverlay' );
-let imageElement = document.getElementById( 'imageFull' );
+let imageElements = imageList.querySelectorAll( 'img.img-thumb' );
 
+// Overlay elements:
+let overlay = document.getElementById( 'overlay' );
+let overlayImageEditLink = document.getElementById( 'imageEditLink' );
+let overlayImageNameTitle = document.getElementById( 'imageName' );
+let overlayImageMapLocationLink = document.getElementById( 'imageMapLink' );
+let overlayClose = document.getElementById( 'closeOverlay' );
+let overlayImageElement = document.getElementById( 'imageFull' );
+
+// When image is clicked, open fullscreen overlay
 imageList.onclick = (event) => {
 	let element = event.target;
 
@@ -42,13 +46,13 @@ imageList.onclick = (event) => {
 		openOverlay( element );
 	}
 }
-
+// Overlay close:
 overlayClose.onclick = () => {
 	overlay.hidden = true;
 	overlay.classList.add( 'hidden' );
 
-	imageEditLink.href = '';
-	imageNameTitle.innerText = '';
-	imageMapLocationLink.href = '';
-	imageElement.src = '';
+	overlayImageEditLink.href = '';
+	overlayImageNameTitle.innerText = '';
+	overlayImageMapLocationLink.href = '';
+	overlayImageElement.src = '';
 }
