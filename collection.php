@@ -21,54 +21,49 @@ array_push(
 	[ 'User', WEB_PATH . '/collections.php' ]
 );
 
-/*
+/* ************************************
  * Pagination code:
- */
+ **************************************/
+
+// Items per page : how many items are shown per page
+$ipp = (int)($_GET[ 'ipp' ] ?? $_SESSION['ipp'] ?? $_COOKIE['ipp'] ?? 100); // Items Per Page
+// Check IPP validity (number between min<->max)
+$ipp = ($ipp < 1 || $ipp > 1000) ? 100 : $ipp;
+$ipp = ($collection->number_of_images < $ipp) ? $collection->number_of_images : $ipp;
+
 // Get the GET parameter values:
 $page = (int)($_GET[ 'page' ] ?? 1); // Page number
-$items_per_page = (int)($_GET[ 'ipp' ] ?? 50); // Items Per Page
-$order_column = (int)($_GET[ 'col' ] ?? 0);
-$order_direction = (int)($_GET[ 'dir' ] ?? 1); // ASC || DESC
+$page = ($page < 1) ? 1 : $page;
+// Total number of pages
+$total_pages = ceil( $collection->number_of_images / $ipp );
+$page = ( $page > $total_pages ) ? $total_pages : $page;
 
-// Check that the page number is valid (max page number is checked later)
-if ( $page < 1 ) {
-	$page = 1;
-}
-// Check that the IPP is valid
-if ( $items_per_page < 1 || $items_per_page > 1000 ) {
-	$items_per_page = 50;
-}
-// Calculate offset (where to start returning images on a list) based on numbers above
-$offset = ($page - 1) * $items_per_page;
+// Sorting order column : which column are the images sorted by
+// Valid columns are listed below
+$ord_col = (int)($_GET[ 'col' ] ?? 0); // 0 = name
+// Sorting order direction : ascending || descending
+$ord_dir = (int)($_GET[ 'dir' ] ?? 1); // 0=ASC || 1=DESC
 
-$collection->getImagesWithPagination( $db, [ $items_per_page, $offset ], [ $order_column, $order_direction ] );
-
-// In case there are fewer images than wanted on page, set IPP to total nro images
-if ( $collection->number_of_images < $items_per_page ) {
-	$items_per_page = $collection->number_of_images;
-}
-
-$total_pages = ($collection->number_of_images !== 0)
-	? ceil( $collection->number_of_images / $items_per_page )
-	: 1;
-
-// If current page is larger than total pages possible, redirect to max page count
-if ( $page > $total_pages ) {
-	header( "Location:collection.php?id={$collection->random_uid}&page={$total_pages}&ipp={$items_per_page}&col={$order_column}&dir={$order_direction}" );
-	exit();
-}
-
-$first_page = "?id={$collection->random_uid}&page=1&ipp={$items_per_page}&col={$order_column}&dir={$order_direction}";
-$prev_page = "?id={$collection->random_uid}&page=" . ($page - 1) . "&ipp={$items_per_page}&col={$order_column}&dir={$order_direction}";
-$next_page = "?id={$collection->random_uid}&page=" . ($page + 1) . "&ipp={$items_per_page}&col={$order_column}&dir={$order_direction}";
-$last_page = "?id={$collection->random_uid}&page={$total_pages}&ipp={$items_per_page}&col={$order_column}&dir={$order_direction}";
-
+// Sorting oder columns
 $orders = [
 	[ 'Name', 'Mediatype', 'Size', 'Location', 'Date created', 'Date added' ],
 	[ "Ascending", "Descending" ],
 ];
-?>
 
+// Calculate offset (where to start returning images on a list) based on numbers above
+$offset = ($page - 1) * $ipp;
+
+$first_page = "?id={$collection->random_uid}&page=1&ipp={$ipp}&col={$ord_col}&dir={$ord_dir}";
+$prev_page = "?id={$collection->random_uid}&page=" . ($page - 1) . "&ipp={$ipp}&col={$ord_col}&dir={$ord_dir}";
+$next_page = "?id={$collection->random_uid}&page=" . ($page + 1) . "&ipp={$ipp}&col={$ord_col}&dir={$ord_dir}";
+$last_page = "?id={$collection->random_uid}&page={$total_pages}&ipp={$ipp}&col={$ord_col}&dir={$ord_dir}";
+
+$disabled_prev = ($page == 1) ? 'disabled' : '';
+$disabled_next = ($page == $total_pages) ? 'disabled' : '';
+
+$collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_dir ] );
+
+?>
 <!DOCTYPE html>
 <html lang="fi">
 
@@ -94,50 +89,67 @@ $orders = [
 		</a>
 	</div>
 
+	<hr>
+
 	<?php if ( $collection->number_of_images != 0 ) : ?>
+		<!-- Pagination -->
 		<div class="pagination">
+			<!-- Options form -->
 			<form class="options margins-off" method="GET" id="pagination-form">
-				<input type="hidden" name="id" value="<?= $collection->random_uid ?>">
+
+				<?php if ( $collection->number_of_images > 100 ) :
+				// Less than 100 images don't show pagination, just takes space ?>
+				<!-- Items Per Page -->
 				<label class="items-per-page margins-off">
+					<!-- Label for IPP -->
 					<span class="label">Items per page</span>
-					<select name="ipp" onchange="this.form.submit()">
-						<?php $x = 10;
-						for ( $i = 0; $i < 5; ++$i ) {
-							echo ($x == $items_per_page)
-								? "<option value='{$x}' selected>{$x}</option>"
-								: "<option value='{$x}'>{$x}</option>";
-							$x = ($i % 2 == 0)
-								? $x = $x * 5
-								: $x = $x * 2;
-						} ?>
-					</select>
+					<!-- Input field for IPP -->
+					<input type="number" min="1" max="1000" step="1" onchange="this.form.submit()"
+					       name="ipp" value="<?= $ipp ?>"
+					       list="suggestedIPPValues" class="option" style="width: 5rem">
 				</label>
+				<?php endif; ?>
+
+				<!-- Sort column -->
 				<label class="sort-by margins-off">
-					Sort <span class="material-icons">sort</span>
-					<select name="col" onchange="this.form.submit()">
+					<!-- Label for sort -->
+					<span class="label">Sort <span class="material-icons">sort</span></span>
+					<!-- Input field, sort-->
+					<select name="col" onchange="this.form.submit()" class="option">
 						<?php foreach ( $orders[ 0 ] as $key => $column ) : ?>
-							<option
-								value="<?= $key ?>" <?= ($key == $order_column) ? 'selected' : '' ?>><?= $column ?></option>
+							<option value="<?= $key ?>" <?= ($key == $ord_col) ? 'selected' : '' ?>>
+								<?= $column ?>
+							</option>
 						<?php endforeach; ?>
 					</select>
 				</label>
+
+				<!-- Sorting order DESC / ASC -->
 				<label class="sort-order margins-off">
-					<span class="material-icons">swap_vert</span>
-					<select name="dir" class="sort-order" onchange="this.form.submit()">
+					<!-- Label for sorting order -->
+					<span class="label material-icons">swap_vert</span>
+					<!-- Input field for sorting order -->
+					<select name="dir" class="sort-order option" onchange="this.form.submit()">
 						<?php foreach ( $orders[ 1 ] as $key => $column ) : ?>
-							<option
-								value="<?= $key ?>" <?= ($key == $order_direction) ? 'selected' : '' ?>><?= $column ?></option>
+							<option value="<?= $key ?>" <?= ($key == $ord_dir) ? 'selected' : '' ?>>
+								<?= $column ?>
+							</option>
 						<?php endforeach; ?>
 					</select>
 				</label>
+
+				<!-- Server side stuff -->
+				<input type="hidden" name="id" value="<?= $collection->random_uid ?>">
 			</form>
 
+		<?php if ( $collection->number_of_images > 100 ) :
+			// Less than 100 images don't show pagination, just takes space ?>
 			<!-- Page navigation (prev / current / next) -->
 			<nav class="page-navigation margins-off">
 				<!-- Backwards navigation (previous / first page) -->
 				<!--				<div class="buttons backward margins-off">-->
-				<a class="button first-page" href="<?= $first_page ?>"> <i class="material-icons">first_page</i> </a>
-				<a class="button" href="<?= $prev_page ?>"> <i class="material-icons">navigate_before</i> </a>
+				<a class="button <?= $disabled_prev ?>" href="<?= $first_page ?>"> <i class="material-icons">first_page</i> </a>
+				<a class="button <?= $disabled_prev ?>" href="<?= $prev_page ?>"> <i class="material-icons">navigate_before</i> </a>
 				<!--				</div>-->
 
 				<!-- Page select -->
@@ -151,30 +163,34 @@ $orders = [
 
 				<!-- Forwards navigation (next / last page) -->
 				<!--				<div class="buttons forward margins-off">-->
-				<a class="button" href="<?= $next_page ?>"> <i class="material-icons">navigate_next</i> </a>
-				<a class="button last-page" href="<?= $last_page ?>"> <i class="material-icons">last_page</i> </a>
+				<a class="button <?= $disabled_next ?>" href="<?= $next_page ?>"> <i class="material-icons">navigate_next</i> </a>
+				<a class="button <?= $disabled_next ?>" href="<?= $last_page ?>"> <i class="material-icons">last_page</i> </a>
 				<!--				</div>-->
 			</nav>
-
-			<p class="current-ipp-value">
-				<?= $offset + 1 ?>&ndash;<?= $offset + $items_per_page ?> / <?= $collection->number_of_images ?>
-			</p>
+		<?php endif; ?>
 		</div>
+
+		<hr>
 
 		<!-- Images list -->
 		<ul class="image-list" id="imageList">
 			<?php foreach ( $collection->images as $index => $img ) : ?>
 				<li class="image-list-item openOverlay" data-id="<?= $img->random_uid ?>">
-					<!--					<span class="openOverlay">-->
 					<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
-					     class="img-thumb" alt="<?= $img->name ?>"
+					     class="img-thumb"
+					     alt="<?= $img->name ?>"
 					     data-id="<?= $img->random_uid ?>"
-					     data-name="<?= $img->name ?>">
-					<!--					</span>-->
+					     data-name="<?= $img->name ?>"
+					     onerror="this.onerror=null;this.src='./img/mopsi.ico'">
 				</li>
 			<?php endforeach; ?>
 		</ul>
 
+		<p class="current-ipp-value">
+			<?= $offset + 1 ?>&ndash;<?= $offset + $ipp ?> / <?= $collection->number_of_images ?>
+		</p>
+
+		<hr>
 	<?php else : ?>
 		<!-- If there are no images in collection, print a short, polite message telling
 			the user that, because apparently the empty page isn't enough of a message... -->
