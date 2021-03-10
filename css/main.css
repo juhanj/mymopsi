@@ -206,8 +206,12 @@ body.grid {
 	background-color: var(--error-darker);
 }
 
-.button:disabled {
-	filter: grayscale(70%);
+.button:disabled,
+.button.disabled {
+	filter: grayscale(90%);
+	pointer-events: none;
+	background-color: var(--input-bg);
+	box-shadow: unset;
 }
 
 a.button {
