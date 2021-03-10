@@ -40,10 +40,8 @@ let overlayImageElement = document.getElementById( 'imageFull' );
 
 // When image is clicked, open fullscreen overlay
 imageList.onclick = (event) => {
-	let element = event.target;
-
-	if ( element && element.tagName === 'IMG' ) {
-		openOverlay( element );
+	if ( event.target && event.target.tagName === 'IMG' ) {
+		openOverlay( event.target );
 	}
 }
 // Overlay close:
