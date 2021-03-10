@@ -13,7 +13,7 @@
 	justify-content: space-between;
 }
 
-.options select {
+.options .option {
 	width: auto;
 	display: inline;
 	padding: .5rem;
@@ -40,7 +40,16 @@
 
 .page-navigation .button {
 	color: var(--primary-darker);
-	background-color: var(--site-bg);
+	background-color: var(--content-box-bg);
+	border: var(--primary) 1px solid;
+}
+.page-navigation .button.disabled {
+	visibility: hidden;
+}
+
+.page-navigation .button:hover {
+	color: var(--text-light);
+	background-color: var(--primary-darker);
 	border: var(--primary) 1px solid;
 }
 
