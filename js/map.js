@@ -16,7 +16,9 @@ function initMopsiClustering () {
 		// Cluster height and width
 		markerClusterHeight: 39,
 		markerClusterWidth: 48,
-		// [top|center|bottom] - [right|center|left]
+		// [top|center|bottom] - [left|center|right]
+		//   [ 0 | 1 | 2 ]     -    [ 0 | 1 | 2 ]
+		// e.g. int[] = [ 2 , 0 ]
 		thumbPosition: 'top-left'
 	};
 
