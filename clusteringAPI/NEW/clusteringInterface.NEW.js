@@ -343,6 +343,8 @@ class MopsiMarkerClustering {
 		paramsOutput.representativeType = opt.representativeType;
 		paramsOutput.markerStyle = opt.markerStyle;
 
+		paramsOutput.clusteringMethod = opt.clusteringMethod;
+
 		return paramsOutput;
 	}
 
@@ -352,55 +354,46 @@ class MopsiMarkerClustering {
 	/**
 	 * converts representative location of clusters from latitude and longitude to pixel
 	 */
-	convertDataToPixel () {
-		var GBCParams, minX1, maxX1, minX, maxX, minY, maxY, dataCluster;
-		var rep, objCluster, point, lat, lng, i, flag, k, tempIndexes;
+	convertDataToPixel ( params ) {
+		let dataCluster = [];
 
-		GBCParams = this.GBCParams;
+		for ( let [ i, marker ] of markersData.entries() ) {
+			let lat = marker.lat;
+			let lng = marker.lng;
 
-		maxX = GBCParams.maxX;
-		maxY = GBCParams.maxY;
-		minX = GBCParams.minX;
-		minY = GBCParams.minY;
-
-		dataCluster = [];
-
-		try {
-			k = 0;
-			tempIndexes = new Array();
-			for ( i = 0; i < this.markersData.length; i++ ) {
-				lat = this.markersData[i].lat;
-				lng = this.markersData[i].lon;
-
-				// convert to pixel
-				point = this.mapEx.getPointFromLatLng( lat, lng );
-				flag = false;
-				if ( GBCParams.reverseX ) {
-					if ( point.x < GBCParams.maxW && point.x >= minX && point.y <= maxY && point.y >= minY ) {
-						point.x -= minX;
-						flag = true;
-					} else if ( point.x < maxX && point.x >= 0 && point.y <= maxY && point.y >= minY ) {
-						point.x += GBCParams.W1;
-						flag = true;
-					}
-				} else {
-					if ( point.x <= maxX && point.x >= minX && point.y <= maxY && point.y >= minY )
-						flag = true;
+			// convert to pixel
+			let point = this.mapEx.getPointFromLatLng( marker.lat, marker.lng );
+			let flag = false;
+			if ( params.reverseX ) {
+				if ( point.x < params.maxW
+					&& point.x >= params.minX
+					&& point.y <= params.maxY
+					&& point.y >= params.minY ) {
+					point.x -= params.minX;
+					flag = true;
 				}
-
-				if ( flag ) {
-					dataCluster[k] = {};
-					dataCluster[k].x = point.x;
-					dataCluster[k].y = point.y;
-					dataCluster[k].lat = lat;
-					dataCluster[k].lng = lng;
-					tempIndexes[k] = i;
-					k++;
+				else if ( point.x < params.maxX
+					&& point.x >= 0
+					&& point.y <= params.maxY
+					&& point.y >= params.minY ) {
+					point.x += params.W1;
+					flag = true;
 				}
 			}
-			this.tempIndexes = tempIndexes;
-		} catch ( err ) {
-			alert( "Fatal error in clustering!" );
+			else {
+				flag = ( point.x <= params.maxX && point.x >= params.minX
+					&& point.y <= params.maxY && point.y >= params.minY );
+			}
+
+			if ( flag ) {b
+				dataCluster[] = {
+					index: i,
+					x: point.x,
+					y: point.y,
+					lat: marker.lat,
+					lng: marker.lng,
+				};
+			}
 		}
 
 		return dataCluster;
@@ -413,7 +406,13 @@ class MopsiMarkerClustering {
 		let params = this.clusteringParams();
 
 		if ( !this.clusteringOptions.serverSide ) {
-			let dataCluster this.convertDataToPixel();
+			let dataCluster = this.convertDataToPixel( params );
+
+			objCluster = new mopsiClustering( dataCluster, params, this );
+			objClusters = objCluster.applyClustering();
+			// correct indexes (because we selected objects in map view)
+			objClusters = this.correctIndexes( objClusters );
+			objClusters = this.representativesToLatLng( objClusters );
 		}
 
 	}
