@@ -38,14 +38,22 @@ let overlayImageMapLocationLink = document.getElementById( 'imageMapLink' );
 let overlayClose = document.getElementById( 'closeOverlay' );
 let overlayImageElement = document.getElementById( 'imageFull' );
 
+overlayImageElement.onerror = () => {
+	overlayImageElement.src='./img/mopsi.ico';
+}
+
 // When image is clicked, open fullscreen overlay
 imageList.onclick = (event) => {
 	if ( event.target && event.target.tagName === 'IMG' ) {
 		openOverlay( event.target );
 	}
+	else if ( event.target && event.target.tagName === 'LI' ) {
+		openOverlay( event.target.children[0] );
+	}
 }
 // Overlay close:
 overlayClose.onclick = () => {
+	//TODO: separate into own function so can use for ESC keyup as well
 	overlay.hidden = true;
 	overlay.classList.add( 'hidden' );
 
@@ -54,3 +62,6 @@ overlayClose.onclick = () => {
 	overlayImageMapLocationLink.href = '';
 	overlayImageElement.src = '';
 }
+
+//TODO: Add escape keyup eventlistener, for closing overlay (if open)
+// Check for overlay.hidden. No need for separate variable.
