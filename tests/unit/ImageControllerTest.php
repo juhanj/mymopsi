@@ -20,6 +20,7 @@ class ImageControllerTest extends TestCase {
 	public static function setUpBeforeClass (): void {
 		parent::setUpBeforeClass();
 
+		empty_database();
 		set_up_database();
 	}
 
@@ -36,29 +37,41 @@ class ImageControllerTest extends TestCase {
 	}
 
 	public function test_RequestUploadNewImages () {
+
+		// For future unit tests; this doesn't work, as it's not a simple rename()
+		// Should use PHPT and ---POST_RAW---, but that is outside todays work.
+
+		copy(
+			'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set\Kainuu.png',
+			'D:\juhanj\Documents\mymopsi\unit\collections\temp\Kainuu.png'
+		);
+		copy(
+			'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set\Pirkanmaa.png',
+			'D:\juhanj\Documents\mymopsi\unit\collections\temp\Pirkanmaa.png'
+		);
 		$_FILES = [
 			'upload' => [
 				'name' => [
-					0 => 'Ahvenanmaa.png',
-					1 => 'Ahvenanmaa.png'
+					0 => 'Kainuu.png',
+					1 => 'Pirkanmaa.png',
 				],
 				'type' => [
 					0 => 'image/png',
 					1 => 'image/png',
 				],
 				'tmp_name' => [
-					0 => 'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set\Ahvenanmaa.png',
-					1 => 'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set\Ahvenanmaa.png',
+					0 => 'D:\juhanj\Documents\mymopsi\unit\collections\temp\Kainuu.png',
+					1 => 'D:\juhanj\Documents\mymopsi\unit\collections\temp\Pirkanmaa.png',
 				],
 				'error' => [
 					0 => 0,
 					1 => 0,
 				],
 				'size' => [
-					0 => '100000',
-					1 => '100000',
-				]
-			]
+					0 => '30123',
+					1 => '30123',
+				],
+			],
 		];
 
 		$collection = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
@@ -71,7 +84,7 @@ class ImageControllerTest extends TestCase {
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
 		self::assertTrue(
-			$this->ctrl->result['success'],
+			$this->ctrl->result[ 'success' ],
 			print_r( $this->ctrl->result, true )
 		);
 	}
@@ -89,18 +102,18 @@ class ImageControllerTest extends TestCase {
 			'collection' => $collection->random_uid,
 			'photos' => [
 				0 => [
-					'photo_id' => "010170_02-00-00_363192096.jpg",
+					'photo_id' => "040514_15-44-09_1381041452.jpg",
 				],
 				1 => [
-					'photo_id' => "300314_12-15-10_181715815.jpg",
+					'photo_id' => "050614_16-31-26_347325878.jpg",
 				],
-			]
+			],
 		];
 
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
 		self::assertTrue(
-			$this->ctrl->result['success'],
+			$this->ctrl->result[ 'success' ],
 			print_r( $this->ctrl->result, true )
 		);
 	}
@@ -118,10 +131,46 @@ class ImageControllerTest extends TestCase {
 		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
 
 		self::assertTrue(
-			$this->ctrl->result['success'],
+			$this->ctrl->result[ 'success' ],
 			print_r( $this->ctrl->result, true )
 		);
 
 		self::assertFalse( file_exists( $image->filepath ) );
 	}
+
+
+	public function test_CreateThumbnail () {
+		$image = Image::fetchImageByID( $this->db, 3 );
+		$newThumbPath = 'D:/juhanj/Documents/mymopsi/unit/collections/temp/test-thumb-actual-image.jpg.webp';
+
+		mkdir('D:/juhanj/Documents/mymopsi/unit/collections/temp/');
+
+		$this->ctrl->createImageThumbnailFile(
+			$image->filepath,
+			$newThumbPath
+		);
+
+		self::assertTrue( file_exists( $newThumbPath ), print_r([$image->filepath,$newThumbPath],true) );
+	}
+
+	public function test_RequestCreateThumbnail () {
+		$image = Image::fetchImageByID( $this->db, 3 );
+
+		$post = [
+			'request' => 'create_thumbnail',
+			'image' => $image->random_uid,
+		];
+
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
+
+		self::assertTrue(
+			$this->ctrl->result[ 'success' ],
+			print_r( $this->ctrl->result, true )
+		);
+
+		$image = Image::fetchImageByID( $this->db, 3 );
+
+		self::assertTrue( file_exists( $image->thumbpath ) );
+	}
+
 }

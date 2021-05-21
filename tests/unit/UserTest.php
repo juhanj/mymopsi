@@ -16,6 +16,7 @@ class UserTest extends TestCase {
 	public static function setUpBeforeClass (): void {
 		parent::setUpBeforeClass();
 
+		empty_database();
 		set_up_database();
 	}
 

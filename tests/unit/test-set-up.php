@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
+$home_directory = 'C:/xampp/htdocs/mopsi_dev/mymopsi/';
 
 require $home_directory . 'class/common.class.php';
 require $home_directory . 'class/dbconnection.class.php';
@@ -45,8 +45,8 @@ function set_up_database () {
 		2, 1, 'unitest-collec2-ruid', 'test2', null,
 	];
 	$db->query( $sql, $values );
-	@mkdir( INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/" );
-	@mkdir( INI['Misc']['path_to_collections'] . "/unitest-collec2-ruid/" );
+	@mkdir( INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/" );
+	@mkdir( INI['Misc']['path_to_collections'] . "unitest-collec2-ruid/" );
 
 	/*
 	 * unit image
@@ -55,18 +55,17 @@ function set_up_database () {
 	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size, latitude, longitude, filepath)
 				values (?,?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?,?)
 				on duplicate key update name=values(name)';
-	$filename1 = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid";
-	$filename2 = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image2-ruid";
-	$filename3 = INI['Misc']['path_to_collections'] . "/unitest-collec2-ruid/unitest-image3-ruid";
+	$filename1 = INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/unitest-image1-ruid";
+	$filename2 = INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/unitest-image2-ruid";
+	$filename3 = "D:/juhanj/Documents/mymopsi/unit/test-actual-image.jpg";
 	$values = [
-		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1','1','1',$filename1,
-		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2','2','2',$filename2,
-		3, 2, 'unitest-image3-ruid', '3', '3', '3', '3', '3','3','3',$filename3,
+		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1','1','1', $filename1,
+		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2','2','2', $filename2,
+		3, 2, 'unitest-image3-ruid', '3', '3', '3', '3', '3','3','3', $filename3,
 	];
 	$db->query( $sql, $values );
 	@file_put_contents( $filename1, "empty" );
 	@file_put_contents( $filename2, "empty" );
-	@file_put_contents( $filename3, "empty" );
 }
 
 function empty_database () {
@@ -87,8 +86,9 @@ function empty_database () {
 	$sql = "SET FOREIGN_KEY_CHECKS=1";
 	$db->query( $sql );
 
-	shell_exec( 'rmdir /q /s D:\juhanj\Documents\mymopsi\unit\collections' );
-	mkdir("D:\juhanj\Documents\mymopsi\unit\collections");
+	Common::deleteFiles("D:/juhanj/Documents/mymopsi/unit/collections");
+//	shell_exec( 'rmdir /q /s D:/juhanj/Documents/mymopsi/unit/collections' );
+	mkdir("D:/juhanj/Documents/mymopsi/unit/collections");
 }
 
 $database_configs = [
@@ -107,8 +107,8 @@ $settings = [
 ];
 $misc = [
 	'perl' => "C:/xampp/perl/bin/perl.exe",
-	'path_to_collections' => "D:\juhanj\Documents\mymopsi\unit\collections",
-	'path_to_mopsi_photos' => "D:\juhanj\Documents\mymopsi\unit\mopsi_photos",
+	'path_to_collections' => "D:/juhanj/Documents/mymopsi/unit/collections/",
+	'path_to_mopsi_photos' => "D:/juhanj/Documents/mymopsi/unit/mopsi_photos/",
 ];
 
 define(
@@ -120,11 +120,5 @@ define(
 	]
 );
 
-define(
-	'DOC_ROOT',
-	'C:\xampp\htdocs'
-);
-define(
-	'WEB_PATH',
-	'/mopsi_dev/mymopsi/'
-);
+const DOC_ROOT = 'C:\xampp\htdocs';
+const WEB_PATH = '/mopsi_dev/mymopsi/';

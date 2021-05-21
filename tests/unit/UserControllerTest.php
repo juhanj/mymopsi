@@ -18,6 +18,7 @@ class UserControllerTest extends TestCase {
 	public static function setUpBeforeClass (): void {
 		parent::setUpBeforeClass();
 
+		empty_database();
 		set_up_database();
 	}
 
@@ -58,6 +59,8 @@ class UserControllerTest extends TestCase {
 
 		self::assertTrue( $result );
 		self::assertEquals( $random_string, $user->username );
+
+		$result = $this->ctrl->setUsername( $this->db, $this->testUser, 'admin' );
 	}
 
 	public function test_SetPassword () {
@@ -100,7 +103,7 @@ class UserControllerTest extends TestCase {
 		$password = 'password';
 
 		$post = [
-			'request' => 'new',
+			'request' => 'new_user',
 			'username' => $username,
 			'password' => $password
 		];
