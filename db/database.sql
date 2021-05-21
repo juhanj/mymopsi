@@ -61,6 +61,7 @@ create table if not exists mymopsi_img (
 	original_name varchar(190)             not null comment 'for posterity',
 	description   text default null,                                                                              -- max ~65k characters
 	filepath      varchar(190) comment 'full real path with file extension',
+	thumbnailpath varchar(190) comment 'full real path with file extension',
 	mediatype     varchar(50)              not null comment 'File media (or MIME) type',
 	size          int                      not null comment 'in bytes',                                           -- UK no_duplicates
 	latitude      float(10, 6)             null default null comment 'in degrees',

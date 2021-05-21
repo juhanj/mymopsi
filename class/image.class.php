@@ -17,6 +17,7 @@ class Image {
 	public $description;
 
 	public $filepath;
+	public $thumbpath;
 	public $mediatype;
 	public $size;
 
