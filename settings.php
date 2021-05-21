@@ -28,9 +28,11 @@ array_push(
 		<?= $lang->RETURN ?>
 	</a>
 
+	<!-- Language select -->
 	<article class="box settings">
 		<h2 class="settings-head"><?= $lang->SETT_LANG_HEAD ?></h2>
 
+		<!-- English -->
 		<label for="english">
 			<input type="radio" name="lang" value="en" id="english"
 				<?= $lang->lang === 'en' ? 'checked' : '' ?>
@@ -38,6 +40,7 @@ array_push(
 			<span class="label">🇬🇧 English</span>
 		</label>
 
+		<!-- Finnish -->
 		<label for="finnish">
 			<input type="radio" name="lang" value="fi" id="finnish"
 				<?= $lang->lang == 'fi' ? 'checked' : '' ?>
@@ -46,6 +49,7 @@ array_push(
 		</label>
 	</article>
 
+	<!-- Links //TODO: this should probably not be in the final version? --jj 21-05-16 -->
     <article class="box links">
         <h2>Links</h2>
         <ul>
