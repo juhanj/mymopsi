@@ -1,7 +1,6 @@
 'use strict';
 
 export class Ajax {
-
 	/**
 	 * Send a JSON request to server, receive JSON back.
 	 * Usage: sendJSON(params).then( function(jsonResponse) );
@@ -10,7 +9,7 @@ export class Ajax {
 	 * @param {boolean} returnJSON
 	 * @returns {Promise<object>} JSON
 	 */
-	async sendJSON ( data, url = './ajax-handler.php', returnJSON = true ) {
+	static async sendJSON ( data, url = './ajax-handler.php', returnJSON = true ) {
 		let response = await fetch( url, {
 			method: 'post',
 			credentials: 'same-origin',
@@ -30,7 +29,7 @@ export class Ajax {
 	 * @param {boolean} returnJSON
 	 * @returns {Promise<object>} JSON
 	 */
-	async sendForm ( data, url = './ajax-handler.php', returnJSON = true ) {
+	static async sendForm ( data, url = './ajax-handler.php', returnJSON = true ) {
 		let response = await fetch( url, {
 			method: 'post',
 			credentials: 'same-origin',
@@ -39,5 +38,4 @@ export class Ajax {
 		} );
 		return (returnJSON) ? await response.json() : await response;
 	}
-
 }
