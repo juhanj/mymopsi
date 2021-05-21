@@ -30,7 +30,7 @@ create table if not exists mymopsi_user_third_party_link (
 	mopsi_id  int,
 	google_id varchar(190),
 	primary key (user_id),
-	constraint fk_3rdpartylink_user foreign key (user_id) references mymopsi_user (id)
+	constraint fk_3rdpartylink_user foreign key (user_id) references mymopsi_user (id) on delete cascade
 )
 	default charset = utf8mb4
 	collate = utf8mb4_unicode_ci;
