@@ -7,6 +7,7 @@ array_push(
 	[ 'Tests', WEB_PATH . '/tests' ],
 );
 
+//debug( $_GET );
 //debug( $_POST );
 //debug( $_FILES );
 //debug( $_COOKIE );
@@ -18,6 +19,9 @@ array_push(
 <?php require 'html-head.php'; ?>
 
 <style>
+	.active {
+		border: #000088 1px solid;
+	}
 </style>
 
 <body class="grid">
@@ -25,14 +29,60 @@ array_push(
 <?php require 'html-header.php'; ?>
 
 <main class="main-body-container">
-	<div class="box">
-		<button class="button" id="button">Press here!</button>
-	</div>
+	<ul id="testList">
+		<li>Item 1</li>
+		<li>Item 2</li>
+		<li>Item 3</li>
+		<li>Item 4</li>
+	</ul>
 </main>
 
 <?php require 'html-footer.php'; ?>
 
-<script type="module">
+<script>
+	let listItems = document.getElementById("testList").getElementsByTagName("li");
+	let activeIndex = null;
+	let activeElement = null;
+
+	document.addEventListener( 'keyup', (event) => {
+		let key = event.key;
+
+		switch ( key ) {
+			case 'ArrowRight':
+				if ( activeElement ) {
+					activeElement.classList.remove('active');
+				}
+
+				if ( activeIndex === null || activeIndex >= (listItems.length - 1) ) {
+					activeIndex = 0;
+				}
+				else ++activeIndex;
+
+				activeElement = listItems.item(activeIndex);
+				activeElement.classList.add('active');
+				break;
+			case 'ArrowLeft':
+				if ( activeElement ) {
+					activeElement.classList.remove('active');
+				}
+
+				if ( activeIndex === null || activeIndex <= 0 ) {
+					activeIndex = listItems.length - 1;
+				}
+				else --activeIndex;
+
+				activeElement = listItems.item(activeIndex);
+				activeElement.classList.add('active');
+				break;
+			case 'Escape':
+				if ( activeElement ) {
+					activeElement.classList.remove('active');
+					activeElement = null;
+				}
+				break;
+		}
+		console.log(event);
+	} )
 </script>
 
 </body>
