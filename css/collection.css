@@ -34,6 +34,7 @@ header #header-coll-link:hover {
 .image-list .image-list-item:focus {
     top: -10px;
     box-shadow: 0 0.3rem 0.3rem 0.1rem var(--text-dark);
+    cursor:pointer;
 }
 
 .image-list-item .openOverlay {
@@ -66,7 +67,7 @@ header #header-coll-link:hover {
     position: fixed;
     width: 100vw;
     height: 100vh;
-    background-color: hsla(0, 0%, 0%, 0.8);
+    background-color: hsla(0, 0%, 0%, 0.9);
     margin: 0;
     padding: 0;
 }
@@ -96,6 +97,12 @@ header #header-coll-link:hover {
     border: var(--warning) 1px solid;
     /*padding: 1rem;*/
     margin: 0;
+}
+/* Flip colours, and change mouse cursor to pointer */
+.button#closeOverlay:hover {
+    background-color: var(--warning);
+    color: hsl(0, 0%, 10%);
+    cursor:pointer;
 }
 
 .button#closeOverlay .material-icons {
