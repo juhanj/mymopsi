@@ -106,8 +106,15 @@ class CollectionController implements Controller {
 			throw new InvalidArgumentException( "Collection is not valid." );
 		}
 
-		Common::deleteFiles( INI['Misc']['path_to_collections'] . '/' . $collection->random_uid );
+		// Sanity check, otherwise it will see no rows changed, and return false at end.
+		if ( $collection->number_of_images === 0 ) {
+			return true;
+		}
 
+		// Delete files
+		Common::deleteFiles( INI['Misc']['path_to_collections'] . $collection->random_uid );
+
+		// Delete from database
 		$rows_changed = $db->query(
 			'delete from mymopsi_img where collection_id = ? limit ?',
 			[ $collection->id, $collection->number_of_images ]
