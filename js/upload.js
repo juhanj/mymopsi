@@ -1,4 +1,5 @@
 "use strict";
+
 /* *************************************************
  * Functions
  * *************************************************/
@@ -38,12 +39,12 @@ function handleRequestResponse ( response ) {
 			let size = image.size;
 			let lastModified = image.lastModified;
 			let location = (image.latitude) ? '<i class="material-icons" style="color: green">check</i>' : '';
-			let type = image.type.split('/',2);
-			type = (type.length > 1 && type[0] === 'image' )
+			let type = image.type.split( '/', 2 );
+			type = (type.length > 1 && type[0] === 'image')
 				? type[1].toUpperCase()
 				: "?!";
 
-			temp +=	`<tr>
+			temp += `<tr>
 				<td class="text">${image.name}</td>
 				<td class="number">${size}</td>
 				<td class="center">${type}</td>
@@ -60,12 +61,12 @@ function handleRequestResponse ( response ) {
 		let temp = '';
 		bad.forEach( ( image ) => {
 			let size = image.size;
-			let type = image.type.split('/',2);
-			type = (type.length > 1 && type[0] === 'image' )
+			let type = image.type.split( '/', 2 );
+			type = (type.length > 1 && type[0] === 'image')
 				? type[1].toUpperCase()
 				: "?!";
 
-			temp +=	`<tr>
+			temp += `<tr>
 				<td class="text">${image.name}</td>
 				<td class="number">${size}</td>
 				<td class="center">${type}</td>
@@ -82,7 +83,11 @@ function handleRequestResponse ( response ) {
 /* *************************************************
  * "Main" code
  * *************************************************/
+import {MB, Ajax as req} from './modules/export.js';
+
 let maxBatchSize = 10 * MB;
+// Server-side limit, can't change without editing actual config-files
+let maxBatchFiles = 20;
 
 // Form elements
 let uploadForm = document.getElementById( 'upload-form' );
@@ -121,13 +126,13 @@ fileInput.onchange = () => {
 	let i = 1;
 	Array.from( fileInput.files ).forEach( ( file ) => {
 		let size = file.size;
-		let type = file.type.split('/',2);
-		type = (type.length > 1 && type[0] === 'image' )
+		let type = file.type.split( '/', 2 );
+		type = (type.length > 1 && type[0] === 'image')
 			? type[1].toUpperCase()
 			: "?!";
 		let lastModified = file.lastModified;
 
-		temp +=	`<tr id="${i}">
+		temp += `<tr id="${i}">
 				<td class="center">${i}</td>
 				<td class="text">${file.name}</td>
 				<td class="number">${size}</td>
@@ -173,33 +178,38 @@ uploadForm.onsubmit = ( event ) => {
 
 	for ( let i = 0; i < fileInput.files.length; i++ ) {
 		// set current batch size to 0
-		let currentBatchSize = 0;
+		let currentBatchSizeBytes = 0;
+		let currentBatchSizeFiles = 0;
 
 		// Delete images[] that was automatically added when creating FormData
 		// I will manually add the images one by one, to be sent in batches
 		formData.delete( 'images[]' );
 
 		// Looping through fileInput.files, also moving the for-loop forwards
-		// adding files to the formData, according to batchsize
-		while ( fileInput.files[i] && (currentBatchSize + fileInput.files[i].size) < maxBatchSize ) {
+		// adding files to the formData, according to batch size
+		while ( fileInput.files[i]
+			&& ((currentBatchSizeBytes + fileInput.files[i].size) < maxBatchSize)
+			&& (currentBatchSizeFiles < maxBatchFiles)
+		) {
 			// Some debuggin logs...
 			console.log( `File ${fileInput.files[i].name} added to batch ${currentBatchIndx}` );
 			// Adding the image to current batch (this gets emptied after request/batch is sent)
 			formData.append( 'images[]', fileInput.files[i] );
 			// Current batch size is used to determine whenthe batch is full and when to leave the while-loop
-			currentBatchSize += fileInput.files[i].size;
+			currentBatchSizeBytes += fileInput.files[i].size;
+			++currentBatchSizeFiles;
 			// Remove element from the "Waiting uploads"-list, for some better user-feedback
 			// document.getElementById( fileInput.files[i].name ).remove();
-			i++; // Advance for-loop, inside said for-loop
+			++i; // Advance for-loop, inside said for-loop
 		}
 
 		// Check that we are actually sending something, and not just empty requests.
-		if ( currentBatchSize > 0 ) {
+		if ( currentBatchSizeBytes > 0 ) {
 			// Add batch-size and index to the request data. These are not used by server, just for debuggin purposes
-			formData.set( 'batchSizeBytes', currentBatchSize.toString() );
+			formData.set( 'batchSizeBytes', currentBatchSizeBytes.toString() );
 			formData.set( 'batchIndex', currentBatchIndx.toString() );
 
-			sendForm( formData )
+			req.sendForm( formData )
 				.then( handleRequestResponse );
 
 			console.log( `Batch ${currentBatchIndx} sent, and waiting for response...` );
