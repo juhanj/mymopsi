@@ -31,6 +31,9 @@ class ImageController implements Controller {
 			case 'delete_image':
 				$result = $this->requestDeleteImage( $db, $user, $req );
 				break;
+			case 'create_thumbnail':
+				$result = $this->requestCreateThumbnail( $db, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
@@ -132,6 +135,31 @@ class ImageController implements Controller {
 	}
 
 	/**
+	 * Use exec() and ImageMagick to create a 256x256 .webp thumbnail.
+	 * Does not check if the new path directory exists, and WILL FAIL if it doesn't.
+	 *
+	 * @param string $imagePath    Path to full image
+	 * @param string $newThumbPath Path to new thumb (where it will be saved).
+	 *                             Make sure the directory exists!
+	 *
+	 * @return bool True, if result_code from exec == 0 (1 means bad)
+	 */
+	function createImageThumbnailFile ( string $imagePath, string $newThumbPath ): bool {
+		$command = "magick convert "
+			. $imagePath // Original image
+			. " -thumbnail 256x256 " // Strip metadata, and size of thumbnail
+			. " -sharpen 0x.5 " // Sharpen image a bit, comes out blurry otherwise
+			. " -gravity center " // Center image for following option
+			. " -extent 256x256 " // Make image square
+			//TODO: transparent background (failed multiple tries) --jj 21-05-16
+			. $newThumbPath; // New thumbnail path
+
+		exec( $command, $output, $returnCode );
+
+		return ($returnCode === 0);
+	}
+
+	/**
 	 * @param DBConnection $db
 	 * @param User         $user
 	 * @param              $options
@@ -182,11 +210,15 @@ class ImageController implements Controller {
 		$files = $this->reorganizeUploadFilesArray( $_FILES );
 
 		$collections = INI[ 'Misc' ][ 'path_to_collections' ];
-		$temp_folder = $collections . "/temp-{$collection->id}-" . mt_rand( 0, 10000 );
-		$final_destination = $collections . '/' . $collection->random_uid;
+		$temp_folder = $collections . "temp-{$collection->id}-" . mt_rand( 0, 10000 ) . '/';
+		$final_destination = $collections . $collection->random_uid . '/';
+		$final_thumb_destination = $final_destination . '/thumb/';
 
 		if ( !file_exists( $final_destination ) ) {
 			mkdir( $final_destination );
+		}
+		if ( !file_exists( $final_thumb_destination ) ) {
+			mkdir( $final_thumb_destination );
 		}
 
 		// create temp folder for the upload
@@ -235,18 +267,23 @@ class ImageController implements Controller {
 			}
 
 			$upload[ 'new_ruid' ] = Common::createRandomUID( $db );
-			// New file is just the RUID. Used have have original name attached but
+			// New file is just the RUID + extension. Used to have original name attached but
 			// exiftool and encoding differences made that difficult.
-			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ];
+			// Extension is needed for ImageMagick thumbnail generation (used to detect file type).
+			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ] . "." . pathinfo( $upload[ 'name' ] )[ 'extension' ];
 
 			// Move to temporary folder
-			$upload[ 'temp_path' ] = $temp_folder . '/' . $upload[ 'new_file_name' ];
+			$upload[ 'temp_path' ] = $temp_folder . $upload[ 'new_file_name' ];
+
+			// This is not a simple rename(), it also checks that the file is actually from a POST request.
+			// (Reason for comment: failed unit test... Will have to write better solution.)
 			move_uploaded_file(
 				$upload[ 'tmp_name' ],
 				$upload[ 'temp_path' ]
 			);
 
-			$upload[ 'final_path' ] = $final_destination . '/' . $upload[ 'new_file_name' ];
+			$upload[ 'final_path' ] = $final_destination . $upload[ 'new_file_name' ];
+			$upload[ 'thumb_path' ] = $final_thumb_destination . "thumb-{$upload[ 'new_file_name' ]}.webp";
 
 			$good_uploads[] = $upload;
 		}
@@ -273,12 +310,13 @@ class ImageController implements Controller {
 			$result = $db->query(
 				'insert into mymopsi_img (
                          collection_id, random_uid, hash, name, original_name,
-                         filepath, mediatype, size, latitude, longitude,
+                         filepath, thumbpath, mediatype, size, latitude, longitude,
                          date_created )
-                      values (?,?,?,?,?,?,?,?,?,?,?)',
+                      values (?,?,?,?,?,?,?,?,?,?,?,?)',
 				[
 					$collection->id, $file[ 'new_ruid' ], $file[ 'hash' ], $file[ 'name' ], $file[ 'name' ],
-					$file[ 'final_path' ], $file[ 'mime' ], $file[ 'size' ], $file[ 'latitude' ] ?? null, $file[ 'longitude' ] ?? null,
+					$file[ 'final_path' ], $file[ 'thumb_path' ], $file[ 'mime' ], $file[ 'size' ],
+					$file[ 'latitude' ] ?? null, $file[ 'longitude' ] ?? null,
 					null /*filectime( $file['final_path'] )*/
 				]
 			);
@@ -288,6 +326,10 @@ class ImageController implements Controller {
 				rename(
 					$file[ 'temp_path' ],
 					$file[ 'final_path' ]
+				);
+
+				$this->createImageThumbnailFile(
+					$file[ 'final_path' ], $file[ 'thumb_path' ]
 				);
 			}
 		}
@@ -316,7 +358,7 @@ class ImageController implements Controller {
 	 *
 	 * @return bool
 	 */
-	public function requestEditGPSCoordinate ( DBConnection $db, User $user, $options ): bool {
+	public function requestEditGPSCoordinate ( DBConnection $db, User $user, array $options ): bool {
 		// LAT & LONG need to be valid
 		if ( empty( $options[ 'lat' ] ) or empty( $options[ 'long' ] ) ) {
 			$this->setError( -1, 'Coordinate not given' );
@@ -371,9 +413,11 @@ class ImageController implements Controller {
 	}
 
 	/**
+	 * This was made to help a student, and is not considered normal behaviour of the site.
+	 *
 	 * @param \DBConnection $db
 	 * @param \User         $user
-	 * @param               $options
+	 * @param array         $options
 	 *
 	 * @return bool
 	 */
@@ -429,7 +473,7 @@ class ImageController implements Controller {
 		$rows = $db->query( $sql, $ids, true );
 
 		//
-		$final_destination = INI[ 'Misc' ][ 'path_to_collections' ] . '/' . $collection->random_uid;
+		$final_destination = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid;
 		$mopsi_images_dir = INI[ 'Misc' ][ 'path_to_mopsi_photos' ];
 
 		if ( !file_exists( $final_destination ) ) {
@@ -538,6 +582,7 @@ class ImageController implements Controller {
 	public function requestDeleteImage ( DBConnection $db, User $user, array $options ): bool {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
+
 			return false;
 		}
 
@@ -560,6 +605,7 @@ class ImageController implements Controller {
 
 		if ( $collection->owner_id !== $user->id and $user->admin == false ) {
 			$this->setError( -3, "No access" );
+
 			return false;
 		}
 
@@ -570,12 +616,59 @@ class ImageController implements Controller {
 		// Delete database row
 		$db->query(
 			"delete from mymopsi_img where id = ?",
-			[$image->id]
+			[ $image->id ]
 		);
 
 		$this->result = [
 			'success' => true,
 			'error' => false,
+		];
+
+		return true;
+	}
+
+	public function requestCreateThumbnail ( DBConnection $db, array $options ) {
+
+		$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
+
+		if ( !$image ) {
+			$this->setError( -1, 'Image not valid' );
+
+			return false;
+		}
+
+		// Collection RUID is needed for file path
+		$collection = Collection::fetchCollectionByID( $db, $image->collection_id );
+
+		$thumbDirectory = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid . '/thumb/';
+		$newThumbFileName = "thumb-{$image->random_uid}.webp";
+
+		$newFullPath = $thumbDirectory . $newThumbFileName;
+
+		if ( !file_exists( $thumbDirectory ) ) {
+			mkdir( $thumbDirectory );
+		}
+
+		$result = $this->createImageThumbnailFile( $image->filepath, $newFullPath );
+
+		if ( !$result ) {
+			$this->setError( -2, 'Could not create thumbnail' );
+
+			$newFullPath = 'no_thumbnail';
+		}
+
+		// Save thumbnail path to database
+		$db->query(
+			'update mymopsi_img set thumbpath = ? where id = ? limit 1',
+			[ $newFullPath, $image->id ]
+		);
+
+		$this->result = [
+			// Request stuff:
+			'success' => true,
+			'error' => false,
+			// Data:
+			'thumbpath' => $newFullPath,
 		];
 
 		return true;
