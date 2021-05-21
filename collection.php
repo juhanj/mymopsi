@@ -35,7 +35,7 @@ $ipp = ($collection->number_of_images < $ipp) ? $collection->number_of_images : 
 $page = (int)($_GET[ 'page' ] ?? 1); // Page number
 $page = ($page < 1) ? 1 : $page;
 // Total number of pages
-$total_pages = ceil( $collection->number_of_images / $ipp );
+$total_pages = ceil( $collection->number_of_images / ($ipp ?: 1) );
 $page = ( $page > $total_pages ) ? $total_pages : $page;
 
 // Sorting order column : which column are the images sorted by
@@ -181,7 +181,7 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 					     alt="<?= $img->name ?>"
 					     data-id="<?= $img->random_uid ?>"
 					     data-name="<?= $img->name ?>"
-					     onerror="this.onerror=null;this.src='./img/mopsi.ico'">
+					     onerror="this.onerror=null;this.src='./img/mopsi.ico';">
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -192,7 +192,7 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 
 		<hr>
 	<?php else : ?>
-		<!-- If there are no images in collection, print a short, polite message telling
+		<!-- If there are no images in collection, print a short polite message telling
 			the user that, because apparently the empty page isn't enough of a message... -->
 		<section>
 			<?= $lang->NO_IMAGES ?>
@@ -203,6 +203,7 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 
 <?php require 'html-footer.php'; ?>
 
+<!-- Hidden fullscreen overlay code. When image thumbnail is clicked, this is shown -->
 <div id="overlay" class="dark-overlay-bg hidden" hidden>
 	<div class="overlay-container">
 		<section class="overlay-header-container center margins-off">
@@ -220,7 +221,7 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 			</button>
 		</section>
 
-		<section class="overlay-image-container">
+		<section class="overlay-image-container" id="overlayImageContainer">
 			<img src="" class="image-full" id="imageFull" alt="">
 		</section>
 	</div>
