@@ -20,6 +20,7 @@ coll_descr_max_len = 300
 ; Localhost / server difference on Perl setup
 perl = "./path/to/perl"
 ; Where are the images saved on the server.
+; Thumbnails for images are saved under each collections own directory
 path_to_collections = "./collections/"
 ; Where are the mopsi images saved on the server
 ; This location is technically public if you know where to look
