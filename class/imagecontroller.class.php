@@ -635,6 +635,7 @@ class ImageController implements Controller {
 		// Delete files
 		// Function also checks if file exists, so if it doesn't, just move on to deleting db row
 		Common::deleteFiles( $image->filepath );
+		Common::deleteFiles( $image->thumbnailpath );
 
 		// Delete database row
 		$db->query(
