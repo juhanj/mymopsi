@@ -5,117 +5,160 @@
     Images in a card layout
  *****************************************************************************/
 header #header-coll-link {
-     color: var(--text-light);
-     text-decoration: underline dashed;
- }
+	color: var(--text-light);
+	text-decoration: underline dashed;
+}
 header #header-coll-link:hover {
-    color: var(--primary-light);
-    text-decoration: underline solid;
-}
-
-.image-list {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    align-items: flex-start;
-    align-content: space-around;
-}
-
-.image-list .image-list-item {
-    display: flex;
-    flex-flow: column nowrap;
-    margin: .5rem;
-    padding: 0;
-    height: 5rem;
-    width: 5rem;
-}
-
-.image-list .image-list-item:hover,
-.image-list .image-list-item:focus {
-    top: -10px;
-    box-shadow: 0 0.3rem 0.3rem 0.1rem var(--text-dark);
-    cursor:pointer;
-}
-
-.image-list-item .openOverlay {
-    max-width: 100%;
-    max-height: 100%;
-    display: flex;
-}
-
-.image-list-item .img-thumb {
-    max-width: 100%;
-    max-height: 100%;
-    margin: auto;
+	color: var(--primary-light);
+	text-decoration: underline solid;
 }
 
 .buttons {
-    display: flex;
-    flex-direction: row;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
 }
 
 .buttons .button {
-    width: 70%;
-    margin: 1rem;
+	width: 11rem;
+	margin: 1rem;
+}
+
+/**************************
+    List
+ ***************************/
+.image-list {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-evenly;
+	align-items: flex-start;
+	align-content: space-around;
+	list-style: none;
+}
+
+.image-list-item {
+	margin: .5rem;
+	padding: 0;
+	height: 8rem;
+	width: 8rem;
+
+	display: grid;
+	grid:
+        'name name' auto
+        'image image' 1fr
+        'icon icon' auto
+        / 1fr auto;
+}
+
+.image-list-item:hover,
+.image-list-item:focus {
+	top: -10px;
+	box-shadow: 0 0.3rem 0.3rem 0.1rem var(--text-dark);
+	cursor:pointer;
+	border-radius: 5px;
+}
+
+.img-name {
+	grid-area: name;
+	z-index: 1; /* draw on top of image */
+	background: hsla(0,0%,100%,.7);
+	-webkit-backdrop-filter: blur(.3rem);
+	backdrop-filter: blur(.1rem);
+	justify-self: center;
+	pointer-events: none;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+	text-align: center;
+}
+
+.img-thumb {
+	/* grid placement */
+	grid-row-start: name; /* Will cover the whole parent */
+	grid-row-end: icon; /* other elements on top of the thumbnail */
+	grid-column: image;
+	/* sizing */
+	max-width: 100%;
+	max-height: 100%;
+	margin: auto;
+	pointer-events: none;
+}
+
+.no-location-warning {
+	/* grid placement */
+	grid-area: icon;
+	z-index: 1; /* draw on top of image */
+	justify-self: end;
+	pointer-events: none;
+}
+
+.active-list-item {
+	border: var(--primary-darker) 1px solid;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) inset, 0 0 8px var(--primary-lighter);
 }
 
 /**************************
     Overlay
  ***************************/
 .dark-overlay-bg {
-    z-index: 2;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background-color: hsla(0, 0%, 0%, 0.9);
-    margin: 0;
-    padding: 0;
+	z-index: 2;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background-color: hsla(0, 0%, 0%, 0.9);
+	margin: 0;
+	padding: 0;
 }
 
 .overlay-container {
-    height: 100%;
-    overflow: hidden;
+	height: 100%;
+	overflow: hidden;
 
-    display: grid;
-    grid:	"header" auto
+	display: grid;
+	grid:	"header" auto
 		        "image" 1fr
 		        / auto;
 }
 
 .overlay-header-container {
-    grid-area: header;
-    padding: 1.5rem;
-    background-color: hsl(0, 0%, 10%);
-    color: whitesmoke;
-    display: flex;
-    flex-direction: row;
+	grid-area: header;
+	padding: 1.5rem;
+	background-color: hsl(0, 0%, 10%);
+	color: whitesmoke;
+	display: flex;
+	flex-direction: row;
+}
+
+.image-name {
+	text-align: center;
 }
 
 .button#closeOverlay {
-    background-color: hsl(0, 0%, 10%);
-    color: var(--warning);
-    border: var(--warning) 1px solid;
-    /*padding: 1rem;*/
-    margin: 0;
+	background-color: hsl(0, 0%, 10%);
+	color: var(--warning);
+	border: var(--warning) 1px solid;
+	margin: 0;
 }
 /* Flip colours, and change mouse cursor to pointer */
 .button#closeOverlay:hover {
-    background-color: var(--warning);
-    color: hsl(0, 0%, 10%);
-    cursor:pointer;
+	background-color: var(--warning);
+	color: hsl(0, 0%, 10%);
+	cursor:pointer;
 }
 
 .button#closeOverlay .material-icons {
-    margin: 0;
+	margin: 0;
 }
 
 .overlay-image-container {
-    grid-area: image;
-    max-height: 80vh;
+	grid-area: image;
+	max-height: 80vh;
 }
 .overlay-image-container .image-full {
-    max-width: 100%;
-    max-height: 100%;
-    margin: auto;
-    display: block;
+	max-width: 100%;
+	max-height: 100%;
+	margin: auto;
+	display: block;
 }

@@ -78,9 +78,9 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 
 <div class="feedback" id="feedback"><?= $feedback ?></div>
 
-<main class="main-body-container">
+<main class="main-body-container width-90">
 
-	<div class="buttons margins-off">
+	<div class="buttons margins-off center">
 		<a href="upload.php?id=<?= $collection->random_uid ?>" class="button margins-off">
 			<?= $lang->ADD_IMG ?>
 			<span class="material-icons">add_photo_alternate</span>
@@ -178,13 +178,20 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 		<!-- Images list -->
 		<ul class="image-list" id="imageList">
 			<?php foreach ( $collection->images as $index => $img ) : ?>
-				<li class="image-list-item openOverlay" data-id="<?= $img->random_uid ?>">
+				<li class="image-list-item openOverlay margins-off"
+				    data-index="<?= $index ?>"
+				    data-id="<?= $img->random_uid ?>"
+				    data-lat="<?= $img->latitude ?>"
+				    data-lng="<?= $img->longitude ?>"
+					data-name="<?= $img->name ?>">
+					<div class="img-name"><?= $img->name ?></div>
 					<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
 					     class="img-thumb"
 					     alt="<?= $img->name ?>"
-					     data-id="<?= $img->random_uid ?>"
-					     data-name="<?= $img->name ?>"
 					     onerror="this.onerror=null;this.src='./img/mopsi.ico';">
+					<span class="no-location-warning"><?= ($img->latitude) ? '' : '⚠' ?></span>
+					<!-- Inline onerror because otherwise it won't trigger
+						(image loads before listener is registered) -->
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -214,7 +221,7 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 				<?= $lang->EDIT ?>
 				<span class="material-icons">edit</span>
 			</a>
-			<span id="imageName"></span>
+			<span class="image-name" id="imageName"></span>
 			<a href="" class="button" id="imageMapLink">
 				<?= $lang->MAP ?>
 				<span class="material-icons">place</span>
