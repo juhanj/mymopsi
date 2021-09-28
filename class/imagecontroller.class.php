@@ -210,7 +210,6 @@ class ImageController implements Controller {
 		$files = $this->reorganizeUploadFilesArray( $_FILES );
 
 		$collections = INI[ 'Misc' ][ 'path_to_collections' ];
-		$temp_folder = $collections . "temp-{$collection->id}-" . mt_rand( 0, 10000 ) . '/';
 		$final_destination = $collections . $collection->random_uid . '/';
 		$final_thumb_destination = $final_destination . '/thumb/';
 
@@ -219,6 +218,13 @@ class ImageController implements Controller {
 		}
 		if ( !file_exists( $final_thumb_destination ) ) {
 			mkdir( $final_thumb_destination );
+		}
+
+		$temp_folder = $collections . "temp/{$collection->id}-"
+			. Common::createRandomUID(null,6, false) . '/';
+		if ( !file_exists( $temp_folder ) ) {
+			$temp_folder = $collections . "temp/{$collection->id}-"
+				. Common::createRandomUID(null,6, false) . '/';
 		}
 
 		// create temp folder for the upload
