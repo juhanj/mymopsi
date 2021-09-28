@@ -4,6 +4,11 @@ ini_set( 'display_errors', "1" );
 
 mb_internal_encoding( "UTF-8" );
 
+/**
+ * Used for printing out variables in human readable format
+ * @param      $var
+ * @param bool $var_dump
+ */
 function debug ( $var, bool $var_dump = false ) {
 	echo "<br><pre>Print_r ::<br>";
 	print_r( $var );
@@ -78,7 +83,7 @@ session_start();
  * Creating necessary objects
  */
 $db = new DBConnection();
-$lang = Language::getLanguageStrings( $_COOKIE['mymopsi_lang'] ?? 'en', CURRENT_PAGE );
+$lang = Language::getLanguageStrings( $_COOKIE['mymopsi_lang'] ?? 'en' );
 
 $user = !empty( $_SESSION['user_id'] )
 	? User::fetchUserByID( $db, $_SESSION['user_id'] )

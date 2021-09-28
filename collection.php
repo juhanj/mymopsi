@@ -24,7 +24,6 @@ array_push(
 /* ************************************
  * Pagination code:
  **************************************/
-
 // Items per page : how many items are shown per page
 $ipp = (int)($_GET[ 'ipp' ] ?? $_SESSION['ipp'] ?? $_COOKIE['ipp'] ?? 100); // Items Per Page
 // Check IPP validity (number between min<->max)
@@ -62,6 +61,10 @@ $disabled_prev = ($page == 1) ? 'disabled' : '';
 $disabled_next = ($page == $total_pages) ? 'disabled' : '';
 
 $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_dir ] );
+/* ************************************
+ * Pagination code END
+ **************************************/
+
 
 ?>
 <!DOCTYPE html>

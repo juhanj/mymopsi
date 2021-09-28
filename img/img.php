@@ -43,7 +43,7 @@ else {
 
 if ( !$image or !file_exists( $image->filepath ) ) {
 	//	header( 'HTTP/1.1 404 Not Found' );
-	http_response_code(404);
+	http_response_code( 404 );
 	exit();
 }
 
@@ -61,9 +61,9 @@ if ( $image->thumbpath === null ) {
 
 // This is never sent from browser, with PPH-script images, so cache no work.
 // the browser will send a $_SERVER['HTTP_IF_MODIFIED_SINCE'] if it has a cached copy
-if ( isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ) {
+if ( isset( $_SERVER[ 'HTTP_IF_MODIFIED_SINCE' ] ) ) {
 	// if the browser has a cached version of this image, send 304
-	http_response_code(304);
+	http_response_code( 304 );
 	//header( 'Last-Modified: ' . $_SERVER['HTTP_IF_MODIFIED_SINCE'], true, 304 );
 	exit();
 }

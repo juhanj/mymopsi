@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
-require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php';
 /**
  * @var DBConnection $db
- * @var Language $lang
- * @var User $user
+ * @var Language     $lang
+ * @var User         $user
  */
 
 $feedback = Common::checkFeedbackAndPOST();
 
-$image = Image::fetchImageByRUID( $db, $_GET['id'] );
+$image = Image::fetchImageByRUID( $db, $_GET[ 'id' ] );
 if ( !$image ) {
-	$_SESSION['feedback'] = "<p class='error'>No Image found with given ID.</p>";
+	$_SESSION[ 'feedback' ] = "<p class='error'>No Image found with given ID.</p>";
 	header( "Location:index.php" );
 	exit();
 }
@@ -18,15 +18,15 @@ if ( !$image ) {
 $collection = Collection::fetchCollectionByID( $db, $image->collection_id );
 
 if ( ($user->id !== $collection->owner_id) and !$collection->public ) {
-	$_SESSION['feedback'] = "<p class='error'>No access to collection.</p>";
+	$_SESSION[ 'feedback' ] = "<p class='error'>No access to collection.</p>";
 	header( "Location:index.php" );
 	exit();
 }
 
 array_push(
-   $breadcrumbs_navigation,
-   [ 'User', WEB_PATH . '/collections.php' ],
-   [ 'Collection', WEB_PATH . '/collection.php?id=' . $collection->random_uid ],
+	$breadcrumbs_navigation,
+	[ 'User', WEB_PATH . '/collections.php' ],
+	[ 'Collection', WEB_PATH . '/collection.php?id=' . $collection->random_uid ],
 );
 ?>
 
@@ -50,7 +50,8 @@ array_push(
 	<!-- Name -->
 	<form class="box" method="post">
 		<!-- Input -->
-		<label> <span class="label"><?= $lang->NAME ?></span>
+		<label>
+			<span class="label"><?= $lang->NAME ?></span>
 			 <input type="text" name="name" value="<?= $image->name ?>" required>
 		</label>
 		<!-- Server stuff for PHP request handling -->

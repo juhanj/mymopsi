@@ -99,7 +99,19 @@ class Collection {
 		];
 		$ordering = "{$orders[0][$ordering[0]]} {$orders[1][$ordering[1]]}";
 
-		$sql = "select id, collection_id, random_uid, hash, name, original_name, filepath, mediatype, size, latitude, longitude, date_created, date_added
+		$sql = "select id
+				    , collection_id
+					, random_uid
+					, hash
+					, name
+					, original_name
+					, filepath
+					, mediatype
+					, size
+					, latitude
+					, longitude
+					, date_created
+					, date_added
 				from mymopsi_img i
 				where collection_id = ?
 				order by {$ordering} 

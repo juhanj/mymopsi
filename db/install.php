@@ -14,7 +14,7 @@ spl_autoload_extensions( '.class.php' );
 spl_autoload_register();
 define(
 	'INI',
-	parse_ini_file( (parse_ini_file( 'config.ini.php' )['config']), true, INI_SCANNER_TYPED )
+	parse_ini_file( (parse_ini_file( 'config.ini.php' )[ 'config' ]), true, INI_SCANNER_TYPED )
 );
 $db = new DBConnection();
 
@@ -27,7 +27,7 @@ $f = file( './database.sql', FILE_IGNORE_NEW_LINES ); // Fetch tables from file
 
 // Remove .sql comments
 foreach ( $f as $k => $v ) {
-	$f[$k] = strstr( $v, '--', true ) ?: $v;
+	$f[ $k ] = strstr( $v, '--', true ) ?: $v;
 }
 
 // Every query into it's own index in the array
@@ -49,8 +49,8 @@ $controller = new UserController();
 $db->query(
 	"insert into mymopsi_user (random_uid,username,password) values (?,?,?),(?,?,?)",
 	[
-		Common::createRandomUID( $db, 20, false ), 'admin', password_hash('admin',PASSWORD_DEFAULT),
-		Common::createRandomUID( $db, 20, false ), 'user', password_hash('user',PASSWORD_DEFAULT),
+		Common::createRandomUID( $db, 20, false ), 'admin', password_hash( 'admin', PASSWORD_DEFAULT ),
+		Common::createRandomUID( $db, 20, false ), 'user', password_hash( 'user', PASSWORD_DEFAULT ),
 	]
 );
 
@@ -59,5 +59,5 @@ $db->query( 'update mymopsi_user set admin = true where id = 1 limit 1' );
 $admin = User::fetchUserByID( $db, 1 );
 $user = User::fetchUserByID( $db, 2 );
 
-Common::debug( $admin );
-Common::debug( $user );
+print_r( $admin );
+print_r( $user );

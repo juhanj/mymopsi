@@ -309,15 +309,32 @@ class ImageController implements Controller {
 			//  and not first add empty row. Plus a lot of unique columns to check
 			$result = $db->query(
 				'insert into mymopsi_img (
-                         collection_id, random_uid, hash, name, original_name,
-                         filepath, thumbpath, mediatype, size, latitude, longitude,
-                         date_created )
+                         collection_id
+                         , random_uid
+                         , hash
+                         , name
+                         , original_name
+                         , filepath
+                         , thumbnailpath
+                         , mediatype
+                         , size
+                         , latitude
+                         , longitude
+                         , date_created )
                       values (?,?,?,?,?,?,?,?,?,?,?,?)',
 				[
-					$collection->id, $file[ 'new_ruid' ], $file[ 'hash' ], $file[ 'name' ], $file[ 'name' ],
-					$file[ 'final_path' ], $file[ 'thumb_path' ], $file[ 'mime' ], $file[ 'size' ],
-					$file[ 'latitude' ] ?? null, $file[ 'longitude' ] ?? null,
-					null /*filectime( $file['final_path'] )*/
+					$collection->id,
+					$file[ 'new_ruid' ],
+					$file[ 'hash' ],
+					$file[ 'new_image_name' ],
+					$file[ 'full_original_name' ],
+					$file[ 'final_path' ],
+					$file[ 'thumb_path' ],
+					$file[ 'mime' ],
+					$file[ 'size' ],
+					$file[ 'latitude' ] ?? null,
+					$file[ 'longitude' ] ?? null,
+					$file[ 'fileLastModified' ],
 				]
 			);
 

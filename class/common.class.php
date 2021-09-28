@@ -122,19 +122,19 @@ class Common {
 		if ( $unit === 'm' ) {
 			$time *= 60;
 		}
-		else if ( $unit === 'h') {
+		else if ( $unit === 'h' ) {
 			$time *= (60 * 60);
 		}
 
 		$time = round( $time );
 
 		// seconds
-		if ( $time < $bounds[0] ) {
+		if ( $time < $bounds[ 0 ] ) {
 			$formatted = "{$time} s";
 		}
 
 		// minutes
-		else if ( $time < $bounds[1] ) {
+		else if ( $time < $bounds[ 1 ] ) {
 			$time /= 60;
 
 			if ( $time < 60 ) {
@@ -200,9 +200,9 @@ class Common {
 	 * Returns a unique, random N character string
 	 * //TODO: Does not work for odd number of characters, always returns even number
 	 *
-	 * @param DBConnection $db
-	 * @param int          $length      How long string returned
-	 * @param bool         $checkIfUsed Check if given RUID already used in DB.
+	 * @param DBConnection|null $db
+	 * @param int               $length      How long string returned
+	 * @param bool              $checkIfUsed Check if given RUID already used in DB.
 	 *
 	 * @return string Random unique N character identifier
 	 */
@@ -212,7 +212,11 @@ class Common {
 			try {
 				$ruid = bin2hex( random_bytes( (int)($length / 2) ) );
 			} catch ( Exception $e ) {
-				$ruid = substr( str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ), 0, $length );
+				$ruid = substr(
+					str_shuffle('123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ),
+					0,
+					$length
+				);
 			}
 		} while ( $checkIfUsed and !self::checkRandomUIDAvailable( $db, $ruid ) );
 
@@ -236,7 +240,6 @@ class Common {
 			. " -j" // Print output in JSON format
 		;
 		$commandOptions .= $options;
-
 
 		exec(
 			"{$perl} {$exiftool} {$commandOptions} {$target}",
