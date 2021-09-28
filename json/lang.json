@@ -22,8 +22,8 @@
 			"en": "Login required to use this feature."
 		},
 		"RETURN": {
-			"en": "<span class='material-icons'>arrow_back</span>Return",
-			"fi": "<span class='material-icons'>arrow_back</span>Takaisin"
+			"en": "Return",
+			"fi": "Takaisin"
 		},
 		"EDIT_SUCCESS": {
 			"en": "Changes saved.",
@@ -128,8 +128,8 @@
 			"en": "Collection | <a id='header-coll-link' class='margins-off'><span id='header-coll-name'></span><span class='material-icons'>edit</span></a>"
 		},
 		"ADD_IMG": {
-			"en": "Add images",
-			"fi": "Lisää kuvia"
+			"en": "Upload",
+			"fi": "Lisää"
 		},
 		"TO_MAP": {
 			"en": "Map",
@@ -332,16 +332,20 @@
 			"fi": "Valmiit kuvat"
 		},
 		"PROGRESS_BITS": {
-			"en": "Total file size uploaded, in bytes",
+			"en": "Bytes finished",
 			"fi": "Valmiit bitit"
 		},
-		"SUCCESS_UPLOAD_HEADER": {
-			"en": "Successful uploads",
-			"fi": "Onnistuneet lataukset"
+		"PROGRESS_BATCHES": {
+			"en": "Batches sent",
+			"fi": "Lähetetyt erät"
 		},
-		"FAILED_UPLOAD_HEADER": {
-			"en": "Failed uploads",
-			"fi": "Epäonnistuneet lataukset"
+		"FINISHED_UPLOAD_BUTTON": {
+			"en": "Finished!",
+			"fi": "Valmis"
+		},
+		"UPLOAD_MORE": {
+			"en": "More?",
+			"fi": "Lisää?"
 		}
 	},
 	"edit-image": {
