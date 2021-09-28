@@ -234,6 +234,8 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 	// These are used in page-specific JS-file, for header-link.
 	let collectionName = "<?= $collection->name ?? substr( $collection->random_uid, 0, 5 ) ?>";
 	let collectionRUID = "<?= $collection->random_uid ?>";
+
+	let images = JSON.parse(`<?= $collection->printImagesJSON() ?>`);
 </script>
 
 </body>

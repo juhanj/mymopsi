@@ -132,4 +132,16 @@ class Collection {
 
 		$this->owner = $db->query( $sql, [ $this->owner_id ], false, 'User' );
 	}
+
+	/**
+	 * JSON formatted string of images
+	 * (with enabled: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK)
+	 * @return string
+	 */
+	public function printImagesJSON (): string {
+		return json_encode(
+			$this->images,
+			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK
+		);
+	}
 }
