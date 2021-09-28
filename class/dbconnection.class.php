@@ -62,12 +62,14 @@ class DBConnection {
 			$config = [ 'host' => $config[ 0 ], 'name' => $config[ 1 ], 'user' => $config[ 2 ], 'pass' => $config[ 3 ] ];
 		}
 		$this->pdo_dsn = "mysql:host={$config[ 'host' ]};dbname={$config[ 'name' ]};charset=utf8";
-		//
-		//
+
+		// Need try-catch for security reason
+		// If connection fails, it will print an error message with the credentials visible
 		try {
 			$this->connection = new PDO( $this->pdo_dsn, $config[ 'user' ], $config[ 'pass' ], $this->pdo_options );
 		} catch ( PDOException $e ) {
-			echo "PDO connection failed. Please check connection to database, and credentials.";
+			echo "PDO connection failed. Please check connection to database, credentials, "
+				."and that the db you're trying to connect to exists.";
 			die();
 		}
 
