@@ -676,7 +676,7 @@ class ImageController implements Controller {
 
 		// Save thumbnail path to database
 		$db->query(
-			'update mymopsi_img set thumbpath = ? where id = ? limit 1',
+			'update mymopsi_img set thumbnailpath = ? where id = ? limit 1',
 			[ $newFullPath, $image->id ]
 		);
 
@@ -685,7 +685,7 @@ class ImageController implements Controller {
 			'success' => true,
 			'error' => false,
 			// Data:
-			'thumbpath' => $newFullPath,
+			'thumbnailpath' => $newFullPath,
 		];
 
 		return true;
