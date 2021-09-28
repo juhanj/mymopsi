@@ -361,7 +361,7 @@ class ImageController implements Controller {
 		$collContr = new CollectionController();
 		$collContr->createServerClusteringJSON( $db, $collection );
 
-		rmdir( $temp_folder );
+		Common::deleteFiles( $temp_folder );
 
 		$this->result = [
 			'success' => true,
