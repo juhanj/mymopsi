@@ -87,6 +87,7 @@
 
 html, body {
 	height: 100vh; /* Problems on Android/iOS, this does not work correctly */
+	font-size: 110%; /* Bigger font-size was wanted */
 }
 
 body {
@@ -137,6 +138,12 @@ body.grid {
 	/*justify-content: space-evenly;*/
 }
 
+.max-width {
+	max-width: 100vw;
+}
+.width-90 {
+	max-width: 90vw;
+}
 .wide {
 	max-width: 50rem;
 }
@@ -175,6 +182,8 @@ body.grid {
 	box-shadow: 0 .2rem 0 0 var(--button-shadow);
 	margin-left: auto;
 	margin-right: auto;
+
+	font-weight: bold;
 }
 
 /* Colours */
@@ -284,7 +293,7 @@ hr {
 	animation: spin 2s ease-in-out infinite;
 	margin: auto;
 }
-.loading @keyframes spin {
+@keyframes spin {
 	0% {
 		transform: rotate(0deg);
 	}
