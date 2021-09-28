@@ -43,7 +43,13 @@ array_push(
 
 <main class="main-body-container">
 
+	<!-- Image -->
 	<section class="box image-container">
+		<h2>Thumbnail</h2>
+		<img src="./img/img.php?id=<?= $image->random_uid ?>&thumb" class="image thumbnail" alt="<?= $image->name ?> thumbnail"
+		     style="">
+
+		<h2>Actual image</h2>
 		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>">
 	</section>
 
@@ -77,14 +83,31 @@ array_push(
 		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
 	</form>
 
+	<!-- GPS editing -->
 	<section class="box">
-		<a href="edit-gps.php?id=<?= $image->random_uid ?>" class="button">
-			<?= $lang->EDIT_GPS ?>
-		</a>
+		<h2>Location</h2>
+		<!-- Map -->
+		<section id="googleMap" class="map margins-initial">
+			<!-- Google Map goes here. `margins-initial`-class necessary
+				to not break Google's own styling -->
+		</section>
+
+		<p style="width: 100%; text-align: center;">
+			<span id="coordinateText"><?= $image->latitude ?>, <?= $image->longitude ?></span>
+		</p>
+
+		<p class="loading" id="loadingIcon" style="margin: 2rem auto auto" hidden></p>
+
+		<!-- To save new coordinate (enabled when coordinate changes) -->
+		<button class="button" id="saveLocationButton"
+		        data-id="<?= $image->random_uid ?>" disabled>
+			Save?
+		</button>
 	</section>
 
 	<hr>
 
+	<!-- Deleting image -->
 	<section class="box warning">
 		<p>
 			<?= $lang->DANGER_DELETE_INFO ?>
@@ -100,6 +123,12 @@ array_push(
 <?php require 'html-footer.php'; ?>
 
 <script>
+	let imageID = '<?= $image->random_uid ?>';
+	let locationKnown = <?= var_export( isset( $image->latitude ) ) ?>;
+	let markerPosition = {
+		lat: <?= $image->latitude ?? 'null' ?>,
+		lng: <?= $image->longitude ?? 'null' ?>,
+	}
 </script>
 
 </body>
