@@ -273,10 +273,18 @@ class ImageController implements Controller {
 			}
 
 			$upload[ 'new_ruid' ] = Common::createRandomUID( $db );
+
+			$filepathinfo = pathinfo( $upload['name'] );
+			$upload['full_original_name'] = $filepathinfo['basename'];
+			$upload['new_image_name'] = $filepathinfo['filename'];
+			$upload['extension'] = $filepathinfo['extension'];
+
+			$upload['fileLastModified'] = filectime( $upload[ 'tmp_name' ] );
+
 			// New file is just the RUID + extension. Used to have original name attached but
 			// exiftool and encoding differences made that difficult.
 			// Extension is needed for ImageMagick thumbnail generation (used to detect file type).
-			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ] . "." . pathinfo( $upload[ 'name' ] )[ 'extension' ];
+			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ] . "." . $upload['extension'];
 
 			// Move to temporary folder
 			$upload[ 'temp_path' ] = $temp_folder . $upload[ 'new_file_name' ];
@@ -290,7 +298,7 @@ class ImageController implements Controller {
 			);
 
 			$upload[ 'final_path' ] = $final_destination . $upload[ 'new_file_name' ];
-			$upload[ 'thumb_path' ] = $final_thumb_destination . "thumb-{$upload[ 'new_file_name' ]}.webp";
+			$upload[ 'thumb_path' ] = $final_thumb_destination . "thumb-{$upload[ 'new_ruid' ]}.webp";
 
 			$good_uploads[] = $upload;
 		}
