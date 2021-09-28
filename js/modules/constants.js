@@ -17,8 +17,19 @@ const MB = 1048576;
 const GB = 1073741824;
 
 const MIN = 60; // seconds
-const HOUR = 3600; // 60 * MIN
-const DAY = 86400; // 24 * HOUR
+const HOUR = 3600; // 60 * MIN seconds
+const DAY = 86400; // 24 * HOUR seconds
+
+const GMAP_MINZOOM = 3;
+const GMAP_MAXZOOM = 20;
+const GMAP_FINLAND = { lat: 62.25, lng: 26.39 };
+const GMAP_INITZOOM = 3;
+
+/**
+ * It's a non-breaking space character.
+ * @type {string}
+ */
+const NBSP = " ";
 
 export {
 	KB,
@@ -26,5 +37,10 @@ export {
 	GB,
 	MIN,
 	HOUR,
-	DAY
+	DAY,
+	GMAP_MINZOOM,
+	GMAP_MAXZOOM,
+	GMAP_FINLAND,
+	GMAP_INITZOOM,
+	NBSP,
 }
