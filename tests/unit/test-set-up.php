@@ -1,20 +1,35 @@
 <?php
 declare(strict_types=1);
 
-$home_directory = 'C:/xampp/htdocs/mopsi_dev/mymopsi/';
+/*
+ * Local directories (const for global use)
+ */
+const XAMPP_DIR = "D:/xampp/";
+const DOC_ROOT = XAMPP_DIR . "htdocs/";
+const WEB_PATH = 'mopsi_dev/mymopsi/';
 
-require $home_directory . 'class/common.class.php';
-require $home_directory . 'class/dbconnection.class.php';
+const COLL_DIR = "C:/Users/Jq/Documents/mymopsi-collections/";
+const UNIT_COLL_DIR = COLL_DIR . "unit/collections/";
 
-require $home_directory . 'class/user.class.php';
-require $home_directory . 'class/collection.class.php';
-require $home_directory . 'class/image.class.php';
+const TEST_IMGS = DOC_ROOT . WEB_PATH . "tests/img/";
+const MOPSI_PHOTOS = TEST_IMGS . "13-mopsi-photos/";
+const REAL_IMAGE_FILE = TEST_IMGS . "test-actual-image.jpg";
 
-require $home_directory . 'class/controller.class.php';
+/*
+ * PHP classes used for testing
+ */
+require DOC_ROOT . WEB_PATH . 'class/common.class.php';
+require DOC_ROOT . WEB_PATH . 'class/dbconnection.class.php';
 
-require $home_directory . 'class/collectioncontroller.class.php';
-require $home_directory . 'class/usercontroller.class.php';
-require $home_directory . 'class/imagecontroller.class.php';
+require DOC_ROOT . WEB_PATH . 'class/user.class.php';
+require DOC_ROOT . WEB_PATH . 'class/collection.class.php';
+require DOC_ROOT . WEB_PATH . 'class/image.class.php';
+
+require DOC_ROOT . WEB_PATH . 'class/controller.class.php';
+
+require DOC_ROOT . WEB_PATH . 'class/collectioncontroller.class.php';
+require DOC_ROOT . WEB_PATH . 'class/usercontroller.class.php';
+require DOC_ROOT . WEB_PATH . 'class/imagecontroller.class.php';
 
 function set_up_database () {
 	$db = new DBConnection();
@@ -27,8 +42,8 @@ function set_up_database () {
 			values (?,?,?,?,?,?,?), (?,?,?,?,?,?,?)
 			on duplicate key update username = values(username), password = values(password), email = values(email)';
 	$values = [
-		1, 'unitest-user1-ruid', 'admin', password_hash( 'admin', PASSWORD_DEFAULT ), 2, 'admin@admin',true,
-		2, 'unitest-user2-ruid', 'user', password_hash( 'user', PASSWORD_DEFAULT ), 2, 'user@user',false,
+		1, 'unitest-user1-ruid', 'admin', password_hash( 'admin', PASSWORD_DEFAULT ), 2, 'admin@admin', true,
+		2, 'unitest-user2-ruid', 'user', password_hash( 'user', PASSWORD_DEFAULT ), 2, 'user@user', false,
 	];
 	$db->query( $sql, $values );
 
@@ -45,8 +60,9 @@ function set_up_database () {
 		2, 1, 'unitest-collec2-ruid', 'test2', null,
 	];
 	$db->query( $sql, $values );
-	@mkdir( INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/" );
-	@mkdir( INI['Misc']['path_to_collections'] . "unitest-collec2-ruid/" );
+	// Supress warning, because file already exists, don't want to write if
+	@mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . "unitest-collec1-ruid/", 0777, true );
+	@mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . "unitest-collec2-ruid/" );
 
 	/*
 	 * unit image
@@ -55,20 +71,24 @@ function set_up_database () {
 	$sql = 'insert into mymopsi_img (id, collection_id, random_uid, hash, name, original_name, mediatype, size, latitude, longitude, filepath)
 				values (?,?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?,?), (?,?,?,?,?,?,?,?,?,?,?)
 				on duplicate key update name=values(name)';
-	$filename1 = INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/unitest-image1-ruid";
-	$filename2 = INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/unitest-image2-ruid";
-	$filename3 = "D:/juhanj/Documents/mymopsi/unit/test-actual-image.jpg";
+	$filename1 = INI[ 'Misc' ][ 'path_to_collections' ] . "unitest-collec1-ruid/unitest-image1-ruid";
+	$filename2 = INI[ 'Misc' ][ 'path_to_collections' ] . "unitest-collec1-ruid/unitest-image2-ruid";
+	$filename3 = REAL_IMAGE_FILE;
 	$values = [
-		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1','1','1', $filename1,
-		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2','2','2', $filename2,
-		3, 2, 'unitest-image3-ruid', '3', '3', '3', '3', '3','3','3', $filename3,
+		1, 1, 'unitest-image1-ruid', '1', '1', '1', '1', '1', '1', '1', $filename1,
+		2, 1, 'unitest-image2-ruid', '2', '2', '2', '2', '2', '2', '2', $filename2,
+		3, 2, 'unitest-image3-ruid', '3', '3', '3', '3', '3', '3', '3', $filename3,
 	];
 	$db->query( $sql, $values );
+	// Supress warning, because file already exists, don't want to write if
 	@file_put_contents( $filename1, "empty" );
 	@file_put_contents( $filename2, "empty" );
+
+	// Suppress warning because file already exists
+	@mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . 'temp/' );
 }
 
-function empty_database () {
+function empty_database_and_test_collections () {
 	$db = new DBConnection();
 
 	$sql = "SET FOREIGN_KEY_CHECKS=0";
@@ -86,9 +106,8 @@ function empty_database () {
 	$sql = "SET FOREIGN_KEY_CHECKS=1";
 	$db->query( $sql );
 
-	Common::deleteFiles("D:/juhanj/Documents/mymopsi/unit/collections");
-//	shell_exec( 'rmdir /q /s D:/juhanj/Documents/mymopsi/unit/collections' );
-	mkdir("D:/juhanj/Documents/mymopsi/unit/collections");
+	Common::deleteFiles( UNIT_COLL_DIR );
+	mkdir( UNIT_COLL_DIR );
 }
 
 $database_configs = [
@@ -106,9 +125,10 @@ $settings = [
 	"coll_descr_max_len" => 300,
 ];
 $misc = [
-	'perl' => "C:/xampp/perl/bin/perl.exe",
-	'path_to_collections' => "D:/juhanj/Documents/mymopsi/unit/collections/",
-	'path_to_mopsi_photos' => "D:/juhanj/Documents/mymopsi/unit/mopsi_photos/",
+	'perl' => XAMPP_DIR . "perl/bin/perl.exe",
+	'imagemagick' => "magick convert",
+	'path_to_collections' => UNIT_COLL_DIR,
+	'path_to_mopsi_photos' => MOPSI_PHOTOS,
 ];
 
 define(
@@ -119,6 +139,3 @@ define(
 		'Misc' => $misc,
 	]
 );
-
-const DOC_ROOT = 'C:\xampp\htdocs';
-const WEB_PATH = '/mopsi_dev/mymopsi/';

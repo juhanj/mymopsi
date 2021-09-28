@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php';
+require '../components/_start.php';
 
 array_push(
 	$breadcrumbs_navigation,
@@ -11,6 +11,8 @@ array_push(
 //debug( $_POST );
 //debug( $_FILES );
 //debug( $_COOKIE );
+
+$image = new Image();
 ?>
 
 <!DOCTYPE html>
@@ -19,8 +21,16 @@ array_push(
 <?php require 'html-head.php'; ?>
 
 <style>
-	.active {
-		border: #000088 1px solid;
+	#container {
+		width: 10rem;
+		height: 10rem;
+		border: 1px solid black;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#elm1, #elm2 {
+		pointer-events: none;
 	}
 </style>
 
@@ -29,60 +39,65 @@ array_push(
 <?php require 'html-header.php'; ?>
 
 <main class="main-body-container">
-	<ul id="testList">
-		<li>Item 1</li>
-		<li>Item 2</li>
-		<li>Item 3</li>
-		<li>Item 4</li>
-	</ul>
+	<div id="container">
+	</div>
 </main>
 
 <?php require 'html-footer.php'; ?>
 
 <script>
-	let listItems = document.getElementById("testList").getElementsByTagName("li");
-	let activeIndex = null;
-	let activeElement = null;
+	const HOUR = 60;
+	const MIN = 60;
+	let container = document.getElementById("container");
 
-	document.addEventListener( 'keyup', (event) => {
-		let key = event.key;
+	container.addEventListener( 'click', (event) => {
+	})
 
-		switch ( key ) {
-			case 'ArrowRight':
-				if ( activeElement ) {
-					activeElement.classList.remove('active');
-				}
+	console.log(
+		formatGPSDecimalToDMS({lat:62.243424,lng:29.387623784})
+	);
 
-				if ( activeIndex === null || activeIndex >= (listItems.length - 1) ) {
-					activeIndex = 0;
-				}
-				else ++activeIndex;
+	function formatGPSDecimalToDMS ( location ) {
+		let latitude = toDegreesMinutesAndSeconds( location.lat );
+		let latitudeCardinal = location.lat >= 0 ? "N" : "S";
 
-				activeElement = listItems.item(activeIndex);
-				activeElement.classList.add('active');
-				break;
-			case 'ArrowLeft':
-				if ( activeElement ) {
-					activeElement.classList.remove('active');
-				}
+		let longitude = toDegreesMinutesAndSeconds( location.lng );
+		let longitudeCardinal = location.lng >= 0 ? "E" : "W";
 
-				if ( activeIndex === null || activeIndex <= 0 ) {
-					activeIndex = listItems.length - 1;
-				}
-				else --activeIndex;
+		return latitude + " " + latitudeCardinal + ", " + longitude + " " + longitudeCardinal;
 
-				activeElement = listItems.item(activeIndex);
-				activeElement.classList.add('active');
-				break;
-			case 'Escape':
-				if ( activeElement ) {
-					activeElement.classList.remove('active');
-					activeElement = null;
-				}
-				break;
+		function toDegreesMinutesAndSeconds( coordinate ) {
+			let absolute = Math.abs(coordinate);
+			let degrees = Math.floor(absolute);
+			let minutesNotTruncated = (absolute - degrees) * HOUR;
+			let minutes = Math.floor(minutesNotTruncated);
+			let seconds = Math.floor((minutesNotTruncated - minutes) * MIN);
+
+			return degrees + "° " + minutes + "′" + seconds + "″";
 		}
-		console.log(event);
-	} )
+	}
+
+	function fGPSDecimalToDMS ( location ) {
+		let latitude = toDegreesMinutesAndSeconds( location.lat );
+		let latitudeCardinal = location.lat >= 0 ? "N" : "S";
+
+		let longitude = toDegreesMinutesAndSeconds( location.lng );
+		let longitudeCardinal = location.lng >= 0 ? "E" : "W";
+
+		return latitude + NBSP + latitudeCardinal + ", " + longitude + NBSP + longitudeCardinal;
+
+		function toDegreesMinutesAndSeconds ( coordinate ) {
+			let absolute = Math.abs( coordinate );
+			let degrees = Math.floor( absolute );
+			let minutesNotTruncated = (absolute - degrees) * HOUR;
+			let minutes = Math.floor( minutesNotTruncated );
+			let seconds = Math.floor( (minutesNotTruncated - minutes) * MIN );
+
+			return degrees + "°" + NBSP + minutes + "′" + seconds + "″";
+		}
+	}
+
+
 </script>
 
 </body>

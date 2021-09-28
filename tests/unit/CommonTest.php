@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
-require_once $home_directory . '\tests\unit\test-set-up.php';
+require './test-set-up.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -113,7 +112,7 @@ class CommonTest extends TestCase {
 	}
 
 	public function test_RunExiftool () {
-		$directory = 'D:\juhanj\Documents\mymopsi\mopsi_photos';
+		$directory = MOPSI_PHOTOS;
 		$result = Common::runExiftool( $directory );
 		self::assertIsObject( $result[0] );
 	}
@@ -124,7 +123,9 @@ class CommonTest extends TestCase {
 	}
 
 	public function test_DeleteFiles_singleFile () {
-		$file = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid/unitest-image1-ruid";
+		$file = INI['Misc']['path_to_collections'] . "unitest-collec1-ruid/unitest-image1-ruid";
+
+		self::assertTrue( file_exists( $file ) );
 
 		Common::deleteFiles( $file );
 
@@ -132,7 +133,7 @@ class CommonTest extends TestCase {
 	}
 
 	public function test_DeleteFiles_directoryRecursively () {
-		$file = INI['Misc']['path_to_collections'] . "/unitest-collec2-ruid";
+		$file = INI['Misc']['path_to_collections'] . "/unitest-collec1-ruid";
 
 		self::assertTrue( file_exists( $file ) );
 

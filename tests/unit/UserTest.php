@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
-require_once $home_directory . '\tests\unit\test-set-up.php';
+require './test-set-up.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +15,7 @@ class UserTest extends TestCase {
 	public static function setUpBeforeClass (): void {
 		parent::setUpBeforeClass();
 
-		empty_database();
+		empty_database_and_test_collections();
 		set_up_database();
 	}
 

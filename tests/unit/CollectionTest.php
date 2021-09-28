@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
-require_once $home_directory . '\tests\unit\test-set-up.php';
+require './test-set-up.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +25,6 @@ class CollectionTest extends TestCase {
 			: $this->db;
 	}
 
-	/** @test */
 	public function test_CreateEmptyCollectionObject () {
 		$coll = new Collection();
 

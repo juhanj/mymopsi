@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$home_directory = 'C:\xampp\htdocs\mopsi_dev\mymopsi/';
-require_once $home_directory . '\tests\unit\test-set-up.php';
+require './test-set-up.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +19,7 @@ class ImageControllerTest extends TestCase {
 	public static function setUpBeforeClass (): void {
 		parent::setUpBeforeClass();
 
-		empty_database();
+		empty_database_and_test_collections();
 		set_up_database();
 	}
 
@@ -92,7 +91,7 @@ class ImageControllerTest extends TestCase {
 	public function test_RequestAddMopsiPhotosFromCSV () {
 
 		set_up_database();
-		empty_database();
+		empty_database_and_test_collections();
 		set_up_database();
 
 		$collection = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
@@ -141,9 +140,9 @@ class ImageControllerTest extends TestCase {
 
 	public function test_CreateThumbnail () {
 		$image = Image::fetchImageByID( $this->db, 3 );
-		$newThumbPath = 'D:/juhanj/Documents/mymopsi/unit/collections/temp/test-thumb-actual-image.jpg.webp';
+		$newThumbPath = INI[ 'Misc' ][ 'path_to_collections' ] . 'temp/test-thumb-actual-image.webp';
 
-		mkdir('D:/juhanj/Documents/mymopsi/unit/collections/temp/');
+		Common::deleteFiles( $newThumbPath );
 
 		$this->ctrl->createImageThumbnailFile(
 			$image->filepath,
@@ -170,7 +169,7 @@ class ImageControllerTest extends TestCase {
 
 		$image = Image::fetchImageByID( $this->db, 3 );
 
-		self::assertTrue( file_exists( $image->thumbpath ) );
+		self::assertTrue( file_exists( $image->thumbnailpath ) );
 	}
 
 }
