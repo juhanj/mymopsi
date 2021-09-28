@@ -206,7 +206,7 @@ class Common {
 	 *
 	 * @return string Random unique N character identifier
 	 */
-	public static function createRandomUID ( DBConnection $db, $length = 20, $checkIfUsed = true ) {
+	public static function createRandomUID ( DBConnection $db = null, $length = 20, $checkIfUsed = true ) {
 		$ruid = null;
 		do {
 			try {
@@ -236,9 +236,11 @@ class Common {
 		$exiftool = DOC_ROOT . WEB_PATH . '/exiftool/exiftool';
 
 		$commandOptions =
-			' -ext "*"' // Process all files
-			. " -j" // Print output in JSON format
-		;
+			' -ext "*" ' // Process all files
+			. " -j " // Print output in JSON format
+			. " -DateTimeOriginal "
+			. " -createdate "
+			. " -FileModifyDate ";
 		$commandOptions .= $options;
 
 		exec(
