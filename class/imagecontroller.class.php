@@ -211,7 +211,7 @@ class ImageController implements Controller {
 
 		$collections = INI[ 'Misc' ][ 'path_to_collections' ];
 		$final_destination = $collections . $collection->random_uid . '/';
-		$final_thumb_destination = $final_destination . '/thumb/';
+		$final_thumb_destination = $final_destination . 'thumb/';
 
 		if ( !file_exists( $final_destination ) ) {
 			mkdir( $final_destination );
@@ -283,6 +283,7 @@ class ImageController implements Controller {
 
 			// This is not a simple rename(), it also checks that the file is actually from a POST request.
 			// (Reason for comment: failed unit test... Will have to write better solution.)
+			// Moving uploaded file for Exiftool reading, before moving to final location
 			move_uploaded_file(
 				$upload[ 'tmp_name' ],
 				$upload[ 'temp_path' ]
@@ -313,6 +314,7 @@ class ImageController implements Controller {
 			// Add to database
 			// Since adding multiple, will do differently from other classes
 			//  and not first add empty row. Plus a lot of unique columns to check
+			//TODO
 			$result = $db->query(
 				'insert into mymopsi_img (
                          collection_id
@@ -496,7 +498,7 @@ class ImageController implements Controller {
 		$rows = $db->query( $sql, $ids, true );
 
 		//
-		$final_destination = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid;
+		$final_destination = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid . '/';
 		$mopsi_images_dir = INI[ 'Misc' ][ 'path_to_mopsi_photos' ];
 
 		if ( !file_exists( $final_destination ) ) {
@@ -505,7 +507,7 @@ class ImageController implements Controller {
 
 		//
 		foreach ( $rows as $photo ) {
-			$photo->filepath = $mopsi_images_dir . '/' . $photo->filename;
+			$photo->filepath = $mopsi_images_dir . $photo->filename;
 
 			/*
 			 * Duplicate check for already uploaded images
@@ -664,7 +666,7 @@ class ImageController implements Controller {
 		// Collection RUID is needed for file path
 		$collection = Collection::fetchCollectionByID( $db, $image->collection_id );
 
-		$thumbDirectory = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid . '/thumb/';
+		$thumbDirectory = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid . 'thumb/';
 		$newThumbFileName = "thumb-{$image->random_uid}.webp";
 
 		$newFullPath = $thumbDirectory . $newThumbFileName;

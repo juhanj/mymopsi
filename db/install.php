@@ -2,10 +2,11 @@
 
 /**
  * Start stuff, copied from _start.php
- * here was a line that fetched something from database that doesn't exist, which breaks the script
+ * There was a line that fetched something from database that doesn't exist,
+ *  which breaks the script
  */
-define( 'DOC_ROOT', $_SERVER['DOCUMENT_ROOT'] );
-define( 'WEB_PATH', '/mopsi_dev/mymopsi/' );
+define( 'DOC_ROOT', $_SERVER[ 'DOCUMENT_ROOT' ] );
+const WEB_PATH = '/mopsi_dev/mymopsi/';
 set_include_path(
 	get_include_path() . PATH_SEPARATOR
 	. DOC_ROOT . WEB_PATH . '/class/' . PATH_SEPARATOR

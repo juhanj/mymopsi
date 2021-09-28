@@ -26,16 +26,14 @@ function debug ( $var, bool $var_dump = false ) {
  */
 define(
 	'DOC_ROOT',
-	$_SERVER['DOCUMENT_ROOT']
-);
-define(
-	'WEB_PATH',
-	'/mopsi_dev/mymopsi/'
+	$_SERVER['DOCUMENT_ROOT'] . '/' // DOCUMENT_ROOT doesn't have trailing slash
 );
 define(
 	'CURRENT_PAGE',
 	basename( $_SERVER['SCRIPT_NAME'], '.php' )
 );
+// Needs to have leading slash, because otherwise HTML <head> doesn't work
+const WEB_PATH = '/mopsi_dev/mymopsi/';
 
 /*
  * Automatic class loading
@@ -43,10 +41,10 @@ define(
  */
 set_include_path(
 	get_include_path() . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/class/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/components/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/cfg/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/json/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . 'class/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . 'components/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . 'cfg/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . 'json/' . PATH_SEPARATOR
 	. DOC_ROOT . WEB_PATH . PATH_SEPARATOR );
 spl_autoload_extensions( '.class.php' );
 spl_autoload_register();
