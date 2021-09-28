@@ -59,17 +59,17 @@ class ImageController implements Controller {
 	 * @param DBConnection $db
 	 * @param Image        $image
 	 * @param              $lat
-	 * @param              $long
+	 * @param              $lng
 	 *
 	 * @return bool
 	 */
-	function setGPSCoordinates ( DBConnection $db, Image $image, $lat, $long ) {
+	function setGPSCoordinates ( DBConnection $db, Image $image, $lat, $lng ) {
 		if ( is_null( $image->id ) ) {
 			throw new InvalidArgumentException( "Image is not valid." );
 		}
 		$rows_changed = $db->query(
 			'update mymopsi_img set latitude = ?, longitude = ? where id = ? limit 1',
-			[ $lat, $long, $image->id ]
+			[ $lat, $lng, $image->id ]
 		);
 
 		return boolval( $rows_changed );
@@ -377,7 +377,7 @@ class ImageController implements Controller {
 	 */
 	public function requestEditGPSCoordinate ( DBConnection $db, User $user, array $options ): bool {
 		// LAT & LONG need to be valid
-		if ( empty( $options[ 'lat' ] ) or empty( $options[ 'long' ] ) ) {
+		if ( empty( $options[ 'lat' ] ) or empty( $options[ 'lng' ] ) ) {
 			$this->setError( -1, 'Coordinate not given' );
 
 			return false;
@@ -398,7 +398,7 @@ class ImageController implements Controller {
 			}
 		}
 
-		$result = $this->setGPSCoordinates( $db, $image, $options[ 'lat' ], $options[ 'long' ] );
+		$result = $this->setGPSCoordinates( $db, $image, $options[ 'lat' ], $options[ 'lng' ] );
 
 		if ( !$result ) {
 			$this->setError( -3, 'Could not edit database, something went wrong' );
@@ -423,7 +423,7 @@ class ImageController implements Controller {
 			'success' => true,
 			'error' => false,
 			'old_gps' => [ $image->latitude, $image->longitude ],
-			'new_gps' => [ $options[ 'lat' ], $options[ 'long' ] ],
+			'new_gps' => [ $options[ 'lat' ], $options[ 'lng' ] ],
 		];
 
 		return true;
