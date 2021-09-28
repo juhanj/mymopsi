@@ -19,6 +19,8 @@ coll_descr_max_len = 300
 [Misc]
 ; Localhost / server difference in Perl setup
 perl = "./path/to/perl"
+; Localhost / server differences in ImageMagick setup
+imagemagick = "imagemagick convert"
 ; Where are the images saved on the server.
 ; Thumbnails for images are saved under each collections own directory
 path_to_collections = "./path/to/collections/"
