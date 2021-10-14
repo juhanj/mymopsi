@@ -1,5 +1,15 @@
+# PhpStorm files
 .idea/
+
+# Sensitive files kept in same directory on localhost
 cfg/config.ini
-tests/img/
 collections/
+
+# Testing stuff not important
+tests/img/
 tests/temp/
+
+# All exiftool files
+exiftool/*
+# ... excecpt the latest version archive
+!exiftool/Image-ExifTool-*
