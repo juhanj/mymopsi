@@ -8,7 +8,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
 
 array_push(
 	$breadcrumbs_navigation,
-	['Settings', WEB_PATH . '/tests' ]
+	['Settings', WEB_PATH . 'tests' ]
 );
 ?>
 <!DOCTYPE html>

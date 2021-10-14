@@ -233,7 +233,7 @@ class Common {
 	 */
 	public static function runExiftool ( string $target, string $options = '' ) {
 		$perl = INI[ 'Misc' ][ 'perl' ];
-		$exiftool = DOC_ROOT . WEB_PATH . '/exiftool/exiftool';
+		$exiftool = DOC_ROOT . WEB_PATH . 'exiftool/exiftool';
 
 		$commandOptions =
 			' -ext "*" ' // Process all files

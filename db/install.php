@@ -9,8 +9,8 @@ define( 'DOC_ROOT', $_SERVER[ 'DOCUMENT_ROOT' ] );
 const WEB_PATH = '/mopsi_dev/mymopsi/';
 set_include_path(
 	get_include_path() . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/class/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . '/cfg/' . PATH_SEPARATOR );
+	. DOC_ROOT . WEB_PATH . 'class/' . PATH_SEPARATOR
+	. DOC_ROOT . WEB_PATH . 'cfg/' . PATH_SEPARATOR );
 spl_autoload_extensions( '.class.php' );
 spl_autoload_register();
 define(
@@ -20,7 +20,7 @@ define(
 $db = new DBConnection();
 
 /**
- * Actual install starts here
+ * Actual installation starts here
  */
 echo "<pre>";
 
@@ -40,7 +40,7 @@ foreach ( $db_file as $sql ) {
 }
 
 echo '<p>Database installed successfully.</p>';
-echo '<a href="../">Link to front page.</a>';
+echo '<p><a href="../">Link to front page.</a></p>';
 
 /*
  * Creating an admin user

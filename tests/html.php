@@ -3,8 +3,8 @@ require '../components/_start.php';
 
 array_push(
 	$breadcrumbs_navigation,
-	[ 'Settings', WEB_PATH . '/tests' ],
-	[ 'Tests', WEB_PATH . '/tests' ],
+	[ 'Settings', WEB_PATH . 'tests' ],
+	[ 'Tests', WEB_PATH . 'tests' ],
 );
 
 //debug( $_GET );
