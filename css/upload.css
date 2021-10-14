@@ -12,15 +12,13 @@
     padding: 0;
     background-color: inherit;
 }
+#upload-form * {
+    cursor: pointer;
+}
 
 #upload-form  #fileinput-label {
     display: grid;
     place-items: center center;
-}
-
-#upload-form  #fileinput-label .label {
-    display: grid;
-    place-items: center;
 }
 
 #upload-form  #fileinput-label .label .material-icons {
@@ -30,7 +28,7 @@
 #upload-form  #fileinput-label #file-input {
     width: 100%;
     border: 1px dashed black;
-    height: 7rem;
+    height: 10rem;
 }
 
 #upload-form #submit-button {
@@ -40,7 +38,39 @@
     height: 5rem;
 }
 
-svg.svg-icon {
-    color: red;
-    margin: .5rem;
+.progress-bar-container {
+    display: none;
+    flex-direction: row;
+}
+
+.progress-bar-label {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.success-indicator .material-icons {
+    margin: 0;
+}
+
+.upload-finished {
+    display: none;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.upload-finished .big-green-checkmark {
+    width: 7rem;
+    display: flex;
+    flex-direction: column;
+}
+.upload-finished .big-green-checkmark .material-icons {
+    color: green;
+    font-size: 3rem;
+}
+.upload-finished .buttons {
+    width: 100%;
+}
+.upload-finished .buttons .button {
+    width: 15rem;
 }
