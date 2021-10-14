@@ -161,4 +161,5 @@ header #header-coll-link:hover {
 	max-height: 100%;
 	margin: auto;
 	display: block;
+	background-color: white;
 }
