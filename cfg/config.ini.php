@@ -9,10 +9,14 @@ user = "root"
 pass = ""
 
 [Settings]
+; Username length
 username_min_len = 1
 username_max_len = 50
+; Password length
 password_min_len = 8
 password_max_len = 300
+; Collection name/description length
+; (min length is 0 (optional))
 coll_name_max_len = 50
 coll_descr_max_len = 300
 
