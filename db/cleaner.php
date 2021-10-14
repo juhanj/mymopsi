@@ -7,29 +7,26 @@ require '../components/_start.php';
  * Cleaning collections directory
  */
 
-$folders = scandir( INI[ 'Misc' ][ 'path_to_collections' ] );
+$collectionsPath = INI[ 'Misc' ][ 'path_to_collections' ];
 
-Common::debug( $folders );
+$folders = scandir( $collectionsPath );
+
+debug( scandir( $collectionsPath ) );
 
 foreach ( $folders as $folder ) {
 	if ( $folder == '.' or $folder == '..' ) {
 		continue;
 	}
 
-	$imgs = scandir( INI[ 'Misc' ][ 'path_to_collections' ] . '/' . $folder );
+	$singleCollDirectory = INI[ 'Misc' ][ 'path_to_collections' ] . $folder;
 
-	Common::debug( $imgs );
+	debug( $singleCollDirectory );
+	debug( scandir($singleCollDirectory) );
 
-	foreach ( $imgs as $img ) {
-		if ( $img == '.' or $img == '..' ) {
-			continue;
-		}
-
-		unlink( INI[ 'Misc' ][ 'path_to_collections' ] . '/' . $folder . '/' . $img );
-	}
-
-	Common::debug( rmdir( INI[ 'Misc' ][ 'path_to_collections' ] . '/' . $folder ) );
+	Common::deleteFiles( $singleCollDirectory );
 }
+
+mkdir( INI[ 'Misc' ][ 'path_to_collections' ] . 'temp/' );
 
 /*
  * Dropping tables, and recreating them with testdata
