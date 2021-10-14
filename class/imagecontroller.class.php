@@ -336,8 +336,9 @@ class ImageController implements Controller {
                          , size
                          , latitude
                          , longitude
-                         , date_created )
-                      values (?,?,?,?,?,?,?,?,?,?,?,?)',
+                         , date_created
+                         , deletable )
+                      values (?,?,?,?,?,?,?,?,?,?,?,?,true)',
 				[
 					$collection->id,
 					$file[ 'new_ruid' ],
@@ -350,7 +351,7 @@ class ImageController implements Controller {
 					$file[ 'size' ],
 					$file[ 'latitude' ] ?? null,
 					$file[ 'longitude' ] ?? null,
-					$file[ 'fileLastModified' ],
+					$file[ 'fileLastModified' ]
 				]
 			);
 
@@ -581,7 +582,7 @@ class ImageController implements Controller {
 				$photo->name,
 				$photo->name,
 				$photo->filepath,
-				'image/jpeg',
+				'image/jpeg', // Mopsi photos are all JPEG
 				$photo->size,
 				$photo->latitude,
 				$photo->longitude,
