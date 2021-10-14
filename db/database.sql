@@ -68,6 +68,7 @@ create table if not exists mymopsi_img (
 	longitude     float(10, 6)             null default null comment 'in degrees',
 	date_created  timestamp                null default null comment 'file creation time (i.e. when was time taken)',
 	date_added    timestamp default now( ) not null comment 'when added to database',
+	deletable     bool                     not null default false comment 'Can the image be safely deleted?',
 	primary key (id),
 	unique random_uid (random_uid),
 	unique no_duplicates (collection_id, hash, size),
