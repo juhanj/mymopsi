@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-require $_SERVER['DOCUMENT_ROOT'] . '/mopsi_dev/mymopsi/components/_start.php';
+require './components/_start.php';
 
 // TODO: Fix this whole page of a mess. Complete rewrite.
 /**
