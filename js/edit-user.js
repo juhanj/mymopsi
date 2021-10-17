@@ -1,5 +1,7 @@
 "use strict";
 
+import {Ajax} from "./modules/export.js";
+
 let deleteButton = document.getElementById( 'deleteButton' );
 
 deleteButton.onclick = () => {
@@ -10,7 +12,7 @@ deleteButton.onclick = () => {
 			'request' : 'delete_user',
 			'user' : userID
 		};
-		sendJSON( request )
+		Ajax.sendJSON( request )
 			.then( (response) => {
 				// Send back to previous page
 				// This could be done better? But I dunno how for now.

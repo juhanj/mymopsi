@@ -1,5 +1,7 @@
 "use strict";
 
+import { Ajax } from './modules/export.js';
+
 let deleteButton = document.getElementById( 'deleteButton' );
 
 deleteButton.onclick = () => {
@@ -10,7 +12,7 @@ deleteButton.onclick = () => {
 			'request' : 'delete_collection',
 			'collection' : collectionID
 		};
-		sendJSON( request )
+		Ajax.sendJSON( request )
 			.then( (response) => {
 				window.location.replace("./collections.php");
 			} );
