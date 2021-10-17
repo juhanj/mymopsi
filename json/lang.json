@@ -55,7 +55,7 @@
 			"en": "Super secret password here"
 		},
 		"LOGIN_SUBMIT": {
-			"en": "Log in to MyMopsi"
+			"en": "Log in"
 		},
 		"CREATE_USER_HEADER": {
 			"en": "Register"
@@ -288,7 +288,7 @@
 			"en": "Changes saved successfully"
 		},
 		"DANGER_DELETE_INFO": {
-			"en": "DANGER! Delete collection and all it's images?<p>Changes are permanent.",
+			"en": "DANGER! Delete collection and all its images?<p>Deletion is permanent.",
 			"fi": "VAARA! Poista kokoelma ja kaikki kokoelman kuvat?<p>Poistoa ei voi peruuttaa."
 		},
 		"DELETE_BUTTON": {
