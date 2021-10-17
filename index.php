@@ -37,19 +37,19 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 
 	<!-- User-login form -->
 	<article class="box">
-		<h2 class="box-header"><?= $lang->USER_LOGIN ?></h2>
+		<h2 class="box-header" hidden><?= $lang->USER_LOGIN ?></h2>
 
 		<form action="login-handler.php" method="post">
 			<!-- Username input field -->
 			<label class="compact">
-				<span class="label required"><?= $lang->USERNAME_LABEL ?></span>
+				<span class="label"><?= $lang->USERNAME_LABEL ?></span>
 				<input type="text" name="username" minlength="1" maxlength="190"
 				       placeholder="<?= $lang->USERNAME_PLACEHOLDER ?>" required>
 			</label>
 
 			<!-- Password input field -->
 			<label class="compact">
-				<span class="label required"><?= $lang->PASSWORD_LABEL ?></span>
+				<span class="label"><?= $lang->PASSWORD_LABEL ?></span>
 				<input type="password" name="password" minlength="1" maxlength="300"
 				       placeholder="<?= $lang->PASSWORD_PLACEHOLDER ?>" required>
 			</label>
@@ -64,9 +64,20 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 				<span class="material-icons">login</span>
 			</button>
 		</form>
+
+		<hr>
+
+		<p style="center">
+			<a href="create-user.php" class="center margins-off">
+				<span>
+					<?= $lang->CREATE_NEW_USER_LINK ?>
+					<span class="material-icons">person_add</span>
+				</span>
+			</a>
+		</p>
 	</article>
 
-	<article class="box">
+	<article class="box" hidden>
 		<!-- Link to new user creation page -->
 		<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
 		<a href="create-user.php" class="button">
