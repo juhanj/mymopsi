@@ -7,6 +7,7 @@ collections/
 
 # Testing stuff not important
 tests/img/
+tests/img-dataset/
 tests/temp/
 
 # All exiftool files
