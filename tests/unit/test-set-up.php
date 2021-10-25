@@ -11,9 +11,8 @@ const WEB_PATH = 'mopsi_dev/mymopsi/';
 const COLL_DIR = "C:/Users/Jq/Documents/mymopsi-collections/";
 const UNIT_COLL_DIR = COLL_DIR . "unit/collections/";
 
-const TEST_IMGS = DOC_ROOT . WEB_PATH . "tests/img/";
-const MOPSI_PHOTOS = TEST_IMGS . "13-mopsi-photos/";
-const REAL_IMAGE_FILE = TEST_IMGS . "test-actual-image.jpg";
+const MOPSI_PHOTOS = DOC_ROOT . WEB_PATH . "tests/img-dataset/test-mopsi-photos/";
+const REAL_IMAGE_FILE = DOC_ROOT . WEB_PATH . "tests/test-image.svg";
 
 /*
  * PHP classes used for testing

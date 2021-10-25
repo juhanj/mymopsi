@@ -40,13 +40,16 @@ class ImageControllerTest extends TestCase {
 		// For future unit tests; this doesn't work, as it's not a simple rename()
 		// Should use PHPT and ---POST_RAW---, but that is outside todays work.
 
+		$imgDatasetPath = "../img-dataset/finland-regions-coat-of-arms/";
+		$collectionsPath = "C:/Users/Jq/Documents/mymopsi-collections/collections/temp/";
+
 		copy(
-			'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set\Kainuu.png',
-			'D:\juhanj\Documents\mymopsi\unit\collections\temp\Kainuu.png'
+			$imgDatasetPath . 'Kainuu.png',
+			$collectionsPath . 'Kainuu.png'
 		);
 		copy(
-			'C:\xampp\htdocs\mopsi_dev\mymopsi\tests\img\1-normal-working-default-set\Pirkanmaa.png',
-			'D:\juhanj\Documents\mymopsi\unit\collections\temp\Pirkanmaa.png'
+			$imgDatasetPath . 'Pirkanmaa.png',
+			$collectionsPath . 'Pirkanmaa.png'
 		);
 		$_FILES = [
 			'upload' => [
@@ -59,8 +62,8 @@ class ImageControllerTest extends TestCase {
 					1 => 'image/png',
 				],
 				'tmp_name' => [
-					0 => 'D:\juhanj\Documents\mymopsi\unit\collections\temp\Kainuu.png',
-					1 => 'D:\juhanj\Documents\mymopsi\unit\collections\temp\Pirkanmaa.png',
+					0 => $collectionsPath . 'Kainuu.png',
+					1 => $collectionsPath . 'Pirkanmaa.png',
 				],
 				'error' => [
 					0 => 0,
@@ -140,7 +143,7 @@ class ImageControllerTest extends TestCase {
 
 	public function test_CreateThumbnail () {
 		$image = Image::fetchImageByID( $this->db, 3 );
-		$newThumbPath = INI[ 'Misc' ][ 'path_to_collections' ] . 'temp/test-thumb-actual-image.webp';
+		$newThumbPath = INI[ 'Misc' ][ 'path_to_collections' ] . 'temp/test-thumb-actual-image.jpg';
 
 		Common::deleteFiles( $newThumbPath );
 

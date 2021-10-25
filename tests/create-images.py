@@ -1,38 +1,45 @@
+import os
 import sys
 from subprocess import Popen, PIPE
 
-def differentFormats ( formats, resolutions ) :
-    for f in formats :
-        for reso in resolutions :
-            # magick convert -size 1x1 xc:red ./img/2-different-formats/ext_1x1.ext
-            process = Popen(
-                ['magick', 'convert', '-size', reso, 'gradient:white-red',
-                 './img/2-different-formats/{1}-{0}.{1}'.format(reso,f)],
-                stdout=PIPE, stderr=PIPE
-            )
-            output = process.communicate()
-            print (output)
-    return
-
-def differentResolutions ( resolutions ) :
-    for reso in resolutions :
-        # magick convert -size {resolution} xc:red ./img/3-different-resolutions/jpeg_{reso}.jpeg
+def differentFormats ( formats ) :
+    os.mkdir('./img-dataset/custom-format-test')
+    for [format, ext] in formats :
+        # magick convert -font Consolas -pointsize 72 label:'#' [outputfile]
         process = Popen(
-            [ 'magick', 'convert', '-size', reso, 'gradient:blue-purple',
-            './img/3-different-resolutions/jpeg-{0}.jpeg'.format(reso) ],
+            ['magick', 'convert', '-size', '400x400', '-font', 'Consolas',
+             '-pointsize', '100', '-gravity', 'center', "caption:{0}".format(format),
+            './img-dataset/custom-format-test/format-{0}.{1}'.format(ext,ext)],
             stdout=PIPE, stderr=PIPE
         )
         output = process.communicate()
-        print (output)
+        print (format, output)
+    return
+
+def differentResolutions ( allResolutions ) :
+    os.mkdir('./img-dataset/custom-resolutions-test')
+    for aspectRatio, resolutions in allResolutions.items() :
+        for reso in resolutions :
+	        # magick convert -size {resolution} caption:{resolution} [ouputfile]
+	        process = Popen(
+	            [ 'magick', 'convert', '-size', reso, '-font', 'Consolas',
+	             '-pointsize', '100', '-gravity', 'center',
+	             'caption:{0} {1}'.format(aspectRatio,reso),
+	             './img-dataset/custom-resolutions-test/reso-{0}-{1}.png'.format(aspectRatio.replace(":",'_'),reso) ],
+	            stdout=PIPE, stderr=PIPE
+	        )
+	        output = process.communicate()
+	        print (aspectRatio, reso, output)
     return
 
 def bigImages ( numberOfImages ) :
+    os.mkdir('./img-dataset/custom-big-images-test')
     # magick convert -size 1920x1080 plasma:fractal -blur 0x2 -swirl 180 ./img/4-big-images/png_1920x1080.png
     for i in range(0, numberOfImages) :
         process = Popen(
             [ 'magick', 'convert', '-size', "7680x4320",
             'plasma:fractal', '-blur', '0x1', '-swirl', '250',
-             './img/4-big-images/big-plasma_fractal-{0}.jpeg'.format(i) ],
+             './img-dataset/custom-big-images-test/big-plasma_fractal-{0}.jpeg'.format(i) ],
             stdout=PIPE, stderr=PIPE
         )
         output = process.communicate()
@@ -42,7 +49,7 @@ def bigImages ( numberOfImages ) :
         process = Popen(
             [ 'magick', 'convert', '-size', "3840x2160",
             'xc:', '+noise', 'Random', '-blur', '0x1',
-             './img/4-big-images/big-random_noise-{0}.jpeg'.format(i) ],
+             './img-dataset/custom-big-images-test/big-random_noise-{0}.jpeg'.format(i) ],
             stdout=PIPE, stderr=PIPE
         )
         output = process.communicate()
@@ -51,52 +58,60 @@ def bigImages ( numberOfImages ) :
     return
 
 def manyImages ( numberOfImages ) :
-    # magick convert -size 20x20 gradient:red-black ./img/5-many-images/jpeg-20x20-i.png
+    os.mkdir('./img-dataset/custom-many-images')
+    # magick convert -font Consolas -pointsize 72 label:'#' many-#.png
     for i in range(0,numberOfImages) :
         process = Popen(
-            [ 'magick', 'convert', '-size', "20x20", 'gradient:red-black',
-             './img/5-many-images/jpeg-20x20-{0}.jpeg'.format(i) ],
+            [ 'magick', 'convert', '-font', 'Consolas', '-pointsize', '72',
+            'label:{0}'.format(i),
+            './img-dataset/custom-many-images/number-{0}.png'.format(i) ],
             stdout=PIPE, stderr=PIPE
         )
         output = process.communicate()
-        print ( "{0}->{1}".format(i,output) )
+        print ( i,output )
     return
 
 commonFormats = [
-    "png", "png8", "png00", "png24", "png32", "png48", "png64", "jpeg",
-    "ico", "gif", "gif87", "bmp", "bmp2", "bmp3", "tiff", "webp", "svg", "flif"
+    ['PNG',"png"], ['JPEG',"jpg"], ['GIF /ɡɪf/',"gif"],
+    ['BMP',"bmp"], ['TIFF',"tiff"], ['WebP',"webp"],
+    ['SVG',"svg"], ['AVIF','avif'], ['JPEG XL','jxl'],
+    ['JPEG 2000', 'jp2'], ['HEIF','heif'],
 ]
 
-formatTestResolutions = [
-    "1x1", "100x100", "640x480", "1280x720"
-]
-
-allResolutions = [
+allResolutions = {
     # 1:1
-    "1x1", "400x400", "600x600", "1000x1000", "5000x5000",
+    "1:1":["50x50", "400x400", "600x600", "1000x1000", "5000x5000"],
     # 3:2
-    "1080x720", "1152x768", "1200x800", "1440x960", "1728x1152", "1800x1200", "1920x1280", "2736x1824",
+    "3:2":["1080x720", "1200x800", "1440x960", "1800x1200", "1920x1280"],
     # 4:3
-    "640x480", "800x600", "960x720", "1024x768", "1280x960", "1400x1050", "1440x1080", "1600x1200", "1856x1392", "1920x1440", "2048x1536",
+    "4:3":["640x480", "800x600", "960x720", "1280x960", "1600x1200", "1920x1440", "2048x1536"],
     # 16:9
-    "1024x576", "1152x648", "1280x720", "1366x768", "1600x900", "1920x1080", "2560x1440", "3840x2160", "7680x4320",
+    "16:9":["1024x576", "1280x720", "1600x900", "1920x1080", "2560x1440", "3840x2160", "7680x4320"],
     # 16:10
-    "1280x800", "1440x900", "1680x1050", "1920x1200", "2560x1600",
-    # special -- panorama, potrait
-    "13312x6656", "1080x1920"
-]
+    "16:10":["1280x800", "1440x900", "1680x1050", "1920x1200", "2560x1600"],
+    # panorama
+    "panorama":["13312x6656"],
+    # potrait
+    "potrait":["1080x2400"]
+}
+
+try:
+	os.mkdir('./img-dataset/')
+except FileExistsError:
+	# nothing
+	print ("nothing")
 
 if ( len(sys.argv) < 2 ) :
     print ('please give argument')
 
 elif ( sys.argv[1] == 'all' ) :
-    differentFormats( commonFormats, formatTestResolutions )
+    differentFormats( commonFormats )
     differentResolutions( allResolutions )
     bigImages()
     manyImages()
 
 elif ( sys.argv[1] == 'format' ) :
-    differentFormats( commonFormats, formatTestResolutions )
+    differentFormats( commonFormats )
 
 elif ( sys.argv[1] == 'resolution' ) :
     differentResolutions( allResolutions )
