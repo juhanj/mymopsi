@@ -298,7 +298,9 @@ class ImageController implements Controller {
 			);
 
 			$upload[ 'final_path' ] = $final_destination . $upload[ 'new_file_name' ];
-			$upload[ 'thumb_path' ] = $final_thumb_destination . "thumb-{$upload[ 'new_ruid' ]}.webp";
+			$upload[ 'thumb_path' ] = $final_thumb_destination . "thumb-{$upload[ 'new_ruid' ]}.jpg";
+			// thumbnail originally was going to use webp but
+			// CS-server imagemagick version didn't support it
 
 			$good_uploads[] = $upload;
 		}
@@ -362,8 +364,9 @@ class ImageController implements Controller {
 					$file[ 'final_path' ]
 				);
 
-				$this->createImageThumbnailFile(
-					$file[ 'final_path' ], $file[ 'thumb_path' ]
+				$thumbResult = $this->createImageThumbnailFile(
+					$file[ 'final_path' ],
+					$file[ 'thumb_path' ]
 				);
 			}
 		}
