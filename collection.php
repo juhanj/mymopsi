@@ -86,10 +86,13 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 			<span class="material-icons">add_photo_alternate</span>
 		</a>
 
-		<a href="map.php?cid=<?= $collection->random_uid ?>" class="button margins-off">
-			<?= $lang->TO_MAP ?>
-			<span class="material-icons">map</span>
-		</a>
+		<?php // Only show map button when actually useful ?>
+		<?php if ( $collection->number_of_images > 0 ) : ?>
+			<a href="map.php?cid=<?= $collection->random_uid ?>" class="button margins-off">
+				<?= $lang->TO_MAP ?>
+				<span class="material-icons">map</span>
+			</a>
+		<?php endif; ?>
 	</div>
 
 	<hr>
