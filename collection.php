@@ -207,8 +207,8 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 	<?php else : ?>
 		<!-- If there are no images in collection, print a short polite message telling
 			the user that, because apparently the empty page isn't enough of a message... -->
-		<section>
-			<?= $lang->NO_IMAGES ?>
+		<section class="center">
+			<?= $lang->ZERO_IMAGE ?>
 		</section>
 	<?php endif; ?>
 
