@@ -364,7 +364,7 @@ class ImageController implements Controller {
 					$file[ 'final_path' ]
 				);
 
-				$thumbResult = $this->createImageThumbnailFile(
+				$this->createImageThumbnailFile(
 					$file[ 'final_path' ],
 					$file[ 'thumb_path' ]
 				);
