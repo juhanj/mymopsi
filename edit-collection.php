@@ -20,6 +20,8 @@ if ( empty($_GET['id']) ) {
 	exit();
 }
 
+// For public/private change
+//TODO: change, too lazy to do now --jj 211109
 if ( !empty( $_POST ) ) {
 	$controller = new CollectionController();
 	$controller->handleRequest( $db, $user, $_POST );
@@ -61,32 +63,33 @@ array_push(
 	<form class="box" method="post">
 		<!-- Input field -->
 		<label>
-			<span class="label required"><?= $lang->NAME ?></span>
+			<span class="label"><?= $lang->NAME ?></span>
 			<input type="text" name="name" value="<?= $collection->name ?>"
-			       placeholder="Write new name here" required>
+			       placeholder="Write new name here" required
+			       id="nameInput">
 		</label>
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="request" value="edit_name">
 		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
 		<!-- Submit -->
-		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>" id="nameSubmit">
 	</form>
 
 	<!-- Edit description -->
 	<form class="box" method="post">
 		<!-- Input field -->
 		<label>
-			<span class="label required"><?= $lang->DESCRIPTION ?></span>
+			<span class="label"><?= $lang->DESCRIPTION ?></span>
 			<?php // No line breaks for textarea, because it shows in HTML output to user ?>
-			<textarea name="description" cols="30" rows="4"><?= $collection->description ?></textarea>
+			<textarea name="description" cols="30" rows="4" id="descriptionInput"><?= $collection->description ?></textarea>
 		</label>
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="collection">
 		<input type="hidden" name="request" value="edit_description">
 		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
 		<!-- Submit -->
-		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>" id="descriptionSubmit">
 	</form>
 
 	<!-- Edit visibiblity (public / private)-->
