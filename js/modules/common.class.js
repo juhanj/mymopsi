@@ -1,5 +1,7 @@
 'use strict';
 
+import {MIN, HOUR, NBSP} from "./constants.js";
+
 export class Common {
 
 	/**
@@ -39,7 +41,6 @@ export class Common {
 
 		return formatted;
 	}
-
 
 	/**
 	 * Format time into human readable format
@@ -91,5 +92,70 @@ export class Common {
 		}
 
 		return formatted;
+	}
+
+	/**
+	 * Format bytes as human-readable text.
+	 *
+	 * Taken from {@link https://stackoverflow.com/a/14919494|Stackoverflow}
+	 *
+	 * @param {int} bytes Number of bytes.
+	 * @param {boolean} si True to use metric (SI) units, aka powers of 1000. False to use
+	 *           binary (IEC), aka powers of 1024.
+	 * @param {int} dp Number of decimal places to display.
+	 *
+	 * @return {string} Formatted string.
+	 */
+	static fFileSize ( bytes, si = false, dp = 1 ) {
+		const thresh = si ? 1000 : 1024;
+
+		if ( Math.abs( bytes ) < thresh ) {
+			return bytes + ' B';
+		}
+
+		const units = si
+			? [ 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ]
+			: [ 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB' ];
+		let u = -1;
+		const r = 10 ** dp;
+
+		do {
+			bytes /= thresh;
+			++u;
+		} while ( Math.round( Math.abs( bytes ) * r ) / r >= thresh && u < units.length - 1 );
+
+
+		return bytes.toFixed( dp ) + ' ' + units[u];
+	}
+
+	/**
+	 * Give GPS lat-lng coordinate, get Degree Minute Second format back
+	 * @param {Object} location .lat .lng
+	 * @returns {string} Degree Minute Second GPS formatted location
+	 */
+	static fGPSDecimalToDMS ( location ) {
+		let latitude = toDegreesMinutesAndSeconds( location.lat );
+		let latitudeCardinal = location.lat >= 0 ? "N" : "S";
+
+		let longitude = toDegreesMinutesAndSeconds( location.lng );
+		let longitudeCardinal = location.lng >= 0 ? "E" : "W";
+
+		return latitude + NBSP + latitudeCardinal + ", " + longitude + NBSP + longitudeCardinal;
+
+		/**
+		 * Nested function, because this is used nowhere else
+		 * @param {number} coordinate Latitude or langitude
+		 * @returns {string} [degree]° [minute]′[second]″
+		 *      There's a NBSP between degree and minute
+		 */
+		function toDegreesMinutesAndSeconds ( coordinate ) {
+			let absolute = Math.abs( coordinate );
+			let degrees = Math.floor( absolute );
+			let minutesNotTruncated = (absolute - degrees) * MIN;
+			let minutes = Math.floor( minutesNotTruncated );
+			let seconds = Math.floor( (minutesNotTruncated - minutes) * MIN );
+
+			return degrees + "°" + NBSP + minutes + "′" + seconds + "″";
+		}
 	}
 }
