@@ -217,9 +217,10 @@ body.grid {
 
 .button:disabled,
 .button.disabled {
-	filter: grayscale(90%);
+	filter: grayscale(50%);
 	pointer-events: none;
 	background-color: var(--input-bg);
+	color: var(--secondary-text);
 	box-shadow: unset;
 }
 
