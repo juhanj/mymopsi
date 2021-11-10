@@ -34,6 +34,12 @@ class ImageController implements Controller {
 			case 'create_thumbnail':
 				$result = $this->requestCreateThumbnail( $db, $req );
 				break;
+			case 'edit_name':
+				$result = $this->requestEditName( $db, $user, $req );
+				break;
+			case 'edit_description':
+				$result = $this->requestEditDescription( $db, $user, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
@@ -157,6 +163,38 @@ class ImageController implements Controller {
 		exec( $command, $output, $returnCode );
 
 		return ($returnCode === 0);
+	}
+
+	private function setName ( DBConnection $db, Image $image, string $newName ): bool {
+		if ( is_null( $image->id ) ) {
+			throw new InvalidArgumentException( "Image is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_img set name = ? where id = ? limit 1',
+			[ $newName, $image->id ]
+		);
+
+		return boolval( $rows_changed );
+	}
+
+	/**
+	 * @param DBConnection $db
+	 * @param Image $image Must have ID
+	 * @param string $description
+	 *
+	 * @return bool
+	 * @throws InvalidArgumentException if $collection has no ID
+	 */
+	function setDescription ( DBConnection $db, Image $image, string $description ): bool {
+		if ( is_null( $image->id ) ) {
+			throw new InvalidArgumentException( "Image is not valid." );
+		}
+		$rows_changed = $db->query(
+			'update mymopsi_img set description = ? where id = ? limit 1',
+			[ $description, $image->id ]
+		);
+
+		return boolval( $rows_changed );
 	}
 
 	/**
@@ -712,4 +750,91 @@ class ImageController implements Controller {
 		return true;
 	}
 
+	public function requestEditName ( DBConnection $db, User $user, array $options ) {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+
+			return false;
+		}
+
+		// Checking valid image
+		if ( empty( $options[ 'image' ] ) ) {
+			$this->setError( -1, 'No image ID' );
+
+			return false;
+		}
+		else {
+			$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
+			if ( !$image ) {
+				$this->setError( -2, 'Image not valid' );
+
+				return false;
+			}
+		}
+
+		$newName = $options['name'];
+
+		//TODO get name from ini-file --jj 211109
+		if ( mb_strlen( $newName ) > 50 ) {
+			$this->setError( -4, "New name {$newName} length invalid" );
+			return false;
+		}
+
+		$result = $this->setName( $db, $image, $newName );
+
+		if ( !$result ) {
+			$this->setError( -5, "Name could not be changed. Unknown error." );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true
+		];
+
+		return true;
+	}
+
+	public function requestEditDescription ( DBConnection $db, User $user, array $options ) {
+		if ( !$user->id ) {
+			$this->setError( -1, 'User not valid' );
+
+			return false;
+		}
+
+		// Checking valid image
+		if ( empty( $options[ 'image' ] ) ) {
+			$this->setError( -1, 'No image ID' );
+
+			return false;
+		}
+		else {
+			$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
+			if ( !$image ) {
+				$this->setError( -2, 'Image not valid' );
+
+				return false;
+			}
+		}
+
+		$newDescription = $options['description'];
+
+		//TODO get name from ini-file --jj 211109
+		if ( mb_strlen( $newDescription ) > 300 ) {
+			$this->setError( -4, "New name `{$newDescription}` length invalid" );
+			return false;
+		}
+
+		$result = $this->setDescription( $db, $image, $newDescription );
+
+		if ( !$result ) {
+			$this->setError( -5, "Description could not be changed. Unknown database error." );
+			return false;
+		}
+
+		$this->result = [
+			'success' => true
+		];
+
+		return true;
+	}
 }
