@@ -216,10 +216,7 @@
 			"en": "Save",
 			"fi": "Tallenna"
 		},
-		"CONFIRM_PASSWORD": {
-			"en": "Confirm password",
-			"fi": "Vahvista salasana"
-		},
+		"CONFIRM_PASSWORD": {},
 		"DANGER_DELETE_INFO": {
 			"en": "DANGER! Delete user and all related data?<p>Deletes all user collections and images permanently.",
 			"fi": "VAARA! Poista käyttäjä ja kaikki käyttäjän tiedot?<p>Poistaa myös kokoelmat ja kuvat pysyvästi."
