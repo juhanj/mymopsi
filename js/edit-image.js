@@ -10,6 +10,28 @@ import {
  * Functions
  ********************************************/
 
+function handleFormSubmit ( event ) {
+	event.preventDefault();
+	let button = event.target;
+	let form = button.parentNode;
+
+	Ajax.sendForm( new FormData(form) )
+		.then( (response) => {
+			console.log(response)
+
+			if ( response.result.success ) {
+				button.value = "💾! ✔";
+			}
+			else {
+				button.value = "💾! ❌";
+			}
+
+			button.disabled = true;
+		} );
+
+	console.log( event.target );
+}
+
 function handleMapClickMarker ( event ) {
 	markerPosition.lat =
 	marker.setPosition( event.latLng )
@@ -94,6 +116,17 @@ function deleteImage () {
 /********************************************
  * Main code
  ********************************************/
+
+let nameInput = document.getElementById( 'nameInput' );
+let nameSubmit = document.getElementById( 'nameSubmit' );
+let descriptionInput = document.getElementById( 'descriptionInput' );
+let descriptionSubmit = document.getElementById( 'descriptionSubmit' );
+
+nameInput.oninput = () => { nameSubmit.disabled = false; nameSubmit.value = "💾 ?"; };
+descriptionInput.oninput = () => { descriptionSubmit.disabled = false; descriptionSubmit.value = "💾 ?"; };
+
+nameSubmit.onclick = handleFormSubmit;
+descriptionSubmit.onclick = handleFormSubmit;
 
 let deleteButton = document.getElementById( 'deleteButton' );
 deleteButton.onclick = deleteImage;

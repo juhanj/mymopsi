@@ -58,14 +58,16 @@ array_push(
 		<!-- Input -->
 		<label>
 			<span class="label"><?= $lang->NAME ?></span>
-			 <input type="text" name="name" value="<?= $image->name ?>" required>
+			 <input type="text" name="name" value="<?= $image->name ?>" required
+			        id="nameInput">
 		</label>
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="image">
 		<input type="hidden" name="request" value="edit_name">
 		<input type="hidden" name="collection" value="<?= $image->random_uid ?>">
 		<!-- Submit -->
-		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>"
+		       id="nameSubmit">
 	</form>
 
 	<!-- Description -->
@@ -73,14 +75,15 @@ array_push(
 		<!-- Image -->
 		<label>
 			<span class="label"><?= $lang->DESCRIPTION ?></span>
-			<textarea name="description" cols="30" rows="4" required><?= $image->description ?></textarea>
+			<textarea name="description" cols="30" rows="4" required id="descriptionInput"><?= $image->description ?></textarea>
 		</label>
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="image">
 		<input type="hidden" name="request" value="edit_description">
 		<input type="hidden" name="collection" value="<?= $image->random_uid ?>">
 		<!-- Submit -->
-		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>">
+		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>"
+		       id="descriptionSubmit">
 	</form>
 
 	<!-- GPS editing -->
