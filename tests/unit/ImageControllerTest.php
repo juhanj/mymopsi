@@ -140,7 +140,6 @@ class ImageControllerTest extends TestCase {
 		self::assertFalse( file_exists( $image->filepath ) );
 	}
 
-
 	public function test_CreateThumbnail () {
 		$image = Image::fetchImageByID( $this->db, 3 );
 		$newThumbPath = INI[ 'Misc' ][ 'path_to_collections' ] . 'temp/test-thumb-actual-image.jpg';
@@ -173,6 +172,54 @@ class ImageControllerTest extends TestCase {
 		$image = Image::fetchImageByID( $this->db, 3 );
 
 		self::assertTrue( file_exists( $image->thumbnailpath ) );
+	}
+
+	public function test_RequestEditName () {
+		$image = Image::fetchImageByID( $this->db, $this->testImage->id );
+		$post_request = [
+			'request' => 'edit_name',
+			'name' => 'New name',
+			'image' => $image->random_uid
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
+
+		self::assertTrue(
+			$image->name !== 'New name'
+		);
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
+
+		$image = Image::fetchImageByID( $this->db, $this->testImage->id );
+		self::assertTrue(
+			$image->name === 'New name'
+		);
+	}
+
+	public function test_RequestEditDescription () {
+		$image = Image::fetchImageByID( $this->db, $this->testImage->id );
+		$post_request = [
+			'request' => 'edit_description',
+			'description' => 'New description',
+			'image' => $image->random_uid
+		];
+		$this->ctrl->handleRequest( $this->db, $this->testUser, $post_request );
+
+		self::assertTrue(
+			$image->description !== 'New description'
+		);
+
+		self::assertTrue(
+			$this->ctrl->result['success'],
+			print_r( $this->ctrl->result, true ) . print_r( $post_request, true )
+		);
+
+		$image = Image::fetchImageByID( $this->db, $this->testImage->id );
+		self::assertTrue(
+			$image->description === 'New description'
+		);
 	}
 
 }
