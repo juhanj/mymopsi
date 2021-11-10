@@ -6,18 +6,6 @@ require './components/_start.php';
  * @var User $user
  */
 
-if ( !empty( $_POST ) ) {
-	$controller = new UserController();
-	$controller->handleRequest( $db, $user, $_POST );
-
-	if ( $controller->result['success'] ) {
-		$_SESSION['feedback'] = "<p class='success'>{$lang->EDIT_SAVED}</p>";
-	}
-	elseif ( $controller->result['error'] ) {
-		$_SESSION['feedback'] = "<p class='error'>Error, {$controller->result['errMsg']}</p>";
-	}
-}
-
 $feedback = Common::checkFeedbackAndPOST();
 
 array_push(
@@ -45,16 +33,18 @@ array_push(
 		<form method="post">
 			<!-- username -->
 			<label for="name">
-				<span class="label required"><?= $lang->USERNAME ?></span>
+				<span class="label"><?= $lang->USERNAME ?></span>
 				<input type="text" name="username" value="<?= $user->username ?>" required
 					minlength="<?= INI['Settings']['username_min_len'] ?>"
-					maxlength="<?= INI['Settings']['username_max_len'] ?>">
+					maxlength="<?= INI['Settings']['username_max_len'] ?>"
+					id="usernameInput">
 			</label>
 			<!-- Server-stuff -->
 			<input type="hidden" name="class" value="user">
 			<input type="hidden" name="request" value="edit_username">
 			<!-- Submit -->
-			<input type="submit" class="button" value="<?= $lang->CHANGE_UN ?>">
+			<input type="submit" class="button" value="<?= $lang->CHANGE_UN ?>"
+				id="usernameSubmit" disabled>
 		</form>
 	</section>
 
@@ -63,27 +53,29 @@ array_push(
 		<form method="post">
 			<!-- Password -->
 			<label for="password">
-				<span class="label required"><?= $lang->PASSWORD ?></span>
+				<span class="label"><?= $lang->PASSWORD ?></span>
 				<input type="password" name="password" value="" required
 					minlength="<?= INI['Settings']['password_min_len'] ?>"
-					maxlength="<?= INI['Settings']['password_max_len'] ?>">
+					maxlength="<?= INI['Settings']['password_max_len'] ?>"
+					id="passwordInput">
 			</label>
 
 			<!-- Password confirm (client-side check only) -->
 			<!-- There was a reason why this is commented out, can't remember why
 			    Something about this being useless? -->
 			<!--<label for="password-confirm">
-				<span class="label required"><?/*= $lang->CONFIRM_PASSWORD */?></span>
+				<span class="label required"></span>
 				<input type="password" name="password-confirm" value="" required
-					minlength="<?/*= INI['Settings']['password_min_len'] */?>"
-					maxlength="<?/*= INI['Settings']['password_max_len'] */?>">
+					minlength=""
+					maxlength="">
 			</label>-->
 
 			<!-- Server-side stuff -->
 			<input type="hidden" name="class" value="user">
 			<input type="hidden" name="request" value="edit_password">
 			<!-- Submit button -->
-			<input type="submit" class="button" value="<?= $lang->CHANGE_PW ?>">
+			<input type="submit" class="button" value="<?= $lang->CHANGE_PW ?>"
+				id="passwordSubmit" disabled>
 		</form>
 	</section>
 
