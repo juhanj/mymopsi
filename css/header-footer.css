@@ -13,6 +13,11 @@
 	justify-content: flex-start;
 	align-items: center;
 	padding: .3rem;
+	flex-wrap: wrap;
+}
+
+.breadcrumbs-navigation {
+	word-break: keep-all;
 }
 
 .breadcrumbs-navigation * {
@@ -20,13 +25,13 @@
 	margin: auto 0;
 }
 
-.site-header .breadcrumbs-navigation .breadcrumbs-navigation-mopsi-logo {
+.breadcrumbs-navigation-mopsi-logo {
 	margin: auto;
 	max-height: 1.5rem;
 }
 
 
-.site-header .breadcrumbs-navigation .separator {
+.breadcrumbs-navigation .separator {
 	margin: 0 .5rem;
 }
 
@@ -44,6 +49,11 @@
  */
 .site-header h1.page-title {
 	font-weight: lighter;
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 80vw;
+	display: flex;
+	text-overflow: ellipsis;
 }
 
 /************************************************************
