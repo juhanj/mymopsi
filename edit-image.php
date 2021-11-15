@@ -64,7 +64,8 @@ array_push(
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="image">
 		<input type="hidden" name="request" value="edit_name">
-		<input type="hidden" name="collection" value="<?= $image->random_uid ?>">
+		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
+		<input type="hidden" name="image" value="<?= $image->random_uid ?>">
 		<!-- Submit -->
 		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>"
 		       id="nameSubmit">
@@ -80,7 +81,8 @@ array_push(
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="image">
 		<input type="hidden" name="request" value="edit_description">
-		<input type="hidden" name="collection" value="<?= $image->random_uid ?>">
+		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
+		<input type="hidden" name="image" value="<?= $image->random_uid ?>">
 		<!-- Submit -->
 		<input type="submit" class="button" value="<?= $lang->SUBMIT ?>"
 		       id="descriptionSubmit">
