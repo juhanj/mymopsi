@@ -1,4 +1,5 @@
-<?php declare(strict_types=1); ?>
+<?php declare(strict_types=1);
+//INI['Misc']['gmaps_api_key'] ?>
 
 <head>
 	<meta charset="UTF-8">
@@ -39,7 +40,7 @@
 	<script defer src="https://unpkg.com/dayjs"></script>
 
 	<!-- Google maps (it should cache 30 minutes, so not too worried about page load) -->
-	<script defer src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>"></script>
+<!--	<script defer src="https://maps.googleapis.com/maps/api/js?key=KEY HERE"></script>-->
 
 	<!-- Main javascript file -->
 	<script type="module" defer src="<?= WEB_PATH ?>js/main.js"></script>
