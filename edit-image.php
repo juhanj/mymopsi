@@ -25,8 +25,8 @@ if ( ($user->id !== $collection->owner_id) and !$collection->public ) {
 
 array_push(
 	$breadcrumbs_navigation,
-	[ 'User', WEB_PATH . 'collections.php' ],
-	[ 'Collection', WEB_PATH . 'collection.php?id=' . $collection->random_uid ],
+	[ $user->username, WEB_PATH . 'collections.php' ],
+	[ $collection->name ?? "Collection", WEB_PATH . 'collection.php?id=' . $collection->random_uid ]
 );
 ?>
 

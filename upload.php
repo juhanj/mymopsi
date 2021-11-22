@@ -45,8 +45,8 @@ if ( (!$collection->public and !$collection->editable) and ($collection->owner_i
 // Breadcrumbs navigation for the header
 array_push(
 	$breadcrumbs_navigation,
-	[ 'User', WEB_PATH . '/collections.php' ],
-	[ 'Collection', WEB_PATH . '/collection.php?id=' . $collection->random_uid ]
+	[ $user->username, WEB_PATH . 'collections.php' ],
+	[ $collection->name, WEB_PATH . 'collection.php?id=' . $collection->random_uid ]
 );
 ?>
 

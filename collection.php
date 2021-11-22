@@ -18,7 +18,7 @@ if ( !$collection ) {
 
 array_push(
 	$breadcrumbs_navigation,
-	[ 'User', WEB_PATH . 'collections.php' ]
+	[ $user->username, WEB_PATH . 'collections.php' ],
 );
 
 /* ************************************
