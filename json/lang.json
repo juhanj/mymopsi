@@ -28,6 +28,10 @@
 		"EDIT_SUCCESS": {
 			"en": "Changes saved.",
 			"fi": "Muutokset tallennettu."
+		},
+		"SETTINGS": {
+			"en": "Settings",
+			"fi": "Asetukset"
 		}
 	},
 	"index": {
@@ -358,8 +362,8 @@
 			"fi": "MyMopsi | Kuva"
 		},
 		"HEADER_TITLE": {
-			"en": "Image info and editing",
-			"fi": "Kuvan tiedot ja muokkaaminen"
+			"en": "Image info",
+			"fi": "Kuvan tiedot"
 		},
 		"NAME": {
 			"en": "Name",
@@ -373,12 +377,22 @@
 			"en": "Save",
 			"fi": "Tallenna"
 		},
+		"LOCATION_TITLE": {
+			"en": "Location",
+			"fi": "Sijainti"
+		},
 		"EDIT_GPS": {
 			"en": "Edit GPS data (where image was taken)",
 			"fi": "Muokaa kuvan GPS-data (missä kuva on otettu)"
 		},
-		"EDIT_SUCCESS": {
-			"en": "Changes saved successfully"
+		"EDIT_SUCCESS": {},
+		"METADATA_LABEL": {
+			"en": "Imagefile metadata",
+			"fi": "Kuvatiedoston metatiedot"
+		},
+		"SHOW_METADATA": {
+			"en": "Show",
+			"fi": "Näytä"
 		},
 		"DANGER_DELETE_INFO": {
 			"en": "DANGER! Delete image?<p>Deletion is permanent.",
@@ -387,6 +401,24 @@
 		"DELETE_BUTTON": {
 			"en": "DELETE IMAGE",
 			"fi": "POISTA KUVA"
+		}
+	},
+	"map": {
+		"HTML_TITLE": {
+			"en": "MyMopsi | Map \uD83D\uDDFA️",
+			"fi": "MyMopsi | Kartta \uD83D\uDDFA️"
+		},
+		"HEADER_TITLE": {
+			"en": "Map",
+			"fi": "Kartta"
+		},
+		"EDIT": {
+			"en": "Edit",
+			"fi": "Muokkaa"
+		},
+		"MAP": {
+			"en": "Map",
+			"fi": "Kartta"
 		}
 	}
 }
