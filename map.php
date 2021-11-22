@@ -26,7 +26,7 @@ if ( !empty( $_GET['iid'] ) ) {
 ?>
 
 <!DOCTYPE html>
-<html lang="fi">
+<html lang="<?= $lang->lang ?>">
 
 <?php require 'html-head.php'; ?>
 
@@ -36,7 +36,7 @@ if ( !empty( $_GET['iid'] ) ) {
 
 <main class="main-body-container margins-off">
 
-	<section class="clustering-container">
+	<section class="clustering-container" hidden>
 		<label>
 			Clustering
 			<select>
@@ -54,7 +54,32 @@ if ( !empty( $_GET['iid'] ) ) {
 
 <?php require 'html-footer.php'; ?>
 
+<!-- Hidden fullscreen overlay code. When image thumbnail is clicked, this is shown -->
+<div id="overlay" class="dark-overlay-bg hidden" hidden>
+	<div class="overlay-container">
+		<section class="overlay-header-container center margins-off">
+			<a href="" class="button" id="imageEditLink">
+				<?= $lang->EDIT ?>
+				<span class="material-icons">edit</span>
+			</a>
+			<span class="image-name" id="imageName"></span>
+			<a href="" class="button" id="imageMapLink">
+				<?= $lang->MAP ?>
+				<span class="material-icons">place</span>
+			</a>
+			<button class="button" id="closeOverlay">
+				<span class="material-icons">close</span>
+			</button>
+		</section>
+
+		<section class="overlay-image-container" id="overlayImageContainer">
+			<img src="" class="image-full" id="imageFull" alt="">
+		</section>
+	</div>
+</div>
+
 <script>
+	let collectionRUID = "<?= $collection->random_uid ?>";
 	let collectionSize = <?= count( $collection->images ) ?>;
 	let points = [
 		<?php foreach ( $collection->images as $i => $img ) : ?>
@@ -63,6 +88,7 @@ if ( !empty( $_GET['iid'] ) ) {
 	} ?>
 		{
 			id: <?= $i ?>,
+			ruid: '<?= $img->random_uid ?>',
 			Lat: '<?= $img->latitude ?>',
 			Lng: '<?= $img->longitude ?>',
 			src: './img/img.php?id=<?= $img->random_uid ?>',

@@ -3,6 +3,8 @@
 /* **************************************
 	Functions
  * **************************************/
+import {Common} from "./modules/common.class.js";
+
 function initMopsiClustering () {
 	let options = {
 		clusteringMethod: "gridBased",
@@ -69,8 +71,10 @@ function initGoogleMap () {
 	 *      .id - the ID of the single data point object
 	 */
 	document.addEventListener( "click_single", function ( event ) {
-		alert( "You clicked a single image." );
+		// alert( `You clicked a single image, ${points[event.id].name}.` );
 		console.log( event );
+		console.log( points[event.id] );
+		openOverlay( points[event.id] );
 	} );
 	document.addEventListener( "rightclick_single", function ( event ) {
 		alert( "A right click has happened!" );
@@ -86,6 +90,28 @@ function initGoogleMap () {
 	} );
 }
 
+function openOverlay ( imageMarker ) {
+	overlayEditLink.href = `./edit-image.php?id=${imageMarker.ruid}`;
+	overlayMapLocationLink.href = `./map.php?cid=${collectionRUID}&iid=${imageMarker.ruid}`;
+	overlayImageElement.src = `./img/img.php?id=${imageMarker.ruid}&full`;
+
+	let location = Common.fGPSDecimalToDMS( {lat:imageMarker.Lat,lng:imageMarker.Lng} );
+	overlayNameTitle.innerHTML = imageMarker.name + "<br>" + location;
+
+	overlay.hidden = false;
+	overlay.classList.remove( 'hidden' );
+}
+
+function closeOverlay () {
+	overlay.hidden = true;
+	overlay.classList.add( 'hidden' );
+
+	overlayEditLink.href = '';
+	overlayNameTitle.innerText = '';
+	overlayMapLocationLink.href = '';
+	overlayImageElement.src = '';
+}
+
 /* **************************************
 	Main code
  * **************************************/
@@ -96,3 +122,19 @@ let mapDiv = document.getElementById( "googleMap" );
 window.onload = () => {
 	initGoogleMap();
 }
+
+// Overlay elements:
+let overlay = document.getElementById( 'overlay' );
+let overlayEditLink = document.getElementById( 'imageEditLink' );
+let overlayNameTitle = document.getElementById( 'imageName' );
+let overlayMapLocationLink = document.getElementById( 'imageMapLink' );
+let overlayClose = document.getElementById( 'closeOverlay' );
+let overlayImageElement = document.getElementById( 'imageFull' );
+
+// If full-sized image fails to load (e.g. file type not supported)
+overlayImageElement.onerror = () => {
+	overlayImageElement.src='./img/mopsi.ico';
+}
+
+// Overlay close:
+overlayClose.onclick = closeOverlay;
