@@ -62,7 +62,7 @@
 	--info: var(--primary-light);
 	--warning: hsl(349, 85%, 30%);
 
-	--border-radius: .3rem;
+	--border-radius: .1rem;
 }
 
 .info {
@@ -262,7 +262,8 @@ a.button {
 	place-items: center;
 }
 
-.material-icons {
+.material-icons,
+.material-icons-outlined {
 	vertical-align: text-top;
 	margin-left: .5rem;
 	margin-right: .5rem;
