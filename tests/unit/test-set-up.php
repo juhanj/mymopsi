@@ -50,13 +50,13 @@ function set_up_database () {
 	 * unit collections
 	 * 1:'test' (user:1) and 2:null (user:2)
 	 */
-	$sql = 'insert into mymopsi_collection (id, owner_id, random_uid, name, description)
-			values (?,?,?,?,?),(?,?,?,?,?)
+	$sql = 'insert into mymopsi_collection (id, owner_id, random_uid, name, description, public)
+			values (?,?,?,?,?,?),(?,?,?,?,?,?)
 			on duplicate key update owner_id = values(owner_id), name = values(name), description = values(description), 
-			                        public=false, editable=false, date_added = now()';
+			                        public=values(public), editable=false, date_added = now()';
 	$values = [
-		1, 1, 'unitest-collec1-ruid', 'test1', null,
-		2, 1, 'unitest-collec2-ruid', 'test2', null,
+		1, 1, 'unitest-collec1-ruid', 'test1', null, false,
+		2, 1, 'unitest-collec2-ruid', 'test2', null, true,
 	];
 	$db->query( $sql, $values );
 	// Supress warning, because file already exists, don't want to write if

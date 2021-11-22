@@ -47,6 +47,20 @@ class CollectionTest extends TestCase {
 		self::assertIsInt( $coll->number_of_images );
 	}
 
+	public function test_FetchPublicCollections () {
+		$colls = Collection::fetchPublicCollections( $this->db );
+
+		self::assertIsArray( $colls );
+		self::assertNotEmpty( $colls );
+	}
+
+	public function test_FetchAllCollections () {
+		$colls = Collection::fetchAllCollections( $this->db );
+
+		self::assertIsArray( $colls );
+		self::assertNotEmpty( $colls );
+	}
+
 	public function test_GetImages () {
 		$coll = Collection::fetchCollectionByID( $this->db, 1 );
 
