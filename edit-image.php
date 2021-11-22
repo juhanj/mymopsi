@@ -28,10 +28,12 @@ array_push(
 	[ $user->username, WEB_PATH . 'collections.php' ],
 	[ $collection->name ?? "Collection", WEB_PATH . 'collection.php?id=' . $collection->random_uid ]
 );
+
+
 ?>
 
 <!DOCTYPE html>
-<html lang="fi">
+<html lang="<?= $lang->lang ?>">
 
 <?php require 'html-head.php'; ?>
 
