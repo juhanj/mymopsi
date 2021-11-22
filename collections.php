@@ -9,34 +9,40 @@ require './components/_start.php';
 $feedback = Common::checkFeedbackAndPOST();
 
 // For now, we only care if there are any public collections.
-$are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection where public = true limit 1" );
+$public_colls_nro = $db->query(
+	"select count(id) as count from mymopsi_collection where public = true",
+	[],
+	false
+)->count;
+$all_colls_nro = $db->query(
+	"select count(id) as count from mymopsi_collection",
+	[],
+	false
+)->count;
+
+$wanted = $_GET[ 'user' ] ?? null;
 
 /**
  * @var Collection[] $collections
  */
 $collections = [];
 
-// If use is admin, get whatever is wanted
-if ( $user and $user->admin and !empty( $_GET[ 'user' ] ) ) {
-	$temp_user = User::fetchUserByRUID( $db, $_GET[ 'user' ] );
-
-	$temp_user->getCollections( $db );
-
-	$collections = $temp_user->collections;
+if ( !$user or $wanted === 'public' ) {
+	$collections = Collection::fetchPublicCollections( $db );
 }
-// Logged in user, get own collections
-else if ( $user and !isset( $_GET[ 'public' ] ) ) {
-	$user->getCollections( $db );
-	$collections = $user->collections;
-}
-// Public collections (if wanted or not if not logged in)
-else if ( isset( $_GET[ 'public' ] ) or !$user ) {
-	$collections = $db->query(
-		"select * from mymopsi_collection where public = true",
-		[],
-		true,
-		'Collection'
-	);
+else {
+	if ( $user->admin and $wanted === 'all' ) {
+		$collections = Collection::fetchAllCollections( $db );
+	}
+	else if ( $user->admin and !empty($wanted) ) {
+		$temp_user = User::fetchUserByRUID( $db, $wanted );
+		$temp_user->getCollections($db);
+		$collections = $temp_user->collections;
+	}
+	else {
+		$user->getCollections( $db );
+		$collections = $user->collections;
+	}
 }
 ?>
 
@@ -54,6 +60,18 @@ else if ( isset( $_GET[ 'public' ] ) or !$user ) {
 
 <main class="main-body-container medium-width">
 
+	<form>
+		<label>
+			<select name="user" id="userSelect" onchange="this.form.submit()">
+				<?php if ($user) : ?>
+					<option value="">You (<?= $user->number_of_collections ?>)</option>
+				<?php endif; ?>
+				<option value="public" <?= $wanted !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>Public (<?= $public_colls_nro ?>)</option>
+				<option value="all" <?= $user->admin ?: 'disabled' ?>>All (<?= $all_colls_nro ?>)</option>
+			</select>
+		</label>
+	</form>
+
 	<section class="buttons">
 		<a href="create-collection.php" class="button">
 			<?= $lang->NEW_COLLECTION ?>
@@ -68,10 +86,6 @@ else if ( isset( $_GET[ 'public' ] ) or !$user ) {
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
 						<h3 class="name margins-off">
 							<span><?= $c->name ?: substr( $c->random_uid, 0, 5 ) ?></span>
-							<span>
-								<?= $c->number_of_images ?>
-								<span class="material-icons">photo_library</span>
-							</span>
 						</h3>
 						<p class="description"><?= $c->description ?? '' ?></p>
 						<img class="image" src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb">
