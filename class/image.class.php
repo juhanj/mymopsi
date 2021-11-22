@@ -67,4 +67,21 @@ class Image {
 
 		return $row ?: null;
 	}
+
+	public function getFileMetadata ( $lang ) {
+
+
+		$perl = INI[ 'Misc' ][ 'perl' ];
+		$exiftool = DOC_ROOT . WEB_PATH . 'exiftool/exiftool';
+
+		$commandOptions =
+			" -g -a --FileName --Directory --FilePermissions -lang " . $lang;
+
+		exec(
+			"{$perl} {$exiftool} {$commandOptions} {$this->filepath}",
+			$output
+		);
+
+		return implode( "\n", $output );
+	}
 }
