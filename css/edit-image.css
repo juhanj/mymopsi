@@ -4,11 +4,9 @@
 *************************************************************/
 
 .image-container {
-    /*max-height: 30rem;*/
+    max-height: 30rem;
 }
-.image-container .thumbnail {
-    border: 1px dotted grey;
-}
+
 .image-container .image {
     object-fit: scale-down;
     max-width: 100%;

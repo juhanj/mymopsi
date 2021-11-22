@@ -44,13 +44,9 @@ array_push(
 <main class="main-body-container">
 
 	<!-- Image -->
-	<section class="box image-container">
-		<h2>Thumbnail</h2>
-		<img src="./img/img.php?id=<?= $image->random_uid ?>&thumb" class="image thumbnail" alt="<?= $image->name ?> thumbnail"
-		     style="">
-
-		<h2>Actual image</h2>
-		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image" alt="<?= $image->name ?>">
+	<section class="image-container">
+		<img src="./img/img.php?id=<?= $image->random_uid ?>" class="image"
+		     alt="<?= $image->name ?>">
 	</section>
 
 	<!-- Name -->
@@ -76,7 +72,8 @@ array_push(
 		<!-- Image -->
 		<label>
 			<span class="label"><?= $lang->DESCRIPTION ?></span>
-			<textarea name="description" cols="30" rows="4" required id="descriptionInput"><?= $image->description ?></textarea>
+			<textarea name="description" cols="30" rows="4" required
+			          id="descriptionInput"><?= $image->description ?></textarea>
 		</label>
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="image">
@@ -90,7 +87,7 @@ array_push(
 
 	<!-- GPS editing -->
 	<section class="box">
-		<h2>Location</h2>
+		<span><?= $lang->LOCATION_TITLE ?></span>
 		<!-- Map -->
 		<section id="googleMap" class="map margins-initial">
 			<!-- Google Map goes here. `margins-initial`-class necessary
@@ -106,8 +103,32 @@ array_push(
 		<!-- To save new coordinate (enabled when coordinate changes) -->
 		<button class="button" id="saveLocationButton"
 		        data-id="<?= $image->random_uid ?>" disabled>
-			Save?
+			💾
 		</button>
+	</section>
+
+	<!-- Image file metadata -->
+	<section class="box">
+		<style>
+			#metadataTextArea {
+				font-family: 'Cascadia Code', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+				width: 100%;
+				resize: vertical;
+				height: 25rem;
+			}
+		</style>
+
+		<label>
+			<span><?= $lang->METADATA_LABEL ?></span>
+			<textarea id="metadataTextArea" hidden><?= $image->getFileMetadata($lang->lang) ?></textarea>
+		</label>
+		<button id="buttonShowMetadata" class="button"><?= $lang->SHOW_METADATA ?></button>
+		<script>
+			document.getElementById("buttonShowMetadata").onclick = () => {
+				document.getElementById("metadataTextArea").hidden = false;
+				document.getElementById("buttonShowMetadata").hidden = true;
+			}
+		</script>
 	</section>
 
 	<hr>
@@ -127,6 +148,7 @@ array_push(
 
 <?php require 'html-footer.php'; ?>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=<?= INI['Misc']['gmaps_api_key'] ?>"></script>
 <script>
 	let imageID = '<?= $image->random_uid ?>';
 	let locationKnown = <?= var_export( isset( $image->latitude ) ) ?>;
