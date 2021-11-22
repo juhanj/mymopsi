@@ -71,6 +71,46 @@ class Collection {
 	}
 
 	/**
+	 * @param DBConnection $db
+	 *
+	 * @return Collection[] | null
+	 */
+	public static function fetchPublicCollections ( DBConnection $db ): ?array {
+		$sql = 'select c.*,
+                    count(i.id) as number_of_images
+				from mymopsi_collection c
+					left join mymopsi_img i on c.id = i.collection_id 
+				where c.public = true
+				group by c.owner_id';
+		$values = [];
+
+		/** @var Collection[] $rows */
+		$rows = $db->query( $sql, $values, true, 'Collection' );
+
+		return $rows ?: null;
+	}
+
+	/**
+	 * This method is only meant for admin user
+	 * @param DBConnection $db
+	 *
+	 * @return Collection[] | null
+	 */
+	public static function fetchAllCollections ( DBConnection $db ): ?array {
+		$sql = 'select c.*,
+                    count(i.id) as number_of_images
+				from mymopsi_collection c
+					left join mymopsi_img i on c.id = i.collection_id
+				group by c.owner_id';
+		$values = [];
+
+		/** @var Collection[] $rows */
+		$rows = $db->query( $sql, $values, true, 'Collection' );
+
+		return $rows ?: null;
+	}
+
+	/**
 	 * Get collection's images from the database
 	 * @param DBConnection $db
 	 */
