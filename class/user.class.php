@@ -29,6 +29,9 @@ class User {
 	/** @var Collection[] */
 	public $collections;
 
+	/** @var int */
+	public $number_of_collections;
+
 	function __construct () {
 	}
 
@@ -38,9 +41,10 @@ class User {
 	 * @return User|null
 	 */
 	static function fetchUserByID ( DBConnection $db, int $id ): ?User {
-		$sql = 'select *
-				from mymopsi_user
-				where id = ?
+		$sql = 'select u.*, count(c.id) as number_of_collections
+				from mymopsi_user u
+				left join mymopsi_collection c on c.owner_id = u.id
+				where u.id = ?
 				limit 1';
 		$values = [ $id ];
 
@@ -56,9 +60,10 @@ class User {
 	 * @return User|null
 	 */
 	static function fetchUserByRUID ( DBConnection $db, $ruid ): ?User {
-		$sql = 'select *
-				from mymopsi_user
-				where random_uid = ?
+		$sql = 'select u.*, count(c.id) as number_of_collections
+				from mymopsi_user u
+				left join mymopsi_collection c on c.owner_id = u.id
+				where u.random_uid = ?
 				limit 1';
 		$values = [ $ruid ];
 
@@ -70,10 +75,11 @@ class User {
 
 	/**
 	 * @param DBConnection $db
-	 * @param string $identifier Either, ID, UID, username, or email
+	 * @param string       $identifier Either, ID, UID, username, or email
+	 *
 	 * @return User|null
 	 */
-	static function fetchUserByUsernameOrEmail ( DBConnection $db, $identifier ): ?User {
+	static function fetchUserByUsernameOrEmail ( DBConnection $db, string $identifier ): ?User {
 		$sql = 'select *
 				from mymopsi_user
 				where username = ?
