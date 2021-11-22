@@ -6,12 +6,6 @@ require $_SERVER[ 'DOCUMENT_ROOT' ] . '/mopsi_dev/mymopsi/components/_start.php'
  * @var User         $user
  */
 
-// TODO: fix this page of a mess
-// submit button label
-// confirmation on complete
-// feedback on button
-// coordinate formatting 12.34N 32.10E
-
 // Valid user logged in
 if ( !$user ) {
 	$_SESSION[ 'feedback' ] = "<p class='error'>{$lang->NOT_LOGGED_IN}</p>";
@@ -35,8 +29,8 @@ if ( !$collection ) {
 	header( 'location: ' . $_SERVER[ 'HTTP_REFERER' ] );
 	exit();
 }
-// Check either collection owner, public&editable collection (not implemented), or admin user
-if ( (!$collection->public and !$collection->editable) and ($collection->owner_id !== $user->id) ) {
+// Check collection owner
+if ( $collection->owner_id !== $user->id ) {
 	$_SESSION[ 'feedback' ] = "<p class='error'>{$lang->NOT_COLL_OWNER}</p>";
 	header( 'location: ' . $_SERVER[ 'HTTP_REFERER' ] );
 	exit();
@@ -64,10 +58,11 @@ array_push(
 	<!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 	<div class="feedback" id="feedback"><?= $feedback ?></div>
 
-	<!-- Link back to collection we're adding images to -->
-	<a href="collection.php?id=<?= $collection->random_uid ?>" class="button return" style="width: 40%">
+	<!-- Return -->
+	<a href="collection.php?id=<?= $collection->random_uid ?>" class="button return"
+	   style="margin: 1rem 0 0; width: max-content;">
 		<i class="material-icons">arrow_back</i>
-		<?= $lang->BACK_TO_COLL ?>
+		<?= $lang->RETURN ?>
 	</a>
 
 	<!-- The form itself.
@@ -78,7 +73,7 @@ array_push(
 
 		<!-- File type input -->
 		<label id="fileinput-label" hidden>
-			<span class="label" id="file-input-label-text">
+			<span class="label center" id="file-input-label-text">
 				<i class="material-icons">save_alt</i>
 				<?= $lang->FILE_INPUT ?>
 			</span>
@@ -86,31 +81,64 @@ array_push(
 		</label>
 
 		<!-- Server processing stuff -->
-		<input type="hidden" name="MAX_FILE_SIZE" value="10000000">
+		<input type="hidden" name="MAX_FILE_SIZE" value="10048576">
 		<input type="hidden" name="class" value="image">
 		<input type="hidden" name="request" value="upload">
 		<input type="hidden" name="collection" value="<?= $collection->random_uid ?>">
 
+		<!-- Submit (hidden until files chosen) -->
 		<button type="submit" class="button" id="submit-button" hidden>
 			<?= $lang->SUBMIT ?>
 			<span class="material-icons">publish</span>
 		</button>
-
 	</form>
 
+	<!-- (More prominent) link to back to collection after upload finishes -->
+	<section class="box upload-finished margins-off" id="uploadFinishedBox" hidden>
+		<!-- Checkmark and number of files successul uploaded -->
+		<div class="center big-green-checkmark">
+			<span class="material-icons">
+				check</span>
+			<p id="finishedFilesUploaded"></p>
+		</div>
+		<div class="buttons center">
+			<a href="./collection.php?id=<?= $collection->random_uid ?>" class="button">
+				<?= $lang->FINISHED_UPLOAD_BUTTON ?>
+			</a>
+<!--			<button class="button return">--><?= ""//$lang->UPLOAD_MORE ?><!--</button>-->
+		</div>
+	</section>
+
 	<!-- Progress bars, one for files, one for bits -->
-	<section class="box progress-bar-container" id="progress-bar-container" hidden>
+	<section class="box progress-bar-container margins-off" id="progress-bar-container" hidden>
 		<!-- Progress number of files -->
-		<label>
+		<label class="progress-bar-label">
 			<span class="label"><?= $lang->PROGRESS_FILES ?></span>
 			<progress id="progress-files" value="0"></progress>
+			<span class="exact-numbers">
+				<span id="doneFiles">0</span> / <span id="totalFiles"></span>
+			</span>
 		</label>
+
 		<!-- Progress of bits, filesize -->
-		<label>
+		<label class="progress-bar-label">
 			<span class="label"><?= $lang->PROGRESS_BITS ?></span>
 			<progress id="progress-bits" value="0"></progress>
+			<span class="exact-numbers">
+				<span id="doneBytes">0 B</span> / <span id="totalBytes"></span>
+			</span>
+		</label>
+
+		<!-- Progress of batches sent/received -->
+		<label class="progress-bar-label">
+			<span class="label"><?= $lang->PROGRESS_BATCHES ?></span>
+			<progress id="progress-batches" value="0"></progress>
+			<span class="exact-numbers">
+				<span id="doneBatches">0</span> / <span id="totalBatches"></span>
+			</span>
 		</label>
 	</section>
+
 
 	<!-- Selected files by the user will be shown here before uploading -->
 	<div class="box" id="files-info" hidden>
@@ -118,75 +146,22 @@ array_push(
 		<table>
 			<thead>
 			<tr>
-				<th class="center">#</th>
+				<th class="text"><span class="material-icons-outlined">check_circle</span></th>
 				<th class="text">Name</th>
 				<th class="number">Size</th>
 				<th class="center">Type</th>
-				<th class="number">Last modified</th>
+				<th class="number">Time</th>
+				<th class="center">Location</th>
 			</tr>
 			</thead>
 			<tbody id="selectedTableBody">
-			<tr>
-				<td class="center">1</td>
-				<td class="text">Amazin picture.jpg</td>
-				<td class="number">925 KB</td>
-				<td class="center">JPEG</td>
-				<td class="number">12.12.2005</td>
-			</tr>
 			</tbody>
 		</table>
 	</div>
 
-	<!-- Successful uploads will be listed here after submitting -->
-	<section class="box" id="successful-uploads" hidden>
-		<h2><?= $lang->SUCCESS_UPLOAD_HEADER ?></h2>
-		<table>
-			<thead>
-			<tr>
-				<th class="text">Name</th>
-				<th class="number">Size</th>
-				<th class="center">Type</th>
-				<th class="number">Last modified</th>
-				<th class="center">Location</th>
-			</tr>
-			</thead>
-			<tbody id="successfulTableBody">
-			<tr>
-				<td class="text">Amazin picture</td>
-				<td class="number">925 KB</td>
-				<td class="center">JPEG</td>
-				<td class="number">12.12.2005</td>
-				<td class="center"><i class="material-icons" style="color: green">check</i></td>
-			</tr>
-			</tbody>
-		</table>
-	</section>
-
-	<!-- Failed uploads will be listed here after submitting -->
-	<section class="box" id="failed-uploads" hidden>
-		<h2><?= $lang->FAILED_UPLOAD_HEADER ?></h2>
-
-		<table>
-			<thead>
-			<tr>
-				<th class="text">Name</th>
-				<th class="number">Size</th>
-				<th class="center">Type</th>
-			</tr>
-			</thead>
-			<tbody id="failedTableBody">
-			<tr>
-				<td class="text">Amazin picture</td>
-				<td class="number">925 KB</td>
-				<td class="center">JPEG</td>
-			</tr>
-			</tbody>
-		</table>
-	</section>
-
 	<hr>
 
-	<section class="box">
+	<section class="box" id="otherUploadMethods">
 		<p>
 			Other means of uploading:
 		</p>
