@@ -85,7 +85,7 @@ else {
 				<li class="collection box" data-id="<?= $c->random_uid ?>">
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
 						<h3 class="name margins-off">
-							<span><?= $c->name ?: substr( $c->random_uid, 0, 5 ) ?></span>
+							<span><?= $c->name ?: substr( $c->random_uid, 0, 4 ) ?></span>
 						</h3>
 						<p class="description"><?= $c->description ?? '' ?></p>
 						<img class="image" src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb">

@@ -55,6 +55,8 @@
 
 .page-navigation .current {
 	margin: 0 2rem;
+	overflow: visible;
+	white-space: nowrap;
 }
 
 .page-navigation .current .page-input {

@@ -40,7 +40,7 @@ if ( $collection->owner_id !== $user->id ) {
 array_push(
 	$breadcrumbs_navigation,
 	[ $user->username, WEB_PATH . 'collections.php' ],
-	[ $collection->name, WEB_PATH . 'collection.php?id=' . $collection->random_uid ]
+	[ $collection->name ?? substr( $collection->random_uid, 0, 4 ), WEB_PATH . 'collection.php?id=' . $collection->random_uid ]
 );
 ?>
 
