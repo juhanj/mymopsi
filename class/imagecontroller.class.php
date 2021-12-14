@@ -117,11 +117,12 @@ class ImageController implements Controller {
 		// run exiftool on that folder
 		$commandOptions =
 			" -g3" // I don't know, but it's important! Related to getting GPS fields
-			. " -a" // Allow duplicates (needed for gps coordinates)
 			. " -gps:all" // All GPS metadata
 			. " -Datecreate"
 			. " -ImageSize"
-			. " -c %.6f" // format for gps coordinates output
+			. " -DateTimeOriginal "
+			. " -createdate "
+			. " -FileModifyDate "
 		;
 		$metadata = Common::runExiftool( $folder, $commandOptions );
 
