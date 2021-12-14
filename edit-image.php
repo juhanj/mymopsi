@@ -43,6 +43,8 @@ array_push(
 
 <div class="feedback" id="feedback"><?= $feedback ?></div>
 
+<?php require 'html-back-button.php'; ?>
+
 <main class="main-body-container">
 
 	<!-- Image -->

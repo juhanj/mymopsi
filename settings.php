@@ -24,7 +24,7 @@ array_push(
 
 <main class="main-body-container narrow">
 
-	<a href="javascript:history.go(-1)" class="button return">
+	<a href="#" onclick="history.go(-1); return false;" class="button return">
 		<?= $lang->RETURN ?>
 	</a>
 

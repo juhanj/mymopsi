@@ -34,6 +34,8 @@ if ( !empty( $_GET['iid'] ) ) {
 
 <?php require 'html-header.php'; ?>
 
+<?php require 'html-back-button.php'; ?>
+
 <main class="main-body-container margins-off">
 
 	<section class="clustering-container" hidden>

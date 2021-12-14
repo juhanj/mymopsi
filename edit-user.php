@@ -26,6 +26,8 @@ array_push(
 <!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 <div class="feedback compact" id="feedback"><?= $feedback ?></div>
 
+<?php require 'html-back-button.php'; ?>
+
 <main class="main-body-container medium-width">
 
 	<!-- Username edit container -->

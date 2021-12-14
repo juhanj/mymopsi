@@ -1,13 +1,5 @@
 @CHARSET "UTF-8";
 
-.button.return {
-    background-color: var(--site-bg);
-    color: var(--text-dark);
-
-    border: 1px solid var(--secondary-text);
-    width: 40%;
-}
-
 #upload-form {
     padding: 0;
     background-color: inherit;

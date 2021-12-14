@@ -36,6 +36,6 @@ export class Ajax {
 			// explicitly no Content-Type with FormData
 			body: data
 		} );
-		return (returnJSON) ? await response.json() : await response;
+		return (returnJSON) ? await response.json() : await response.text();
 	}
 }

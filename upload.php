@@ -53,17 +53,12 @@ array_push(
 
 <?php require 'html-header.php'; ?>
 
+<?php require 'html-back-button.php'; ?>
+
 <main class="main-body-container">
 
 	<!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
 	<div class="feedback" id="feedback"><?= $feedback ?></div>
-
-	<!-- Return -->
-	<a href="collection.php?id=<?= $collection->random_uid ?>" class="button return"
-	   style="margin: 1rem 0 0; width: max-content;">
-		<i class="material-icons">arrow_back</i>
-		<?= $lang->RETURN ?>
-	</a>
 
 	<!-- The form itself.
 	    Contains <input type=file> -tag, and two hidden input-tags (request and collection-ID)
