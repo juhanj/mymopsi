@@ -227,7 +227,7 @@ class Common {
 	 * Runs exiftool for given target (file or dir)
 	 *
 	 * @param string $target  file or directory
-	 * @param string $options options for exiftool, by default has "-ext '*' -j"
+	 * @param string $options options for exiftool, by default has "-ext '*' -j -a -c %.6f"
 	 *
 	 * @return stdClass[] decoded JSON-output from command line
 	 */
@@ -238,9 +238,9 @@ class Common {
 		$commandOptions =
 			' -ext "*" ' // Process all files
 			. " -j " // Print output in JSON format
-			. " -DateTimeOriginal "
-			. " -createdate "
-			. " -FileModifyDate ";
+			. " -a " // Show duplicates
+			. " -c %.6f " // GPS coordinate formatting
+		;
 		$commandOptions .= $options;
 
 		exec(
