@@ -54,9 +54,6 @@ array_push(
 
 <?php require 'html-header.php'; ?>
 
-<!-- Feedback from the server goes here. Any possible prints, successes, failures that the server does. -->
-<div class="feedback compact" id="feedback"><?= $feedback ?></div>
-
 <?php require 'html-back-button.php'; ?>
 
 <main class="main-body-container medium-width">
@@ -84,7 +81,8 @@ array_push(
 		<label>
 			<span class="label"><?= $lang->DESCRIPTION ?></span>
 			<?php // No line breaks for textarea, because it shows in HTML output to user ?>
-			<textarea name="description" cols="30" rows="4" id="descriptionInput"><?= $collection->description ?></textarea>
+			<textarea name="description" cols="30" rows="4" id="descriptionInput"
+				><?= $collection->description ?></textarea>
 		</label>
 		<!-- Server stuff for PHP request handling -->
 		<input type="hidden" name="class" value="collection">

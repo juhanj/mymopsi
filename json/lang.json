@@ -32,6 +32,14 @@
 		"SETTINGS": {
 			"en": "Settings",
 			"fi": "Asetukset"
+		},
+		"PUBLIC": {
+			"en": "Public",
+			"fi": "Julkiset"
+		},
+		"ALL": {
+			"en": "All",
+			"fi": "Kaikki"
 		}
 	},
 	"index": {

@@ -66,8 +66,12 @@ else {
 				<?php if ($user) : ?>
 					<option value="">You (<?= $user->number_of_collections ?>)</option>
 				<?php endif; ?>
-				<option value="public" <?= $wanted !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>Public (<?= $public_colls_nro ?>)</option>
-				<option value="all" <?= $user->admin ?: 'disabled' ?>>All (<?= $all_colls_nro ?>)</option>
+				<option value="public" <?= $wanted !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>
+					<?= $lang->PUBLIC ?> (<?= $public_colls_nro ?>)
+				</option>
+				<option value="all" <?= ($user != null and $user->admin) ?: 'disabled' ?>>
+					<?= $lang->ALL ?> (<?= $all_colls_nro ?>)
+				</option>
 			</select>
 		</label>
 	</form>
@@ -88,7 +92,10 @@ else {
 							<span><?= $c->name ?: substr( $c->random_uid, 0, 4 ) ?></span>
 						</h3>
 						<p class="description"><?= $c->description ?? '' ?></p>
-						<img class="image" src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb">
+						<img
+							class="image"
+							src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb"
+							onerror="this.onerror=null;this.src='';">
 						<span class="count"><?= $c->number_of_images ?></span>
 					</a>
 				</li>
@@ -106,8 +113,8 @@ else {
 
 <script>
 	// These are used in page-specific JS-file, for header-link.
-	let userName = "<?= $user->username ?>";
-	let userRUID = "<?= $user->random_uid ?>";
+	let userName = "<?= ($user) ? $user->username : $lang->HTML_TITLE ?>";
+	let userRUID = "<?= ($user) ? $user->random_uid : null ?>";
 </script>
 
 </body>

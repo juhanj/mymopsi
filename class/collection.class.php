@@ -1,5 +1,8 @@
 <?php declare(strict_types=1);
 
+/**
+ *
+ */
 class Collection {
 
 	/** @var int */
@@ -76,12 +79,11 @@ class Collection {
 	 * @return Collection[] | null
 	 */
 	public static function fetchPublicCollections ( DBConnection $db ): ?array {
-		$sql = 'select c.*,
-                    count(i.id) as number_of_images
-				from mymopsi_collection c
-					left join mymopsi_img i on c.id = i.collection_id 
-				where c.public = true
-				group by c.owner_id';
+		$sql = 'select *,
+                    (select count(id) from mymopsi_img where collection_id = c.id ) 
+                        as number_of_images
+				from mymopsi_collection c 
+				where c.public = true';
 		$values = [];
 
 		/** @var Collection[] $rows */
@@ -97,10 +99,10 @@ class Collection {
 	 * @return Collection[] | null
 	 */
 	public static function fetchAllCollections ( DBConnection $db ): ?array {
-		$sql = 'select c.*,
-                    count(i.id) as number_of_images
+		$sql = 'select *,
+                    (select count(id) from mymopsi_img where collection_id = c.id ) 
+                        as number_of_images
 				from mymopsi_collection c
-					left join mymopsi_img i on c.id = i.collection_id
 				group by c.owner_id';
 		$values = [];
 

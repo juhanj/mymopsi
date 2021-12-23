@@ -40,6 +40,9 @@ class ImageController implements Controller {
 			case 'edit_description':
 				$result = $this->requestEditDescription( $db, $user, $req );
 				break;
+			case 'singe_image_metadata':
+				$result = $this->requestSingleImageMetadata( $db, $req );
+				break;
 			default:
 				$result = false;
 				$this->setError( 0, 'Invalid request' );
@@ -838,4 +841,44 @@ class ImageController implements Controller {
 
 		return true;
 	}
+
+	public function requestSingleImageMetadata ( DBConnection $db, array $req ) {
+
+		if ( !$_FILES ) {
+			$this->setError( -1, 'No files received' );
+
+			return false;
+		}
+
+		// reorganise FILES array, because I don't like how PHP does it.
+		$files = $this->reorganizeUploadFilesArray( $_FILES );
+
+		$file = $files[0];
+
+		if ( $file['error'] ) {
+			$this->setError( -2, 'PHP upload error ' );
+			$this->result['info'] = $file;
+
+			return false;
+		}
+
+
+		$commandOptions =
+			" -g " // Group by tag group/type/family
+			. ' -all ';
+		;
+
+		$metadata = Common::runExiftool( $file['tmp_name'], $commandOptions );
+
+		// Add each file to
+		$this->result = [
+			'success' => true,
+			'error' => false,
+			'file' => $file,
+			'metadata' => $metadata,
+		];
+
+		return true;
+	}
+
 }

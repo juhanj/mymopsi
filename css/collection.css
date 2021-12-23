@@ -114,12 +114,13 @@ header #header-coll-link:hover {
 
 .overlay-container {
 	height: 100%;
-	overflow: hidden;
+	overflow: scroll;
 
 	display: grid;
 	grid:	"header" auto
-		        "image" 1fr
-		        / auto;
+			"image" 1fr
+			"info" auto
+		    / auto;
 }
 
 .overlay-header-container {
@@ -162,4 +163,8 @@ header #header-coll-link:hover {
 	margin: auto;
 	display: block;
 	background-color: white;
+}
+
+.overlay-info-container {
+	color: var(--text-light);
 }

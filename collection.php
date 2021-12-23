@@ -18,7 +18,7 @@ if ( !$collection ) {
 
 array_push(
 	$breadcrumbs_navigation,
-	[ $user->username, WEB_PATH . 'collections.php' ],
+	[ (($user) ? $user->username : $lang->PUBLIC), WEB_PATH . 'collections.php' ],
 );
 
 /* ************************************
@@ -237,6 +237,19 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 		<section class="overlay-image-container" id="overlayImageContainer">
 			<img src="" class="image-full" id="imageFull" alt="">
 		</section>
+
+		<section class="overlay-info-container">
+			<dl>
+				<dt>Name</dt>
+				<dd id="overlayDlName">Test</dd>
+				<dt>Description</dt>
+				<dd id="overlayDlDescription">Test</dd>
+				<dt>Location</dt>
+				<dd id="overlayDlLocation">Test</dd>
+				<dt>Address</dt>
+				<dd id="overlayDlAddress">Test</dd>
+			</dl>
+		</section>
 	</div>
 </div>
 
@@ -244,6 +257,8 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 	// These are used in page-specific JS-file, for header-link.
 	let collectionName = "<?= $collection->name ?? substr( $collection->random_uid, 0, 4 ) ?>";
 	let collectionRUID = "<?= $collection->random_uid ?>";
+
+	let owner = "<?= $user and $collection->owner_id === $user->id ?>";
 
 	let images = JSON.parse(`<?= $collection->printImagesJSON() ?>`);
 </script>
