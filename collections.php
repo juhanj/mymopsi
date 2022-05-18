@@ -20,22 +20,22 @@ $all_colls_nro = $db->query(
 	false
 )->count;
 
-$wanted = $_GET[ 'user' ] ?? null;
+$user_id = $_GET[ 'user' ] ?? null;
 
 /**
  * @var Collection[] $collections
  */
 $collections = [];
 
-if ( !$user or $wanted === 'public' ) {
+if ( !$user or $user_id === 'public' ) {
 	$collections = Collection::fetchPublicCollections( $db );
 }
 else {
-	if ( $user->admin and $wanted === 'all' ) {
+	if ( $user->admin and $user_id === 'all' ) {
 		$collections = Collection::fetchAllCollections( $db );
 	}
-	else if ( $user->admin and !empty($wanted) ) {
-		$temp_user = User::fetchUserByRUID( $db, $wanted );
+	else if ( $user->admin and !empty($user_id) ) {
+		$temp_user = User::fetchUserByRUID( $db, $user_id );
 		$temp_user->getCollections($db);
 		$collections = $temp_user->collections;
 	}
@@ -66,7 +66,7 @@ else {
 				<?php if ($user) : ?>
 					<option value="">You (<?= $user->number_of_collections ?>)</option>
 				<?php endif; ?>
-				<option value="public" <?= $wanted !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>
+				<option value="public" <?= $user_id !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>
 					<?= $lang->PUBLIC ?> (<?= $public_colls_nro ?>)
 				</option>
 				<option value="all" <?= ($user != null and $user->admin) ?: 'disabled' ?>>

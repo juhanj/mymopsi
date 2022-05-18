@@ -13,6 +13,9 @@ array_push(
 //debug( $_COOKIE );
 
 $image = new Image();
+$file_string = file_get_contents( "./temp/object.json" );
+$metadata = json_decode( $file_string );
+$json_string = json_encode( $metadata );
 ?>
 
 <!DOCTYPE html>
@@ -21,16 +24,25 @@ $image = new Image();
 <?php require 'html-head.php'; ?>
 
 <style>
-	#container {
-		width: 10rem;
-		height: 10rem;
-		border: 1px solid black;
+	dl {
 		display: flex;
-		flex-direction: column;
+		flex-flow: row wrap;
+		border: solid #666;
+		border-width: 1px 1px 0 0;
 	}
-
-	#elm1, #elm2 {
-		pointer-events: none;
+	dt {
+		flex-basis: 20%;
+		padding: 2px 4px;
+		background: #666;
+		text-align: right;
+		color: #fff;
+		margin-top: ;
+	}
+	dd {
+		flex-basis: 70%;
+		flex-grow: 1;
+		padding: 2px 4px;
+		border-bottom: 1px solid #666;
 	}
 </style>
 
@@ -40,64 +52,23 @@ $image = new Image();
 
 <main class="main-body-container">
 	<div id="container">
+		<?php foreach ( $metadata as $title => $section ) : ?>
+		<h2><?= $title ?>:</h2>
+
+		<dl class="margins-off">
+			<?php foreach ( $section as $dt => $dd ) : ?>
+			<dt><?= $dt ?></dt>
+			<dd><?= $dd ?></dd>
+			<?php endforeach; ?>
+		</dl>
+		<?php endforeach; ?>
 	</div>
 </main>
 
 <?php require 'html-footer.php'; ?>
 
 <script>
-	const HOUR = 60;
-	const MIN = 60;
-	let container = document.getElementById("container");
-
-	container.addEventListener( 'click', (event) => {
-	})
-
-	console.log(
-		formatGPSDecimalToDMS({lat:62.243424,lng:29.387623784})
-	);
-
-	function formatGPSDecimalToDMS ( location ) {
-		let latitude = toDegreesMinutesAndSeconds( location.lat );
-		let latitudeCardinal = location.lat >= 0 ? "N" : "S";
-
-		let longitude = toDegreesMinutesAndSeconds( location.lng );
-		let longitudeCardinal = location.lng >= 0 ? "E" : "W";
-
-		return latitude + " " + latitudeCardinal + ", " + longitude + " " + longitudeCardinal;
-
-		function toDegreesMinutesAndSeconds( coordinate ) {
-			let absolute = Math.abs(coordinate);
-			let degrees = Math.floor(absolute);
-			let minutesNotTruncated = (absolute - degrees) * HOUR;
-			let minutes = Math.floor(minutesNotTruncated);
-			let seconds = Math.floor((minutesNotTruncated - minutes) * MIN);
-
-			return degrees + "° " + minutes + "′" + seconds + "″";
-		}
-	}
-
-	function fGPSDecimalToDMS ( location ) {
-		let latitude = toDegreesMinutesAndSeconds( location.lat );
-		let latitudeCardinal = location.lat >= 0 ? "N" : "S";
-
-		let longitude = toDegreesMinutesAndSeconds( location.lng );
-		let longitudeCardinal = location.lng >= 0 ? "E" : "W";
-
-		return latitude + NBSP + latitudeCardinal + ", " + longitude + NBSP + longitudeCardinal;
-
-		function toDegreesMinutesAndSeconds ( coordinate ) {
-			let absolute = Math.abs( coordinate );
-			let degrees = Math.floor( absolute );
-			let minutesNotTruncated = (absolute - degrees) * HOUR;
-			let minutes = Math.floor( minutesNotTruncated );
-			let seconds = Math.floor( (minutesNotTruncated - minutes) * MIN );
-
-			return degrees + "°" + NBSP + minutes + "′" + seconds + "″";
-		}
-	}
-
-
+	let metadata = JSON.parse( '<?= $json_string ?>' );
 </script>
 
 </body>

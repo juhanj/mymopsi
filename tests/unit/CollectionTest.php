@@ -58,7 +58,7 @@ class CollectionTest extends TestCase {
 		$colls = Collection::fetchAllCollections( $this->db );
 
 		self::assertIsArray( $colls );
-		self::assertNotEmpty( $colls );
+		self::assertCount(5, $colls);
 	}
 
 	public function test_GetImages () {

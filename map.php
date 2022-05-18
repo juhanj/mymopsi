@@ -6,20 +6,52 @@ require './components/_start.php';
  * @var User $user
  */
 
-$collection = Collection::fetchCollectionByRUID( $db, $_GET['cid'] );
+function allCollections () {}
+function allImages () {}
+function userImages () {}
+function userCollections () {}
 
-if ( !$collection ) {
-	$_SESSION['feedback'] = "<p class='error'>{$lang->NO_COLLECTION_FOUND}</p>";
-	header( 'location: index.php' );
-	exit;
+function collectionImages ( $db, $coll_ruid ) {
+	$collection = Collection::fetchCollectionByRUID( $db, $coll_ruid );
+	$collection->getImages( $db );
+
+	return $collection;
 }
 
-$collection->getImages( $db );
+// Get mode - 'coll' or 'all' or 'user' ('all' only for admins, 'user' only for logged-in/admins)
+$mode = $_GET['mode'] ?? 'coll_img';
+$coll_ruid = $_GET['cid'] ?? null;
+$image_focus = $_GET['iid'] ?? null;
 
-if ( !empty( $_GET['iid'] ) ) {
+switch ( $mode ) {
+	case 'all_coll' :
+		// Get all collections, like literally all from all users
+		//TODO: all collections and represanttavive
+		break;
+	case 'all_img' :
+		// Get all images, like literally all from all users
+		//TODO: All images
+		break;
+	case 'user_coll':
+		// Get all collections from one user
+		//TODO: get collections with representative img
+		break;
+	case 'user_img':
+		// Get all images from one user
+		//TODO: get all images from user, from all collections
+		break;
+	case 'coll_img':
+	default:
+		// Get images from one collection
+		$collection = collectionImages( $db, $coll_ruid );
+		break;
+}
+
+if ( isset( $image_focus ) ) {
 	foreach ( $collection->images as $img ) {
-		if ( $img->random_uid === $_GET['iid'] ) {
-			$focus = [ (float)$img->latitude, (float)$img->longitude ];
+		if ( $img->random_uid === $image_focus ) {
+			$image_focus = $img;
+			break;
 		}
 	}
 }
@@ -32,20 +64,24 @@ if ( !empty( $_GET['iid'] ) ) {
 
 <body class="grid margins-off">
 
-<?php require 'html-header.php'; ?>
-
-<?php require 'html-back-button.php'; ?>
-
 <main class="main-body-container margins-off">
 
-	<section class="clustering-container" hidden>
-		<label>
-			Clustering
-			<select>
-				<option value="server">Server</option>
-				<option value="client">Client</option>
-			</select>
-		</label>
+	<section class="sidebar">
+		<?php require 'html-back-button.php'; ?>
+		<ol class="sidebar-list">
+			<?php foreach ( $collection->images as $img ) : ?>
+			<li class="sidebar-list-item margins-off">
+				<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
+				     class="list-img-thumb"
+				     alt="<?= $img->name ?>"
+				     onerror="this.onerror=null;this.src='./img/mopsi.ico';">
+				<!-- Inline onerror because otherwise it won't trigger
+						(image loads before listener is registered) -->
+				<p class="list-item-name"><?= $img->name ?></p>
+				<p class="list-item-info"><?= ($img->latitude) ? '' : '⚠' ?></p>
+			</li>
+			<?php endforeach; ?>
+		</ol>
 	</section>
 
 	<section id="googleMap" class="map margins-initial">
@@ -53,8 +89,6 @@ if ( !empty( $_GET['iid'] ) ) {
 	</section>
 
 </main>
-
-<?php require 'html-footer.php'; ?>
 
 <!-- Hidden fullscreen overlay code. When image thumbnail is clicked, this is shown -->
 <div id="overlay" class="dark-overlay-bg hidden" hidden>
@@ -84,12 +118,15 @@ if ( !empty( $_GET['iid'] ) ) {
 	let collectionRUID = "<?= $collection->random_uid ?>";
 	let collectionSize = <?= count( $collection->images ) ?>;
 	let points = [
-		<?php foreach ( $collection->images as $i => $img ) : ?>
-		<?php if ( !$img->latitude ) {
-		continue;
-	} ?>
+		<?php
+		$index_counter = 0;
+		foreach ( $collection->images as $img ) :
+		if ( !$img->latitude ) :
+			continue;
+		endif;
+		?>
 		{
-			id: <?= $i ?>,
+			id: <?= $index_counter++ ?>,
 			ruid: '<?= $img->random_uid ?>',
 			Lat: '<?= $img->latitude ?>',
 			Lng: '<?= $img->longitude ?>',
@@ -103,10 +140,10 @@ if ( !empty( $_GET['iid'] ) ) {
 	let mapCentre = { lat: 62.25, lng: 26.39 };
 	let initialZoom = 5;
 
-	<?php if ( !empty( $_GET['iid'] ) ) : ?>
-		mapCentre.lat = <?= $focus[0] ?>;
-		mapCentre.lng = <?= $focus[1] ?>;
-		initialZoom = 13;
+	<?php if ( isset( $image_focus ) ) : ?>
+	mapCentre.lat = <?= $image_focus->latitude ?>;
+	mapCentre.lng = <?= $image_focus->longitude ?>;
+	initialZoom = 17;
 	<?php endif; ?>
 </script>
 

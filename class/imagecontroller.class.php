@@ -14,10 +14,10 @@ class ImageController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param User         $user
+	 * @param User|null    $user
 	 * @param array        $req
 	 */
-	public function handleRequest ( DBConnection $db, User $user, array $req ) {
+	public function handleRequest ( DBConnection $db, $user, array $req ) {
 		switch ( $req[ 'request' ] ?? null ) {
 			case 'upload':
 				$result = $this->requestUploadNewImages( $db, $user, $req );
@@ -125,8 +125,7 @@ class ImageController implements Controller {
 			. " -ImageSize"
 			. " -DateTimeOriginal "
 			. " -createdate "
-			. " -FileModifyDate "
-		;
+			. " -FileModifyDate ";
 		$metadata = Common::runExiftool( $folder, $commandOptions );
 
 		return $metadata;
@@ -183,8 +182,8 @@ class ImageController implements Controller {
 
 	/**
 	 * @param DBConnection $db
-	 * @param Image $image Must have ID
-	 * @param string $description
+	 * @param Image        $image Must have ID
+	 * @param string       $description
 	 *
 	 * @return bool
 	 * @throws InvalidArgumentException if $collection has no ID
@@ -263,10 +262,10 @@ class ImageController implements Controller {
 		}
 
 		$temp_folder = $collections . "temp/{$collection->id}-"
-			. Common::createRandomUID(null,6, false) . '/';
+			. Common::createRandomUID( null, 6, false ) . '/';
 		if ( !file_exists( $temp_folder ) ) {
 			$temp_folder = $collections . "temp/{$collection->id}-"
-				. Common::createRandomUID(null,6, false) . '/';
+				. Common::createRandomUID( null, 6, false ) . '/';
 		}
 
 		// create temp folder for the upload
@@ -316,17 +315,17 @@ class ImageController implements Controller {
 
 			$upload[ 'new_ruid' ] = Common::createRandomUID( $db );
 
-			$filepathinfo = pathinfo( $upload['name'] );
-			$upload['full_original_name'] = $filepathinfo['basename'];
-			$upload['new_image_name'] = $filepathinfo['filename'];
-			$upload['extension'] = $filepathinfo['extension'];
+			$filepathinfo = pathinfo( $upload[ 'name' ] );
+			$upload[ 'full_original_name' ] = $filepathinfo[ 'basename' ];
+			$upload[ 'new_image_name' ] = $filepathinfo[ 'filename' ];
+			$upload[ 'extension' ] = $filepathinfo[ 'extension' ];
 
-			$upload['fileLastModified'] = filectime( $upload[ 'tmp_name' ] );
+			$upload[ 'fileLastModified' ] = filectime( $upload[ 'tmp_name' ] );
 
 			// New file is just the RUID + extension. Used to have original name attached but
 			// exiftool and encoding differences made that difficult.
 			// Extension is needed for ImageMagick thumbnail generation (used to detect file type).
-			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ] . "." . $upload['extension'];
+			$upload[ 'new_file_name' ] = $upload[ 'new_ruid' ] . "." . $upload[ 'extension' ];
 
 			// Move to temporary folder
 			$upload[ 'temp_path' ] = $temp_folder . $upload[ 'new_file_name' ];
@@ -395,7 +394,7 @@ class ImageController implements Controller {
 					$file[ 'size' ],
 					$file[ 'latitude' ] ?? null,
 					$file[ 'longitude' ] ?? null,
-					$file[ 'fileLastModified' ]
+					$file[ 'fileLastModified' ],
 				]
 			);
 
@@ -776,11 +775,12 @@ class ImageController implements Controller {
 			}
 		}
 
-		$newName = $options['name'];
+		$newName = $options[ 'name' ];
 
 		//TODO get name from ini-file --jj 211109
 		if ( mb_strlen( $newName ) > 50 ) {
 			$this->setError( -4, "New name {$newName} length invalid" );
+
 			return false;
 		}
 
@@ -788,11 +788,12 @@ class ImageController implements Controller {
 
 		if ( !$result ) {
 			$this->setError( -5, "Name could not be changed. Unknown error." );
+
 			return false;
 		}
 
 		$this->result = [
-			'success' => true
+			'success' => true,
 		];
 
 		return true;
@@ -820,11 +821,12 @@ class ImageController implements Controller {
 			}
 		}
 
-		$newDescription = $options['description'];
+		$newDescription = $options[ 'description' ];
 
 		//TODO get name from ini-file --jj 211109
 		if ( mb_strlen( $newDescription ) > 300 ) {
 			$this->setError( -4, "New name `{$newDescription}` length invalid" );
+
 			return false;
 		}
 
@@ -832,11 +834,12 @@ class ImageController implements Controller {
 
 		if ( !$result ) {
 			$this->setError( -5, "Description could not be changed. Unknown database error." );
+
 			return false;
 		}
 
 		$this->result = [
-			'success' => true
+			'success' => true,
 		];
 
 		return true;
@@ -853,11 +856,11 @@ class ImageController implements Controller {
 		// reorganise FILES array, because I don't like how PHP does it.
 		$files = $this->reorganizeUploadFilesArray( $_FILES );
 
-		$file = $files[0];
+		$file = $files[ 0 ];
 
-		if ( $file['error'] ) {
+		if ( $file[ 'error' ] ) {
 			$this->setError( -2, 'PHP upload error ' );
-			$this->result['info'] = $file;
+			$this->result[ 'info' ] = $file;
 
 			return false;
 		}
@@ -865,10 +868,9 @@ class ImageController implements Controller {
 
 		$commandOptions =
 			" -g " // Group by tag group/type/family
-			. ' -all ';
-		;
+			. ' -all ';;
 
-		$metadata = Common::runExiftool( $file['tmp_name'], $commandOptions );
+		$metadata = Common::runExiftool( $file[ 'tmp_name' ], $commandOptions );
 
 		// Add each file to
 		$this->result = [

@@ -34,9 +34,15 @@ require './components/_start.php';
 		<input type="hidden" name="request" value="singe_image_metadata">
 	</form>
 
-	<div class="image-container">
-		<img src="" id="imagePreview" alt="Image preview" hidden class="image">
+	<div class="image-container" id="imageContainer" hidden>
+		<img src="" id="imagePreview" alt="Image preview" class="image">
 	</div>
+
+	<div id="loader" class="loading" hidden></div>
+
+	<section id="imageMetadata">
+
+	</section>
 
 </main>
 

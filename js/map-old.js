@@ -41,6 +41,7 @@ function initGoogleMap () {
 		zoom: initialZoom,
 		minZoom: 3,
 		maxZoom: 20,
+		disableDefaultUI: true,
 		streetViewControl: false,
 		styles: [
 			{
@@ -48,7 +49,7 @@ function initGoogleMap () {
 				elementType: "labels",
 				stylers: [ { visibility: "off" } ]
 			}
-		]
+		],
 	} );
 
 	google.maps.event.addListenerOnce( map, 'tilesloaded', function () {

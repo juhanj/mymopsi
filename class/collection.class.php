@@ -102,8 +102,7 @@ class Collection {
 		$sql = 'select *,
                     (select count(id) from mymopsi_img where collection_id = c.id ) 
                         as number_of_images
-				from mymopsi_collection c
-				group by c.owner_id';
+				from mymopsi_collection c';
 		$values = [];
 
 		/** @var Collection[] $rows */
