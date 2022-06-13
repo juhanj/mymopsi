@@ -3,7 +3,7 @@
 /**
  * Start stuff, copied from _start.php
  * There was a line that fetched something from database that doesn't exist,
- *  which breaks the script
+ *  which breaks the script, hence the partial copy-paste
  */
 define( 'DOC_ROOT', $_SERVER[ 'DOCUMENT_ROOT' ] );
 const WEB_PATH = '/mopsi_dev/mymopsi/';
@@ -43,7 +43,8 @@ echo '<p>Database installed successfully.</p>';
 echo '<p><a href="../">Link to front page.</a></p>';
 
 /*
- * Creating an admin user
+ * Creating an admin user `admin`
+ * and a test user `user`
  */
 $controller = new UserController();
 
