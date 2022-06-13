@@ -255,6 +255,8 @@ class UserController implements Controller {
 	}
 
 	/**
+	 * Check normal Mopsi account login
+	 *
 	 * @param DBConnection $db
 	 * @param string       $username
 	 * @param string       $password
@@ -341,22 +343,21 @@ class UserController implements Controller {
 			return null;
 		}
 
-		// We have a Mopsi-user. Now let's find the linked mymopsi-user or create a new one.
+		// We have a Mopsi-user. Now let's find the linked mymopsi-user ...
 
 		$row = $db->query(
 			'select user_id from mymopsi_user_third_party_link where mopsi_id = ?',
 			[ $response->id ]
 		);
 
+		// ... or create a new one if none found above.
+
 		if ( !$row ) {
 			// Create new empty MyMopsi user, so the site has something to refer to.
 			$user = $this->createEmptyUserRowInDatabase( $db );
 
-			$new_username = $this->checkUsernameAvailable( $db, $response->username )
-				? $response->username
-				: "{$response->username}." . rand( 100, 999 );
-
-			$this->setUsername( $db, $user, $new_username );
+			// Do not create a username or password for new user.
+			// Breaks login process.
 
 			$this->addMopsiLinkToUser( $db, $user, (int)$response->id );
 		}
@@ -415,20 +416,28 @@ class UserController implements Controller {
 	}
 
 	/**
+	 * Log in functionality for Mopsi/MyMopsi account both.
+	 * (And possibly others if ever implemented.)
+	 *
 	 * @param DBConnection $db
 	 * @param array        $options
 	 *
 	 * @return bool
 	 */
 	public function requestUnifiedLogin ( DBConnection $db, array $options ) {
-		// Check $options
+		// Sanity check $options for empty fields
 		if ( empty( $options[ 'username' ] ) or empty( $options[ 'password' ] ) ) {
 			$this->setError( -1, "Invalid param" );
 
 			return false;
 		}
 
+		// I don't care about empty spaces at either end of string.
+		// Assume it's a user mistake, and remove.
 		$options[ 'username' ] = trim( $options[ 'username' ] );
+		// I don't do the same for the password, because there I consider it
+		//  a valid character just like any other. If a user wants to end
+		//  their password with five spaces, that's their problem.
 
 		// Check if either login returns a valid user.
 		$user = $this->normalLogin( $db, $options[ 'username' ], $options[ 'password' ] )
@@ -574,6 +583,7 @@ class UserController implements Controller {
 	public function requestDeleteUser ( DBConnection $db, User $user, $options ) {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
+
 			return false;
 		}
 

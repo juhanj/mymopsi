@@ -77,15 +77,6 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 		</p>
 	</article>
 
-	<article class="box" hidden>
-		<!-- Link to new user creation page -->
-		<h2 class="box-header"><?= $lang->CREATE_USER_HEADER ?></h2>
-		<a href="create-user.php" class="button">
-			<?= $lang->CREATE_NEW_USER_LINK ?>
-			<span class="material-icons">person_add</span>
-		</a>
-	</article>
-
 	<!-- Link to public collections -->
 	<article class="box" id="public-collections">
 		<h2 class="box-header"><?= $lang->PUBLIC_COLLECTIONS_HEADER ?></h2>
@@ -97,6 +88,12 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 				<?= $lang->NO_PUBLIC_COLL_AVAILABLE ?>
 			</p>
 		<?php endif; ?>
+	</article>
+
+	<!-- Link to public collections -->
+	<article class="box" id="view-single-metadata">
+		<h2 class="box-header"><?= $lang->SINGLE_METADATA_HEADER ?></h2>
+		<a href="./metadata-reader.php" class="button"><?= $lang->VIEW_SINGLE_METADATA ?></a>
 	</article>
 
 </main>

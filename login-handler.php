@@ -1,5 +1,10 @@
 <?php declare(strict_types=1);
 require './components/_start.php';
+/**
+ * @var DBConnection $db
+ * @var Language     $lang
+ * @var User         $user
+ */
 
 $request = $_POST;
 

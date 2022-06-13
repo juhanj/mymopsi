@@ -85,7 +85,15 @@
 			"en": "No public collections available.",
 			"fi": "Ei julkisia kokoelmia"
 		},
-		"NEW_USER_CREATED": {}
+		"NEW_USER_CREATED": {},
+		"SINGLE_METADATA_HEADER": {
+			"en": "Single image metadata",
+			"fi": "Yksittäisen kuvan metadata"
+		},
+		"VIEW_SINGLE_METADATA": {
+			"en": "View metadata in a single image",
+			"fi": "Katso metadata yksittäisessä kuvassa"
+		}
 	},
 	"settings": {
 		"HTML_TITLE": {
