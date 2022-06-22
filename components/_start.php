@@ -22,7 +22,7 @@ function debug ( $var, bool $var_dump = false ) {
 
 /**
  * For easier access. This way any includes/requires and such can be written shorter,
- * and not be dependant on location.
+ * and not be dependent on location.
  */
 define(
 	'DOC_ROOT',
