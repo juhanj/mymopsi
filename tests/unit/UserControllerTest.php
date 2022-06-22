@@ -127,10 +127,10 @@ class UserControllerTest extends TestCase {
 	public function test_RequestUnifiedLogin_normal () {
 		$post = [
 			'request' => 'unified_login',
-			'username' => 'admin',
-			'password' => 'admin'
+			'username' => 'user',
+			'password' => 'user'
 		];
-		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
+		$this->ctrl->handleRequest( $this->db, null, $post );
 
 		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
 	}
@@ -141,7 +141,7 @@ class UserControllerTest extends TestCase {
 			'username' => 'test',
 			'password' => 'test'
 		];
-		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
+		$this->ctrl->handleRequest( $this->db, null, $post );
 
 		self::assertTrue( $this->ctrl->result['success'], print_r( $this->ctrl->result, true ) );
 	}

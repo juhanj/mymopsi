@@ -38,7 +38,7 @@ class ImageControllerTest extends TestCase {
 	public function test_RequestUploadNewImages () {
 
 		// For future unit tests; this doesn't work, as it's not a simple rename()
-		// Should use PHPT and ---POST_RAW---, but that is outside todays work.
+		// Should use PHPT and ---POST_RAW---, but that is outside today's work.
 
 		$imgDatasetPath = "../img-dataset/finland-regions-coat-of-arms/";
 		$collectionsPath = "C:/Users/Jq/Documents/mymopsi-collections/collections/temp/";

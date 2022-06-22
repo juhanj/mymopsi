@@ -6,29 +6,29 @@ declare(strict_types=1);
  */
 const XAMPP_DIR = "D:/xampp/";
 const DOC_ROOT = XAMPP_DIR . "htdocs/";
-const WEB_PATH = 'mopsi_dev/mymopsi/';
+const FILE_PATH = 'mopsi_dev/mymopsi/';
 
 const COLL_DIR = "C:/Users/Jq/Documents/mymopsi-collections/";
 const UNIT_COLL_DIR = COLL_DIR . "unit/collections/";
 
-const MOPSI_PHOTOS = DOC_ROOT . WEB_PATH . "tests/img-dataset/test-mopsi-photos/";
-const REAL_IMAGE_FILE = DOC_ROOT . WEB_PATH . "tests/test-image.svg";
+const MOPSI_PHOTOS = DOC_ROOT . FILE_PATH . "tests/img-dataset/test-mopsi-photos/";
+const REAL_IMAGE_FILE = DOC_ROOT . FILE_PATH . "tests/test-image.svg";
 
 /*
  * PHP classes used for testing
  */
-require DOC_ROOT . WEB_PATH . 'class/common.class.php';
-require DOC_ROOT . WEB_PATH . 'class/dbconnection.class.php';
+require DOC_ROOT . FILE_PATH . 'class/common.class.php';
+require DOC_ROOT . FILE_PATH . 'class/dbconnection.class.php';
 
-require DOC_ROOT . WEB_PATH . 'class/user.class.php';
-require DOC_ROOT . WEB_PATH . 'class/collection.class.php';
-require DOC_ROOT . WEB_PATH . 'class/image.class.php';
+require DOC_ROOT . FILE_PATH . 'class/user.class.php';
+require DOC_ROOT . FILE_PATH . 'class/collection.class.php';
+require DOC_ROOT . FILE_PATH . 'class/image.class.php';
 
-require DOC_ROOT . WEB_PATH . 'class/controller.class.php';
+require DOC_ROOT . FILE_PATH . 'class/controller.class.php';
 
-require DOC_ROOT . WEB_PATH . 'class/collectioncontroller.class.php';
-require DOC_ROOT . WEB_PATH . 'class/usercontroller.class.php';
-require DOC_ROOT . WEB_PATH . 'class/imagecontroller.class.php';
+require DOC_ROOT . FILE_PATH . 'class/collectioncontroller.class.php';
+require DOC_ROOT . FILE_PATH . 'class/usercontroller.class.php';
+require DOC_ROOT . FILE_PATH . 'class/imagecontroller.class.php';
 
 function set_up_database () {
 	$db = new DBConnection();

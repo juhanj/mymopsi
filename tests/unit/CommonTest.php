@@ -114,7 +114,7 @@ class CommonTest extends TestCase {
 	public function test_RunExiftool () {
 		$directory = MOPSI_PHOTOS;
 		$result = Common::runExiftool( $directory );
-		self::assertIsObject( $result[0] );
+		self::assertIsArray( $result );
 	}
 
 	public function test_GetNominatimReverseGeocoding () {

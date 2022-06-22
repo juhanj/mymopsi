@@ -55,6 +55,13 @@ class UserTest extends TestCase {
 		self::assertNull( $user );
 	}
 
+	public function test_fetchAllUsers () {
+		$users = User::fetchAllUsers( $this->db );
+
+		self::assertIsArray( $users );
+		self::assertInstanceOf( 'User', $users[0] );
+	}
+
 	public function test_GetCollections () {
 		$user = User::fetchUserByID( $this->db, 1 );
 
