@@ -198,12 +198,13 @@ class UserController implements Controller {
 	 * @param User         $user     Must have type and hashed password
 	 * @param string       $password Clear text password, from form POST
 	 *
-	 * @return bool
+	 * @return bool True if password correct
 	 */
 	function checkPasswordOnLogin ( DBConnection $db, User $user, string $password ): bool {
 		if ( is_null( $user->password ) ) {
 			throw new InvalidArgumentException( "User is not valid. No password found." );
 		}
+
 		if ( $user->type === 1 ) {
 			// Here would happen updating the password hash in the database
 			// I don't have the mopsi login hashing function, nor do I really want to add it here.
@@ -228,7 +229,7 @@ class UserController implements Controller {
 			$password_correct = false;
 		}
 
-		return boolval( $password_correct );
+		return $password_correct;
 	}
 
 	/**
@@ -268,7 +269,7 @@ class UserController implements Controller {
 			or strlen( $username ) > self::MAX_USERNAME_LENGTH
 			or strlen( $password ) < 1
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
-			$this->setError( -1, 'Username or password length wrong' );
+			$this->setError( -3, 'Username or password length wrong' );
 
 			return null;
 		}
@@ -277,13 +278,13 @@ class UserController implements Controller {
 
 		if ( $user ) {
 			if ( !$this->checkPasswordOnLogin( $db, $user, $password ) ) {
-				$this->setError( -3, 'Password wrong' );
+				$this->setError( -4, 'Password wrong' );
 
 				return null;
 			}
 		}
 		else {
-			$this->setError( -2, "No MyMopsi user found in database" );
+			$this->setError( -5, "No user found in database" );
 
 			return null;
 		}
@@ -302,7 +303,7 @@ class UserController implements Controller {
 		if ( strlen( $username ) > self::MAX_USERNAME_LENGTH
 			or strlen( $password ) < 1
 			or strlen( $password ) > self::MAX_PASSWORD_LENGTH ) {
-			$this->setError( -1, 'Username or password length wrong' );
+			$this->setError( -3, 'Username or password length wrong' );
 
 			return null;
 		}
@@ -335,10 +336,15 @@ class UserController implements Controller {
 
 		curl_close( $curlHandle );
 
-		if ( $response->message === -1
+		if ( !$response ) {
+			$this->setError( -7, "Mopsi server error, no response at all" );
+
+			return null;
+		}
+		else if ( $response->message === -1
 			and $response->id === -1
 			and $response->error !== null ) {
-			$this->setError( -2, "Mopsi server error, no user found probably" );
+			$this->setError( -6, "Mopsi server error, no user found probably" );
 
 			return null;
 		}
