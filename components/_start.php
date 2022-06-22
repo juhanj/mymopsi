@@ -23,6 +23,7 @@ function debug ( $var, bool $var_dump = false ) {
 /**
  * For easier access. This way any includes/requires and such can be written shorter,
  * and not be dependent on location.
+ * As a general rule, no leading slash added ever. Only ending slash for directories.
  */
 define(
 	'DOC_ROOT',
@@ -32,7 +33,10 @@ define(
 	'CURRENT_PAGE',
 	basename( $_SERVER['SCRIPT_NAME'], '.php' )
 );
-// Needs to have leading slash, because otherwise HTML <head> doesn't work
+const FILE_PATH = 'mopsi_dev/mymopsi/';
+// web-path needs a leading slash to indicate root for links, src, and such.
+// Any paths used in HTML, basically. Could add it above, but brakes stuff in
+//  Windows testing, and also sometimes adds double slashes.
 const WEB_PATH = '/mopsi_dev/mymopsi/';
 
 /*
@@ -41,11 +45,11 @@ const WEB_PATH = '/mopsi_dev/mymopsi/';
  */
 set_include_path(
 	get_include_path() . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . 'class/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . 'components/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . 'cfg/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . 'json/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . PATH_SEPARATOR );
+	. DOC_ROOT . FILE_PATH . 'class/' . PATH_SEPARATOR
+	. DOC_ROOT . FILE_PATH . 'components/' . PATH_SEPARATOR
+	. DOC_ROOT . FILE_PATH . 'cfg/' . PATH_SEPARATOR
+	. DOC_ROOT . FILE_PATH . 'json/' . PATH_SEPARATOR
+	. DOC_ROOT . FILE_PATH . PATH_SEPARATOR );
 spl_autoload_extensions( '.class.php' );
 spl_autoload_register();
 
