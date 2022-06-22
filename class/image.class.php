@@ -32,7 +32,8 @@ class Image {
 	 * Can be used on the server-side when database obfuscation is not needed.
 	 *
 	 * @param DBConnection $db
-	 * @param int $id
+	 * @param int          $id
+	 *
 	 * @return Image|null
 	 */
 	public static function fetchImageByID ( DBConnection $db, int $id ): ?Image {
@@ -52,7 +53,8 @@ class Image {
 	 * Fetch image object by RUID (for when anonymity/database obscufaction is important, e.g. UI)
 	 *
 	 * @param DBConnection $db
-	 * @param string $ruid Random Unique ID
+	 * @param string       $ruid Random Unique ID
+	 *
 	 * @return Image|null
 	 */
 	public static function fetchImageByRUID ( DBConnection $db, string $ruid ): ?Image {
@@ -68,20 +70,56 @@ class Image {
 		return $row ?: null;
 	}
 
-	public function getFileMetadata ( $lang ) {
+	public static function fetchCollectionRepresentativeImage
+	( DBConnection $db, string $collRuid, int $repType = 2 ): Image {
+		$collection = Collection::fetchCollectionByRUID( $db, $collRuid );
 
+		switch ( $repType ) {
+			case 0:
+				// first
+				$orderBy = 'date_added asc';
+				break;
+			case 1 :
+				// last
+				$orderBy = 'date_added desc';
+				break;
+			case 2 :
+			default :
+				// random
+				$orderBy = 'rand()';
+		}
 
-		$perl = INI[ 'Misc' ][ 'perl' ];
-		$exiftool = DOC_ROOT . WEB_PATH . 'exiftool/exiftool';
+		$sql = "select id
+                , random_uid
+                , mediatype
+				, filepath
+				, thumbnailpath
+				, size 
+			from mymopsi_img
+			where collection_id = ?
+			order by $orderBy
+			limit 1";
+		$values = [ $collection->id ];
 
+		/** @var Image $image */
+		$image = $db->query( $sql, $values, false, 'Image' );
+		return $image;
+	}
+
+	/**
+	 * Used in edit-image.php, for printing out metadata in textbox
+	 *
+	 * @param $lang
+	 *
+	 * @return string
+	 */
+	public function getFileMetadata ( $lang ): string {
 		$commandOptions =
 			" -g -a --FileName --Directory --FilePermissions -lang " . $lang;
 
-		exec(
-			"{$perl} {$exiftool} {$commandOptions} {$this->filepath}",
-			$output
-		);
+		$output = Common::runExiftool( $this->filepath, $commandOptions, true );
 
 		return implode( "\n", $output );
 	}
+
 }
