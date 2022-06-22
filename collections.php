@@ -8,12 +8,13 @@ require './components/_start.php';
 
 $feedback = Common::checkFeedbackAndPOST();
 
-// For now, we only care if there are any public collections.
+// Number of public collections
 $public_colls_nro = $db->query(
 	"select count(id) as count from mymopsi_collection where public = true",
 	[],
 	false
 )->count;
+// Number of all collections (selectable by admin)
 $all_colls_nro = $db->query(
 	"select count(id) as count from mymopsi_collection",
 	[],
@@ -29,10 +30,16 @@ $collections = [];
 
 if ( !$user or $user_id === 'public' ) {
 	$collections = Collection::fetchPublicCollections( $db );
+	foreach ( $collections as $c ) {
+		$c->getOwner( $db );
+	}
 }
 else {
 	if ( $user->admin and $user_id === 'all' ) {
 		$collections = Collection::fetchAllCollections( $db );
+		foreach ( $collections as $c ) {
+			$c->getOwner( $db );
+		}
 	}
 	else if ( $user->admin and !empty($user_id) ) {
 		$temp_user = User::fetchUserByRUID( $db, $user_id );
@@ -43,6 +50,10 @@ else {
 		$user->getCollections( $db );
 		$collections = $user->collections;
 	}
+}
+
+if ($user->admin) {
+	$users = User::fetchAllUsers( $db );
 }
 ?>
 
@@ -60,6 +71,7 @@ else {
 
 <main class="main-body-container medium-width">
 
+	<!-- Dropdown selector for own, public, or all collections (admin only) -->
 	<form>
 		<label>
 			<select name="user" id="userSelect" onchange="this.form.submit()">
@@ -69,13 +81,23 @@ else {
 				<option value="public" <?= $user_id !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>
 					<?= $lang->PUBLIC ?> (<?= $public_colls_nro ?>)
 				</option>
-				<option value="all" <?= ($user != null and $user->admin) ?: 'disabled' ?>>
+				<option value="all" <?= $user_id !== 'all' ?: 'selected'?> <?= ($user != null and $user->admin) ?: 'disabled' ?>>
 					<?= $lang->ALL ?> (<?= $all_colls_nro ?>)
 				</option>
+				<?php if ( $user->admin ) : ?>
+				<hr>
+				<option disabled>----</option>
+				<?php foreach ( $users as $u ) : ?>
+					<option value="<?= $u->random_uid ?>" <?= $user_id !== $u->random_uid ?: 'selected'?>>
+						<?= $u->username ?> (<?= $u->number_of_collections ?>)
+					</option>
+				<?php endforeach; ?>
+				<?php endif; ?>
 			</select>
 		</label>
 	</form>
 
+	<!-- Create a new collection (link to new page) -->
 	<section class="buttons">
 		<a href="create-collection.php" class="button">
 			<?= $lang->NEW_COLLECTION ?>
@@ -83,6 +105,7 @@ else {
 		</a>
 	</section>
 
+	<!-- Collections list -->
 	<article>
 		<ol class="collections-list margins-off">
 			<?php foreach ( $collections as $c ) : ?>
@@ -90,11 +113,14 @@ else {
 					<a href="./collection.php?id=<?= $c->random_uid ?>" class="collection-link">
 						<h3 class="name margins-off">
 							<span><?= $c->name ?: substr( $c->random_uid, 0, 4 ) ?></span>
+							<?php if ( $user_id == 'public' or $user_id == 'all' ) : ?>
+							<span>(<?= $c->owner->username ?>)</span>
+							<?php endif; ?>
 						</h3>
 						<p class="description"><?= $c->description ?? '' ?></p>
 						<img
 							class="image"
-							src="./img/img.php?collection=<?= $c->random_uid ?>&random&thumb"
+							src="./img/img.php?collection=<?= $c->random_uid ?>&thumb"
 							onerror="this.onerror=null;this.src='';">
 						<span class="count"><?= $c->number_of_images ?></span>
 					</a>
