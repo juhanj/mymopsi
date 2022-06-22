@@ -51,7 +51,7 @@ class User {
 		/** @var User $row */
 		$row = $db->query( $sql, $values, false, 'User' );
 
-		return $row ?: null;
+		return $row->id ? $row : null;
 	}
 
 	/**
@@ -91,6 +91,25 @@ class User {
 		$row = $db->query( $sql, $values, false, 'User' );
 
 		return $row ?: null;
+	}
+
+	/**
+	 * This method is only meant for admin user
+	 * @param DBConnection $db
+	 *
+	 * @return User[] | null
+	 */
+	public static function fetchAllUsers ( DBConnection $db ): ?array {
+		$sql = 'select *,
+                    (select count(id) from mymopsi_collection c where c.owner_id = u.id ) 
+                        as number_of_collections
+				from mymopsi_user u';
+		$values = [];
+
+		/** @var Collection[] $rows */
+		$rows = $db->query( $sql, $values, true, 'User' );
+
+		return $rows ?: null;
 	}
 
 	/**
