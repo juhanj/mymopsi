@@ -68,6 +68,18 @@
 			"en": "Log in",
 			"fi": "Kirjaudu sisään"
 		},
+		"LOGGED_IN_AS": {
+			"en": "Logged in as",
+			"fi": "Kirjautuneena sisään"
+		},
+		"VIEW_USER_COLLECTIONS": {
+			"en": "User page",
+			"fi": "Omat kokoelmat"
+		},
+		"LOGOUT": {
+			"en": "Log out",
+			"fi": "Kirjaudu ulos"
+		},
 		"CREATE_USER_HEADER": {},
 		"CREATE_NEW_USER_LINK": {
 			"en": "Register a new user",
@@ -78,8 +90,8 @@
 			"fi": "Julkiset kokoelmat"
 		},
 		"VIEW_PUBLIC_COLLECTIONS": {
-			"en": "View public collections from all users",
-			"fi": "Katso julkisia kokoelmia"
+			"en": "Public collections",
+			"fi": "Julkiset kokoelmat"
 		},
 		"NO_PUBLIC_COLL_AVAILABLE": {
 			"en": "No public collections available.",
@@ -91,8 +103,16 @@
 			"fi": "Yksittäisen kuvan metadata"
 		},
 		"VIEW_SINGLE_METADATA": {
-			"en": "View metadata in a single image",
-			"fi": "Katso metadata yksittäisessä kuvassa"
+			"en": "Upload image",
+			"fi": "Lataa kuva"
+		},
+		"LOGIN_SUCCESS": {
+			"en": "You have successfully logged in.",
+			"fi": "Kirjautuminen onnistunut"
+		},
+		"LOGIN_FAIL": {
+			"en": "Login failed. Try again?",
+			"fi": "Kirjautuminen epäonnistui. Kokeile uudestaan?"
 		}
 	},
 	"settings": {
@@ -103,16 +123,6 @@
 		"SETT_LANG_HEAD": {
 			"en": "Select language",
 			"fi": "Valitse kieli"
-		}
-	},
-	"login-handler": {
-		"LOGIN_SUCCESS": {
-			"en": "You have successfully logged in.",
-			"fi": "Kirjautuminen onnistunut"
-		},
-		"LOGIN_FAIL": {
-			"en": "Login failed. Try again?",
-			"fi": "Kirjautuminen epäonnistui. Kokeile uudestaan?"
 		}
 	},
 	"collections": {
