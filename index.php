@@ -6,14 +6,27 @@ require './components/_start.php';
  * @var User         $user
  */
 
-if ( $user ) {
-	header( "Location: ./collections.php" );
-	exit();
+
+if ( $_POST ) {
+	$controller = new UserController();
+	$controller->handleRequest( $db, $user, $_POST );
+
+	session_regenerate_id(true);
+
+	if ( $controller->result['success'] ) {
+		$_SESSION['user_id'] = $controller->result['user_id'];
+		$_SESSION['feedback'] .= "<p class='success'>{$lang->LOGIN_SUCCESS}</p>";
+		header( "Location: ./collections.php" );
+		exit();
+	} else {
+		$_SESSION['feedback'] .= "<p class='error'>{$lang->LOGIN_FAIL}</p>";
+		$_SESSION['feedback'] .= "<p class='error'>{$controller->result['errMsg']}</p>";
+	}
 }
 
 $feedback = Common::checkFeedbackAndPOST();
 
-// For now, we only care if there are any public collections.
+// Check if there are any public collections; if yes, give link to guest users
 $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection where public = true limit 1" );
 ?>
 
@@ -35,11 +48,12 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 		Mopsi
 	</h1>
 
+	<?php if (!$user) : ?>
 	<!-- User-login form -->
 	<article class="box">
 		<h2 class="box-header" hidden><?= $lang->USER_LOGIN ?></h2>
 
-		<form action="login-handler.php" method="post">
+		<form method="post">
 			<!-- Username input field -->
 			<label class="compact">
 				<span class="label"><?= $lang->USERNAME_LABEL ?></span>
@@ -76,6 +90,17 @@ $are_there_any_public_colls = $db->query( "select 1 from mymopsi_collection wher
 			</a>
 		</p>
 	</article>
+
+	<?php else: ?>
+
+	<!-- Link to user page -->
+	<article class="box">
+		<p class="center"><?= $lang->LOGGED_IN_AS ?>: <?= $user->username ?></p>
+		<a href="./collections.php" class="button"><?= $lang->VIEW_USER_COLLECTIONS ?></a>
+		<hr>
+		<a href="./logout.php" class="button red"><?= $lang->LOGOUT ?></a>
+	</article>
+	<?php endif; ?>
 
 	<!-- Link to public collections -->
 	<article class="box" id="public-collections">
