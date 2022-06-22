@@ -41,7 +41,7 @@ class ImageController implements Controller {
 				$result = $this->requestEditDescription( $db, $user, $req );
 				break;
 			case 'singe_image_metadata':
-				$result = $this->requestSingleImageMetadata( $db, $req );
+				$result = $this->requestSingleImageMetadata();
 				break;
 			default:
 				$result = false;
@@ -119,7 +119,12 @@ class ImageController implements Controller {
 	function getUploadMetadataWithExiftool ( $folder, &$files = null ) {
 		// run exiftool on that folder
 		$commandOptions =
-			" -g3" // I don't know, but it's important! Related to getting GPS fields
+			' -ext "*" ' // Process all files
+			. " -j " // Print output in JSON format
+			. " -a " // Show duplicates
+			. " -c %.6f " // GPS coordinate formatting
+
+			. " -g3" // I don't know, but it's important! Related to getting GPS fields
 			. " -gps:all" // All GPS metadata
 			. " -Datecreate"
 			. " -ImageSize"
@@ -706,7 +711,7 @@ class ImageController implements Controller {
 		return true;
 	}
 
-	public function requestCreateThumbnail ( DBConnection $db, array $options ) {
+	public function requestCreateThumbnail ( DBConnection $db, array $options ): bool {
 
 		$image = Image::fetchImageByRUID( $db, $options[ 'image' ] );
 
@@ -733,6 +738,8 @@ class ImageController implements Controller {
 		if ( !$result ) {
 			$this->setError( -2, 'Could not create thumbnail' );
 
+			// This avoids a loop of constantly trying to create a new thumbnail
+			//  every time it's requested. Probably if once fails, all times fail.
 			$newFullPath = 'no_thumbnail';
 		}
 
@@ -845,7 +852,11 @@ class ImageController implements Controller {
 		return true;
 	}
 
-	public function requestSingleImageMetadata ( DBConnection $db, array $req ) {
+	/**
+	 * Uploaded file is read from _FILES global variable
+	 * @return bool
+	 */
+	public function requestSingleImageMetadata (): bool {
 
 		if ( !$_FILES ) {
 			$this->setError( -1, 'No files received' );
@@ -867,8 +878,14 @@ class ImageController implements Controller {
 
 
 		$commandOptions =
-			" -g " // Group by tag group/type/family
-			. ' -all ';;
+			' -ext "*" ' // Process all files
+			. " -j " // Print output in JSON format
+			. " -a " // Show duplicates
+			. " -c %.4f " // GPS coordinate formatting
+
+			. " -g " // Group by tag group/type/family
+			. ' -all '
+		;
 
 		$metadata = Common::runExiftool( $file[ 'tmp_name' ], $commandOptions );
 
