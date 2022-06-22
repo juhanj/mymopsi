@@ -6,11 +6,11 @@
  *  which breaks the script, hence the partial copy-paste
  */
 define( 'DOC_ROOT', $_SERVER[ 'DOCUMENT_ROOT' ] );
-const WEB_PATH = '/mopsi_dev/mymopsi/';
+const FILE_PATH = '/mopsi_dev/mymopsi/';
 set_include_path(
 	get_include_path() . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . 'class/' . PATH_SEPARATOR
-	. DOC_ROOT . WEB_PATH . 'cfg/' . PATH_SEPARATOR );
+	. DOC_ROOT . FILE_PATH . 'class/' . PATH_SEPARATOR
+	. DOC_ROOT . FILE_PATH . 'cfg/' . PATH_SEPARATOR );
 spl_autoload_extensions( '.class.php' );
 spl_autoload_register();
 define(

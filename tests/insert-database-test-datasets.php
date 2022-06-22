@@ -50,14 +50,14 @@ foreach ( $collections as $coll ) {
 
 	echo "<h1>{$coll_id} - {$coll[1]}</h1>";
 
-	$dataset = scandir( DOC_ROOT . WEB_PATH . 'tests/img/' . $coll[2] );
+	$dataset = scandir( DOC_ROOT . FILE_PATH . 'tests/img/' . $coll[2] );
 
 	foreach ( $dataset as $img ) {
 		if ( $img == '.' or $img == '..' ) {
 			continue;
 		}
 
-		$filepath = DOC_ROOT . WEB_PATH . 'tests/img/' . $coll[2] . '/' . $img;
+		$filepath = DOC_ROOT . FILE_PATH . 'tests/img/' . $coll[2] . '/' . $img;
 		echo($filepath . '<br>');
 
 		$db->query(

@@ -1,4 +1,10 @@
-<?php declare(strict_types=1); ?>
+<?php declare(strict_types=1);
+/**
+ * @var DBConnection $db
+ * @var Language     $lang
+ * @var User         $user
+ */
+?>
 
 <footer class="site-footer margins-off" id="site-footer">
 

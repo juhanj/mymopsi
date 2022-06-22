@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);
-//INI['Misc']['gmaps_api_key'] ?>
+<?php declare(strict_types=1); ?>
 
 <head>
 	<meta charset="UTF-8">
@@ -28,13 +27,13 @@
 	<link rel="stylesheet" href="<?= WEB_PATH ?>css/modern-normalize.css">
 
 	<!-- Main CSS file -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>css/main.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . 'css/main.css' ) ?>">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>css/main.css?v=<?= filemtime( DOC_ROOT.FILE_PATH . 'css/main.css' ) ?>">
 	<!-- Header/footer CSS file -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>css/header-footer.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . 'css/header-footer.css' ) ?>">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>css/header-footer.css?v=<?= filemtime( DOC_ROOT.FILE_PATH . 'css/header-footer.css' ) ?>">
 	<!-- Pagination CSS file (only used in collections and images pages) -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>css/pagination.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . 'css/pagination.css' ) ?>">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>css/pagination.css?v=<?= filemtime( DOC_ROOT.FILE_PATH . 'css/pagination.css' ) ?>">
 	<!-- Page specific CSS file -->
-	<link rel="stylesheet" href="<?= WEB_PATH ?>css/<?= CURRENT_PAGE ?>.css?v=<?= filemtime( DOC_ROOT.WEB_PATH . 'css/'.CURRENT_PAGE.'.css' ) ?>">
+	<link rel="stylesheet" href="<?= WEB_PATH ?>css/<?= CURRENT_PAGE ?>.css?v=<?= filemtime( DOC_ROOT.FILE_PATH . 'css/'.CURRENT_PAGE.'.css' ) ?>">
 
 	<!-- Day.js library for handling datetimes in javascript -->
 	<script defer src="https://unpkg.com/dayjs"></script>
