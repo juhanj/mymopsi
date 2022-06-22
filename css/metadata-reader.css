@@ -38,7 +38,7 @@
 	Image container
  */
 .image-container {
-	max-height: 30rem;
+	max-height: 20rem;
 }
 
 .image-container .image {
@@ -55,12 +55,13 @@
 dl {
 	display: flex;
 	flex-flow: row wrap;
-	border: solid #666;
+	border-top: solid black;
 	border-width: 1px 1px 0 0;
+	margin-top: 0;
 }
 
 dt {
-	flex-basis: 20%;
+	flex-basis: 30%;
 	padding: 2px 4px;
 	background: #666;
 	text-align: right;
@@ -72,5 +73,4 @@ dd {
 	flex-basis: 70%;
 	flex-grow: 1;
 	padding: 2px 4px;
-	border-bottom: 1px solid #666;
 }

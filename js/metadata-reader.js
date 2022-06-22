@@ -9,6 +9,8 @@ import {Ajax as req} from "./modules/export.js";
 function processMetadataResult ( response ) {
 	let metadata = response.result.metadata[0];
 	delete metadata.SourceFile;
+	delete metadata.ExifTool;
+	delete metadata.File;
 	console.log( metadata );
 
 	let tempHTML = '';
