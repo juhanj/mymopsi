@@ -10,49 +10,20 @@ require '../components/_start.php';
  * GET variables:
  */
 $thumbnail = isset( $_GET[ 'thumb' ] );
-// Single image GET request
+// Single image
 $image_ruid = $_GET[ 'id' ] ?? null; // RUID
-// collection image GET request
+// collection image (representative, thumbnail probably)
 $collection_ruid = $_GET[ 'collection' ] ?? null; // RUID
 
-// Collection representative image
-// Random, first added, last added
-//TODO: currently only random, add other options --jj 21-05-16
 if ( $collection_ruid ) {
-	$collection = Collection::fetchCollectionByRUID( $db, $collection_ruid );
-
-	$sql = "select id
-                , random_uid
-                , mediatype
-				, filepath
-				, thumbnailpath
-				, size 
-			from mymopsi_img
-			where collection_id = ?
-			order by rand()
-			limit 1";
-	$values = [ $collection->id ];
+	$image = Image::fetchCollectionRepresentativeImage( $db, $collection_ruid );
 }
-
-// Singe individual image
 else {
-	$sql = "select id
-			     , random_uid
-			     , mediatype
-			     , filepath
-			     , thumbnailpath
-			     , size 
-			from mymopsi_img
-			where random_uid = ?
-			limit 1";
-	$values = [ $image_ruid ];
+	$image = Image::fetchImageByRUID( $db, $image_ruid );
 }
-
-/** @var Image $image */
-$image = $db->query( $sql, $values, false, 'Image' );
 
 if ( !$image or !file_exists( $image->filepath ) ) {
-	//	header( 'HTTP/1.1 404 Not Found' );
+	// 404 file not found
 	http_response_code( 404 );
 	exit();
 }
@@ -64,21 +35,11 @@ if ( $image->thumbnailpath === null ) {
 	$controller = new ImageController();
 	$controller->requestCreateThumbnail( $db, [ 'image' => $image->random_uid ] );
 
-	$sql = "select id
-				, random_uid
-				, mediatype
-				, filepath
-				, thumbnailpath
-				, size
-			from mymopsi_img
-			where id = ?
-			limit 1";
-
-	$image = $db->query( $sql, [ $image->id ], false, 'Image' );
+	$image->thumbnailpath = $controller->result['thumbnailpath'];
 }
 
-// This is never sent from browser, with PPH-script images, so cache no work.
 // the browser will send a $_SERVER['HTTP_IF_MODIFIED_SINCE'] if it has a cached copy
+//TODO: This is never sent from browser, with PPH-script images, so cache no work. --jj 22-06-16
 if ( isset( $_SERVER[ 'HTTP_IF_MODIFIED_SINCE' ] ) ) {
 	// if the browser has a cached version of this image, send 304
 	http_response_code( 304 );
@@ -90,12 +51,14 @@ $responseFilePath = ($thumbnail)
 	? $image->thumbnailpath
 	: $image->filepath;
 
+// In some cases thumbnail creation fails
+// Can't check for NULL because that means system hasn't tried to create one.
 if ( $responseFilePath === 'no_thumbnail' ) {
 	$responseFilePath = $image->filepath;
 }
 
-// All thumbnails are .WEBP format
-$contentType = ($thumbnail) ? 'image/webp' : $image->mediatype;
+// All thumbnails are .JPEG format
+$contentType = ($thumbnail) ? 'image/jpeg' : $image->mediatype;
 // Have to read the filesize of the thumbnail, because the browser will actually
 //  wait for those missing bytes otherwise, which shows as slow loading client-side
 $contentLength = ($thumbnail) ? filesize($responseFilePath) : $image->size;
@@ -103,6 +66,7 @@ $contentLength = ($thumbnail) ? filesize($responseFilePath) : $image->size;
 header( 'Content-Type: ' . $contentType );
 header( 'Content-Length: ' . $contentLength );
 // Cache valid 7 days
+//TODO: Doesn't work currently --jj 22-06-16
 header( "Cache-Control: public,max-age=604800,immutable", true );
 
 readfile( $responseFilePath );
