@@ -213,7 +213,7 @@ class Common {
 				$ruid = bin2hex( random_bytes( (int)($length / 2) ) );
 			} catch ( Exception $e ) {
 				$ruid = substr(
-					str_shuffle('123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ),
+					str_shuffle( '123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm' ),
 					0,
 					$length
 				);
@@ -227,28 +227,23 @@ class Common {
 	 * Runs exiftool for given target (file or dir)
 	 *
 	 * @param string $target  file or directory
-	 * @param string $options options for exiftool, by default has "-ext '*' -j -a -c %.6f"
+	 * @param string $options options for exiftool, by default "-j -a"
+	 *                        for JSON output
 	 *
 	 * @return stdClass[] decoded JSON-output from command line
 	 */
-	public static function runExiftool ( string $target, string $options = '' ) {
+	public static function runExiftool ( string $target, string $options = '-j -a', bool $rawOutput = false ) {
 		$perl = INI[ 'Misc' ][ 'perl' ];
-		$exiftool = DOC_ROOT . WEB_PATH . 'exiftool/exiftool';
-
-		$commandOptions =
-			' -ext "*" ' // Process all files
-			. " -j " // Print output in JSON format
-			. " -a " // Show duplicates
-			. " -c %.6f " // GPS coordinate formatting
-		;
-		$commandOptions .= $options;
+		$exiftool = DOC_ROOT . FILE_PATH . 'exiftool/exiftool';
 
 		exec(
-			"{$perl} {$exiftool} {$commandOptions} {$target}",
+			"{$perl} {$exiftool} {$options} {$target}",
 			$output
 		);
 
-		return json_decode( implode( "", $output ) );
+		return ($rawOutput)
+			? $output
+			: json_decode( implode( "", $output ) );
 	}
 
 	/**
