@@ -20,14 +20,14 @@ function createMarker(mapEx, jsonString, mapArea) {
     mopsiMarker.Lng = jsonObject.longitude;
 
     google.maps.event.addListener(mopsiMarker.marker, 'click', function (e) {
-        
+
         if(jsonObject.clusterSize > 1)
         {
             if(jsonObject.zoomToCluster == true)
             {
                 mopsiMarker.zoomIntoCluster();
             }
-            
+
             else
             {
                 let event = new Event("click_cluster", {bubbles: true});
@@ -52,13 +52,13 @@ function createMarker(mapEx, jsonString, mapArea) {
             event.clusterSize = mopsiMarker.clusterSize;
             event.id = mopsiMarker.id
             mapArea.dispatchEvent(event);
-            
+
         }
     });
-    
-    
+
+
     google.maps.event.addListener(mopsiMarker.marker, 'rightclick', function (e) {
-        
+
         if(jsonObject.clusterSize > 1)
         {
                 let event = new Event("rightclick_cluster", {bubbles: true});
@@ -69,9 +69,9 @@ function createMarker(mapEx, jsonString, mapArea) {
                 event.clusterSize = mopsiMarker.clusterSize;
                 event.id = mopsiMarker.id;
                 mapArea.dispatchEvent(event);
-            
+
         }
-        
+
         else
         {
             let event = new Event("rightclick_single", {bubbles: true});
@@ -82,15 +82,15 @@ function createMarker(mapEx, jsonString, mapArea) {
             event.clusterSize = mopsiMarker.clusterSize;
             event.id = mopsiMarker.id
             mapArea.dispatchEvent(event);
-            
+
         }
     });
 
-    google.maps.event.addListener(mopsiMarker.marker, 'dragstart', function () 
+    google.maps.event.addListener(mopsiMarker.marker, 'dragstart', function ()
     {
-        
+
     });
-    
+
     mapEx.addToOverlays(mopsiMarker);
 
     return mopsiMarker;
@@ -140,9 +140,9 @@ function markerX(mapEx, jsonObject) {
     this.map = map;
 
     this.markerStyle = jsonObject.style;
-    
+
     this.thumbPosition = "top-right";
-    
+
     if(jsonObject.thumbPosition != undefined)
     {
         this.thumbPosition = jsonObject.thumbPosition
@@ -175,7 +175,7 @@ function getIconForMarkerParamType(jsonObject) {
         iconUrl = jsonObject.thumb;
 
         if (!(fileExists(iconUrl))) {
-            
+
             // ##################################### icon
             iconUrl = clusteringAssetPath + "thumb-nophoto.jpg";
         }
@@ -188,20 +188,20 @@ function getIconForMarkerParamType(jsonObject) {
 
     if (jsonObject.style == "marker1") {
         if (jsonObject.clusterSize > 1) {
-            
+
             iconUrl = jsonObject.iconLink;
-            
+
             size = new google.maps.Size(jsonObject.width, jsonObject.height);
             origin = new google.maps.Point(0, 0);
             anchor = new google.maps.Point(jsonObject.width , jsonObject.height);
             scaledSize = new google.maps.Size(jsonObject.width, jsonObject.height);
         }
-        
+
         else {
-            
+
             iconUrl = jsonObject.iconLink;
-            
-            
+
+
             size = new google.maps.Size(jsonObject.width, jsonObject.height);
             origin = new google.maps.Point(0, 0);
             anchor = new google.maps.Point(jsonObject.width, jsonObject.height);
@@ -225,7 +225,7 @@ function getShadowForMarkerParamType(markerStyle, type, clusterSize) {
 
     if (markerStyle == "thumbnail") {
         if (clusterSize > 1)
-            
+
             //################################################### icon
             shadow = new google.maps.MarkerImage(clusteringAssetPath + 'photoCollectionShadow.gif', null, new google.maps.Point(0, 0), new google.maps.Point(35, 57));
         else
@@ -372,7 +372,7 @@ markerX.prototype.zoomIntoCluster = function () {
             type = "single";
 
         // Are objects in a cluster very close?
-        // ################ Clicking marker on a cluster 
+        // ################ Clicking marker on a cluster
         if (type == "cluster") {
             if (n < 50 && n > 1) { // this check is not necessary for big clusters
                 for (i = 0; i < n && !flagZoomToCluster; i++) {
@@ -388,7 +388,7 @@ markerX.prototype.zoomIntoCluster = function () {
             else
                 flagZoomToCluster = 1;
         }
-        
+
         else{
             console.log("single");
         }
@@ -402,13 +402,13 @@ markerX.prototype.zoomIntoCluster = function () {
             // myMarker.openOrUpdateInfoWindow();
         }
     }
- 
+
 }
 
 // click on marker on the map
 markerX.prototype.clickMarkerOnMap = function () {
-    
-    
+
+
 }
 
 
@@ -435,7 +435,7 @@ markerX.prototype.openOrUpdateInfoWindow = function () {
         this.openInfoWindow();
 }
 
-// open infowindow with this.marker.selectedIndex 
+// open infowindow with this.marker.selectedIndex
 markerX.prototype.openInfoWindow = function () {
     var i, selectedIndex, doOpen;
     doOpen = true;
@@ -465,7 +465,7 @@ markerX.prototype.openInfoWindow = function () {
 
 }
 
-//infoWindow 
+//infoWindow
 markerX.prototype.updateInfoWindow = function () {
     var N, iconUrl;
 
@@ -708,7 +708,7 @@ markerX.prototype.searchThroughChildSibling = function (i, j) {
 }
 
 markerX.prototype.clickThumbCircleOnMap = function () {
-    
+
     let event = new Event("click_thumb", {bubbles: true});
     mapArea.dispatchEvent(event);
 
@@ -824,7 +824,7 @@ Label.prototype.draw = function () {
         widthNumber = 50;
         heightNumber = 50;
         marginLeft = '-10px';
-        
+
     //}
 
         // Thumb Position placing
@@ -833,49 +833,49 @@ Label.prototype.draw = function () {
             div.style.left = position.x - width +  'px';
             div.style.top = position.y - this.marker.height + 'px';
         }
-        
-        else if(this.thumbPosition == "top-center") 
+
+        else if(this.thumbPosition == "top-center")
         {
 			console.log(width);
             div.style.left = position.x - this.marker.width/2 - (width/2)  + 'px';
             div.style.top = position.y - this.marker.height + 'px';
         }
-        
+
         else if(this.thumbPosition == "top-left"){
             div.style.left = position.x - this.marker.width  +  'px';
             div.style.top = position.y - this.marker.height + 'px';
         }
-        
+
         else if(this.thumbPosition == "center-right"){
             div.style.left = position.x - width  +  'px';
             div.style.top = position.y - this.marker.height/2 - (height/2) + 'px';
         }
-        
+
         else if(this.thumbPosition == "center"){
             div.style.left = position.x - this.marker.width/2 - (width/2)  + 'px';
             div.style.top = position.y - this.marker.height/2 - (height/2) + 'px';
         }
-        
+
         else if(this.thumbPosition == "center-left"){
             div.style.left = position.x - this.marker.width  +  'px';
             div.style.top = position.y - this.marker.height/2 - (height/2) + 'px';
         }
-        
+
         else if(this.thumbPosition == "bottom-right"){
             div.style.left = position.x - width  +  'px';
             div.style.top = position.y - height + 'px';
         }
-        
+
         else if(this.thumbPosition == "bottom-center"){
             div.style.left = position.x - this.marker.width/2 - (width/2)  + 'px';
             div.style.top = position.y - height + 'px';
         }
-        
+
         else if(this.thumbPosition == "bottom-left"){
             div.style.left = position.x - this.marker.width  + 'px';
             div.style.top = position.y - height + 'px';
         }
-    
+
 
     div.style.height = "14px";
     div.style.width = div.style.left; // if I don't set this, in dragging map, the number in circle is misplaced
@@ -883,24 +883,24 @@ Label.prototype.draw = function () {
     switch (this.markerStyle) {
         case "thumbnail":
             if (this.thumb != undefined && this.clusterSize > 1) {
-                
+
                 var nr = this.clusterSize > 99 ? "*" : this.clusterSize;
                 var id = Math.round(position.x) + "" + Math.round(position.y);
 
-                
+
                 if(this.color != undefined)
                 {
                     div.innerHTML = '<span class = "dot" id="P' + id + '" style=" background-color:' + this.color + ';display:inline; vertical-align:middle; margin:auto; cursor: pointer; z-index:1001;overflow: hidden;position:absolute;text-align: center;width:' + width + 'px;height: ' + height + 'px;">' + nr + '</span>';
                 }
-                
+
                 else
                 {
                     div.innerHTML = '<span class = "dot" id="P' + id + '" style="display:inline; vertical-align:middle; margin:auto; cursor: pointer; z-index:1001;overflow: hidden;position:absolute;text-align: center;width:' + width + 'px;height: ' + height + 'px;">' + nr + '</span>';
                 }
-                
-                
-                
-                
+
+
+
+
                 var me = this;
                 $(div).unbind('click');
                 $(div).unbind('dblclick');
@@ -920,17 +920,17 @@ Label.prototype.draw = function () {
         case "marker1":
             var id = Math.round(position.x) + "" + Math.round(position.y);
             var nr = this.clusterSize > 99 ? "*" : this.clusterSize;
-            
+
             if(this.color != undefined)
             {
                 div.innerHTML = '<span class = "dot" id="P' + id + '" style=" background-color:' + this.color + ';display:inline; vertical-align:middle; margin:auto; cursor: pointer; z-index:1001;overflow: hidden;position:absolute;text-align: center;width:' + width + 'px;height: ' + height + 'px;">' + nr + '</span>';
             }
-                
+
             else
             {
                 div.innerHTML = '<span class = "dot" id="P' + id + '" style="display:inline; vertical-align:middle; margin:auto; cursor: pointer; z-index:1001;overflow: hidden;position:absolute;text-align: center;width:' + width + 'px;height: ' + height + 'px;">' + nr + '</span>';
             }
-            
+
             var me = this;
             //$(div).unbind('click');
             $(div).click(function () {

@@ -1,3 +1,5 @@
+'use strict';
+
 class ClusteringMap {
 
 	googleMap;
@@ -25,7 +27,8 @@ class ClusteringMap {
 
 		let me = this;
 
-		me.myClickListener = google.maps.event.addListener( this.map, "click", function () {
+		me.myClickListener = google.maps.event.addListener( this.map, "click",
+		function () {
 			setTimeout( function () {
 				let temp = me.closeInfoWindowByClick;
 				if ( temp ) {// because of conflict with clicking on a label
@@ -35,7 +38,8 @@ class ClusteringMap {
 			}, 100 );
 		} );
 
-		google.maps.event.addListener( this.infoWindow, 'closeclick', function () {
+		google.maps.event.addListener( this.infoWindow, 'closeclick',
+		function () {
 			me.closeInfoWindowByClick = true;
 			me.infoWindow.isOpen = false;
 		} );
@@ -60,7 +64,7 @@ class ClusteringMap {
 		this.map.setCenter( latlng );
 	}
 
-	getCenter = function () {
+	getCenter () {
 		return this.map.getCenter();
 	}
 
@@ -82,7 +86,8 @@ class ClusteringMap {
 	getPointFromLatLng ( lat, lng ) {
 		let point;
 
-		point = this.map.getProjection().fromLatLngToPoint( new google.maps.LatLng( lat, lng ) );
+		point = this.map.getProjection().fromLatLngToPoint(
+			new google.maps.LatLng( lat, lng ) );
 		point.x = Math.floor( point.x * Math.pow( 2, this.map.getZoom() ) );
 		point.y = Math.floor( point.y * Math.pow( 2, this.map.getZoom() ) );
 
@@ -107,5 +112,179 @@ class ClusteringMap {
 			&& !bounds.getSouthWest().equals( bounds.getNorthEast() ) ) {
 			this.setBounds( bounds );
 		}
+	}
+
+	setBoundsFromLatLngBoundingBox ( minLat, maxLat, minLng, maxLng ) {
+		let latlng = new google.maps.LatLng( minLat, minLng );
+		let bounds = new google.maps.LatLngBounds( latlng, latlng );
+		latlng = new google.maps.LatLng( maxLat, maxLng );
+		bounds.extend( latlng );
+
+		if ( bounds != null ) {
+			this.setBounds( bounds );
+		}
+	}
+
+	setBoundsFromIndexes ( markersData, indexes ) {
+		let minLat = 1000.0;
+		let maxLat = -1000.0;
+		let minLon = 1000.0;
+		let maxLon = -1000.0;
+		let bounds;
+
+		for ( let i = 0; i < indexes.length; i++ ) {
+			let j = indexes[i];
+			let latlng = new google.maps.LatLng( markersData[j].lat, markersData[j].lon );
+
+			if ( markersData[j].lat < minLat )
+				minLat = markersData[j].lat;
+			if ( markersData[j].lat > maxLat )
+				maxLat = markersData[j].lat;
+
+			if ( markersData[j].lon < minLon )
+				minLon = markersData[j].lon;
+			if ( markersData[j].lon > maxLon )
+				maxLon = markersData[j].lon;
+
+			if ( !bounds ) {
+				bounds = new google.maps.LatLngBounds( latlng, latlng );
+			} else {
+				bounds.extend( latlng );
+			}
+		}
+
+		if ( bounds != null )
+			this.setBounds( bounds );
+	}
+
+	setBoundsFromData ( markersData ) {
+		let bounds = null;
+
+		for ( let i = 0; i < data.length; i++ ) {
+			let latlng = new google.maps.LatLng(
+				markersData[i].lat, markersData[i].lon );
+
+			if ( bounds == null ) {
+				bounds = new google.maps.LatLngBounds( latlng, latlng );
+			} else {
+				bounds.extend( latlng );
+			}
+		}
+
+		if ( bounds != null )
+			this.setBounds( bounds );
+	}
+
+	getBounds () {
+		return this.map.getBounds();
+	}
+	getProjection () {
+		return this.overlay.getProjection();
+	}
+	setBounds ( bounds ) {
+		this.map.fitBounds( bounds );
+	}
+	getZoom () {
+		return this.map.getZoom();
+	}
+	setZoom ( zoom ) {
+		return this.map.setZoom( zoom );
+	}
+
+	addListener ( event, callbackFunction ) {
+	 	let mopsiMap = this;
+		google.maps.event.addListener( this.map, event, function () {
+			callbackFunction( mopsiMap )
+		} );
+	}
+	removeListener ( type ) {
+		google.maps.event.clearListeners( this.map, type );
+	}
+
+	removeMarkersWithType ( type ) {
+		if ( this.overlays[type] !== undefined )
+			while ( this.overlays[type].length !== 0 ) {
+				let overlay = this.overlays[type].pop();
+				overlay.setMap( null );
+			}
+	}
+
+	removeMarkersWithId ( Ids ) {
+		if ( Ids == undefined ) {
+			return;
+		}
+
+		for ( let id of Ids ) {
+			for ( let overlay of this.overlays ) {
+				for ( let i = overlay.length - 1; i >= 0; i-- ) {
+					if ( overlay[i] === undefined ) {
+						continue;
+					}
+
+					if ( id === overlay[i].idx ) {
+						overlay.splice( i, 1 );
+						overlay.setMap( null );
+					}
+				}
+			}
+		}
+	}
+
+	getMarkerOnLatLng ( latStamp, lngStamp ) {
+		for ( let overlay of this.overlays ) {
+			for ( let i = overlay.length - 1; i >= 0; i-- ) {
+				if ( overlay[i] === undefined ) {
+					continue;
+				}
+				if ( overlay[i].myLat == latStamp && overlay[i].myLng == lngStamp ) {
+					return overlay[i];
+				}
+			}
+		}
+
+		return null;
+	}
+
+	removeClickListenerFromMap () {
+		if ( this.myClickListener !== null ) {
+			google.maps.event.removeListener( this.myClickListener );
+			this.myClickListener = null;
+		}
+	}
+
+	addClickListenerToMap () {
+		removeClickListenerFromMap();
+		this.myClickListener = google.maps.event.addListener( this.map, "click",
+		function () {
+			setTimeout( function () {
+				if ( this.closeInfoWindowByClick ) {
+					this.closeInfoWindow();
+				}
+				this.closeInfoWindowByClick = true;
+			}, 100 );
+		} );
+	}
+
+	closeInfoWindow () {
+		this.infoWindow.close();
+		this.infoWindow.isOpen = false;
+	}
+
+	hvs ( lat1, lat2, lng1, lng2 ) {
+		var earthRadius = 3958.75;
+		var dLat = (lat2 - lat1) * Math.PI / 180;
+		var dLng = (lng2 - lng1) * Math.PI / 180;
+		var a = Math.sin( dLat / 2 )
+			* Math.sin( dLat / 2 )
+			+ Math.cos( (lat1) * Math.PI / 180 )
+			* Math.cos( (lat2) * Math.PI / 180 )
+			* Math.sin( dLng / 2 )
+			* Math.sin( dLng / 2 );
+		var c = 2 * Math.atan2( Math.sqrt( a ), Math.sqrt( 1 - a ) );
+		var dist = earthRadius * c;
+
+		var meterConversion = 1609;
+
+		return dist * meterConversion;
 	}
 }
