@@ -91,5 +91,4 @@ $user = !empty( $_SESSION['user_id'] )
 	? User::fetchUserByID( $db, $_SESSION['user_id'] )
 	: null;
 
-$breadcrumbs_navigation = [
-];
+$breadcrumbs_navigation = [];

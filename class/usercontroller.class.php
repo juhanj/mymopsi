@@ -352,8 +352,9 @@ class UserController implements Controller {
 		// We have a Mopsi-user. Now let's find the linked mymopsi-user ...
 
 		$row = $db->query(
-			'select user_id from mymopsi_user_third_party_link where mopsi_id = ?',
-			[ $response->id ]
+			'select user_id from mymopsi_user_third_party_link where mopsi_id = ? limit 1',
+			[ $response->id ],
+			false
 		);
 
 		// ... or create a new one if none found above.
@@ -370,6 +371,8 @@ class UserController implements Controller {
 		else {
 			$user = User::fetchUserByID( $db, $row->user_id );
 		}
+
+		setcookie( 'username', $response->username, time()+3600 );
 
 		return $user;
 	}

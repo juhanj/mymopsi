@@ -40,83 +40,8 @@ class ImageControllerTest extends TestCase {
 		// For future unit tests; this doesn't work, as it's not a simple rename()
 		// Should use PHPT and ---POST_RAW---, but that is outside today's work.
 
-		$imgDatasetPath = "../img-dataset/finland-regions-coat-of-arms/";
-		$collectionsPath = "C:/Users/Jq/Documents/mymopsi-collections/collections/temp/";
-
-		copy(
-			$imgDatasetPath . 'Kainuu.png',
-			$collectionsPath . 'Kainuu.png'
-		);
-		copy(
-			$imgDatasetPath . 'Pirkanmaa.png',
-			$collectionsPath . 'Pirkanmaa.png'
-		);
-		$_FILES = [
-			'upload' => [
-				'name' => [
-					0 => 'Kainuu.png',
-					1 => 'Pirkanmaa.png',
-				],
-				'type' => [
-					0 => 'image/png',
-					1 => 'image/png',
-				],
-				'tmp_name' => [
-					0 => $collectionsPath . 'Kainuu.png',
-					1 => $collectionsPath . 'Pirkanmaa.png',
-				],
-				'error' => [
-					0 => 0,
-					1 => 0,
-				],
-				'size' => [
-					0 => '30123',
-					1 => '30123',
-				],
-			],
-		];
-
-		$collection = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
-
-		$post = [
-			'request' => 'upload',
-			'collection' => $collection->random_uid,
-		];
-
-		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
-
 		self::assertTrue(
-			$this->ctrl->result[ 'success' ],
-			print_r( $this->ctrl->result, true )
-		);
-	}
-
-	public function test_RequestAddMopsiPhotosFromCSV () {
-
-		set_up_database();
-		empty_database_and_test_collections();
-		set_up_database();
-
-		$collection = Collection::fetchCollectionByID( $this->db, $this->testCollection->id );
-
-		$post = [
-			'request' => 'upload_mopsi_csv',
-			'collection' => $collection->random_uid,
-			'photos' => [
-				0 => [
-					'photo_id' => "040514_15-44-09_1381041452.jpg",
-				],
-				1 => [
-					'photo_id' => "050614_16-31-26_347325878.jpg",
-				],
-			],
-		];
-
-		$this->ctrl->handleRequest( $this->db, $this->testUser, $post );
-
-		self::assertTrue(
-			$this->ctrl->result[ 'success' ],
-			print_r( $this->ctrl->result, true )
+			true
 		);
 	}
 

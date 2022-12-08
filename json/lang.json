@@ -179,14 +179,41 @@
 		"MAP": {
 			"en": "Map",
 			"fi": "Kartta"
+		},
+
+		"IMAGE_INFO_HEADING": {
+			"en": "Image information",
+			"fi": "Kuvatietoja"
+		},
+		"IMAGE_DESCRIPTION": {
+			"en": "Description",
+			"fi": "Kuvaus"
+		},
+		"IMAGE_LOCATION_GPS": {
+			"en": "GPS Location",
+			"fi": "GPS sijainti"
+		},
+		"IMAGE_LOCATION_ADDRESS": {
+			"en": "Address",
+			"fi": "Osoite"
+		},
+		"DATE_CREATED": {
+			"en": "Date created",
+			"fi": "Kuva luotu"
+		},
+		"DATE_ADDED": {
+			"en": "Date added to MyMopsi",
+			"fi": "Kuva lisätty MyMopsiin"
 		}
 	},
 	"create-user": {
 		"HTML_TITLE": {
-			"en": "MyMopsi | New user"
+			"en": "MyMopsi | New user",
+			"en": "MyMopsi | Uusi käyttäjä"
 		},
 		"HEADER_TITLE": {
-			"en": "New user creation"
+			"en": "New user creation",
+			"en": "Uuden käyttäjän luonti"
 		},
 		"NEW_USER_CREATED": {
 			"en": "New user created successfully. Please login with new account.",

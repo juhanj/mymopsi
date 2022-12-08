@@ -36,14 +36,14 @@ create table if not exists mymopsi_user_third_party_link (
 	collate = utf8mb4_unicode_ci;
 
 create table if not exists mymopsi_collection (
-	id          int                      not null auto_increment,                                   -- PK
-	owner_id    int                      not null,                                                  -- PK FK
-	random_uid  varchar(20)              not null comment 'public facing string for URLs and such', -- UK
+	id          int                     not null auto_increment,                                   -- PK
+	owner_id    int                     not null,                                                  -- PK FK
+	random_uid  varchar(20)             not null comment 'public facing string for URLs and such', -- UK
 	name        varchar(50),
-	description text default null,                                                                  -- max ~65k characters
+	description text default null,                                                                 -- max ~65k characters
 	public      boolean default false comment 'Is the collection public, i.e. shown on front page',
 	editable    boolean default false comment 'Can anyone edit this, owner/admin can always edit',
-	date_added  timestamp default now( ) not null,
+	date_added  datetime default now( ) not null,
 	primary key (id),
 	unique random_uid (random_uid),
 	constraint fk_collection_user foreign key (owner_id) references mymopsi_user (id)
@@ -53,22 +53,22 @@ create table if not exists mymopsi_collection (
 	auto_increment = 1;
 
 create table if not exists mymopsi_img (
-	id            int                      not null auto_increment,                                               -- PK
-	collection_id int                      not null,                                                              -- FK UK no_duplicates
-	random_uid    varchar(20)              not null comment 'public facing string for URLs and such',             -- UK random_uid
-	hash          char(40)                 not null comment 'SHA1 hash for comparing files (prevent duplicates)', -- UK no_dupl
-	name          varchar(190)             not null comment 'user editable',
-	original_name varchar(190)             not null comment 'for posterity',
-	description   text default null,                                                                              -- max ~65k characters
+	id            int                     not null auto_increment,                                               -- PK
+	collection_id int                     not null,                                                              -- FK UK no_duplicates
+	random_uid    varchar(20)             not null comment 'public facing string for URLs and such',             -- UK random_uid
+	hash          char(40)                not null comment 'SHA1 hash for comparing files (prevent duplicates)', -- UK no_dupl
+	name          varchar(190)            not null comment 'user editable',
+	original_name varchar(190)            not null comment 'for posterity',
+	description   text default null,                                                                             -- max ~65k characters
 	filepath      varchar(190) comment 'full real path with file extension',
 	thumbnailpath varchar(190) comment 'full real path with file extension',
-	mediatype     varchar(50)              not null comment 'File media (or MIME) type',
-	size          int                      not null comment 'in bytes',                                           -- UK no_duplicates
-	latitude      float(10, 6)             null default null comment 'in degrees',
-	longitude     float(10, 6)             null default null comment 'in degrees',
-	date_created  timestamp                null default null comment 'file creation time (i.e. when was time taken)',
-	date_added    timestamp default now( ) not null comment 'when added to database',
-	deletable     bool                     not null default false comment 'Can the image be safely deleted?',
+	mediatype     varchar(50)             not null comment 'File media (or MIME) type',
+	size          int                     not null comment 'in bytes',                                           -- UK no_duplicates
+	latitude      float(10, 6)            null default null comment 'in degrees',
+	longitude     float(10, 6)            null default null comment 'in degrees',
+	date_created  datetime                null default null comment 'file creation time (e.g. when was photo taken)',
+	date_added    datetime default now( ) not null comment 'when added to database',
+	deletable     bool                    not null default false comment 'Can the image be safely deleted?',
 	primary key (id),
 	unique random_uid (random_uid),
 	unique no_duplicates (collection_id, hash, size),

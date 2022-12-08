@@ -158,4 +158,11 @@ export class Common {
 			return degrees + "°" + NBSP + minutes + "′" + seconds + "″";
 		}
 	}
+
+	/**
+	 * @param {Object} location .lat .lng
+	 */
+	static reverseGeocodingFromServer ( location ) {
+
+	}
 }

@@ -35,11 +35,11 @@
 	margin: 0 .5rem;
 }
 
-.site-header a {
+.site-header .header-page-link {
 	color: var(--text-light);
 	text-decoration: underline dashed;
 }
-.site-header a:hover {
+.site-header .header-page-link:hover {
 	color: var(--primary-light);
 	text-decoration: underline solid;
 }

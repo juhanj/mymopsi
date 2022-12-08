@@ -101,7 +101,7 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 		<!-- Pagination -->
 		<div class="pagination">
 			<!-- Options form -->
-			<form class="options margins-off" method="GET" id="pagination-form">
+			<form class="options margins-off" method="GET" id="paginationForm">
 
 				<?php if ( $collection->number_of_images > 100 ) :
 				// Less than 100 images don't show pagination, just takes space ?>
@@ -161,8 +161,8 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 				<!-- Page select -->
 				<div class="current">
 					<input type="number" value="<?= $page ?>" step="1"
-					       name="page" form="pagination-form" title="Page input" class="page-input"
-					       onclick="this.select();">
+					       name="page" form="paginationForm" title="Page input" class="page-input"
+					       onclick="this.select();" id="pageSelectInput">
 					<span class="separator">/</span>
 					<span class="total-pages"><?= $total_pages ?></span>
 				</div>
@@ -186,7 +186,11 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 				    data-id="<?= $img->random_uid ?>"
 				    data-lat="<?= $img->latitude ?>"
 				    data-lng="<?= $img->longitude ?>"
-					data-name="<?= $img->name ?>">
+				    data-description="<?= $img->description ?>"
+				    data-name="<?= $img->name ?>"
+				    data-created="<?= $img->date_created ?>"
+				    data-added="<?= $img->date_added ?>"
+				>
 					<div class="img-name"><?= $img->name ?></div>
 					<img src="./img/img.php?id=<?= $img->random_uid ?>&thumb"
 					     class="img-thumb"
@@ -224,7 +228,10 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 				<?= $lang->EDIT ?>
 				<span class="material-icons">edit</span>
 			</a>
-			<span class="image-name" id="imageName"></span>
+			<div class="image-name margins-off" id="overlayTitle">
+				<span class="margins-off" id="imageName"></span>
+				<span class="margins-off" id="imageLocationAddress"></span>
+			</div>
 			<a href="" class="button" id="imageMapLink">
 				<?= $lang->MAP ?>
 				<span class="material-icons">place</span>
@@ -239,15 +246,18 @@ $collection->getImagesWithPagination( $db, [ $ipp, $offset ], [ $ord_col, $ord_d
 		</section>
 
 		<section class="overlay-info-container">
-			<dl>
-				<dt>Name</dt>
-				<dd id="overlayDlName">Test</dd>
-				<dt>Description</dt>
-				<dd id="overlayDlDescription">Test</dd>
-				<dt>Location</dt>
-				<dd id="overlayDlLocation">Test</dd>
-				<dt>Address</dt>
-				<dd id="overlayDlAddress">Test</dd>
+			<h3><?= $lang->IMAGE_INFO_HEADING ?></h3>
+			<dl class="margins-off">
+				<dt><?= $lang->IMAGE_DESCRIPTION ?></dt>
+				<dd id="overlayDlImgDescription"></dd>
+				<dt><?= $lang->IMAGE_LOCATION_GPS ?></dt>
+				<dd id="overlayDlImgLocation"></dd>
+				<dt><?= $lang->IMAGE_LOCATION_ADDRESS ?></dt>
+				<dd id="overlayDlImgAddress"></dd>
+				<dt><?= $lang->DATE_CREATED ?></dt>
+				<dd id="overlayDlImgDateAdded"></dd>
+				<dt><?= $lang->DATE_ADDED ?></dt>
+				<dd id="overlayDlImgDateCreated"></dd>
 			</dl>
 		</section>
 	</div>

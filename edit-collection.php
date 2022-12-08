@@ -23,6 +23,9 @@ if ( empty($_GET['id']) ) {
 // For public/private change
 //TODO: change, too lazy to do now --jj 211109
 if ( !empty( $_POST ) ) {
+
+	debug( $_POST );
+
 	$controller = new CollectionController();
 	$controller->handleRequest( $db, $user, $_POST );
 

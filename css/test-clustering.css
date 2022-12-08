@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+/************************************************************
+	Main layout, and sidebar
+*************************************************************/
+.main-body-container {
+	max-width: 100%;
+	display: grid;
+	grid: "map" 1fr
+			/ 1fr;
+}
+
+.map {
+	grid-area: map;
+}
+
+/************************************************************
+	Mopsi clustering API CSS (formerly thumb.css)
+*************************************************************/
+.dot {
+	height: 25px;
+	width: 25px;
+	background-color: #FFFF00;
+	text-align: center;
+	border-radius: 50%;
+	display: inline-block;
+}

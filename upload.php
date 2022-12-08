@@ -92,8 +92,7 @@ array_push(
 	<section class="box upload-finished margins-off" id="uploadFinishedBox" hidden>
 		<!-- Checkmark and number of files successul uploaded -->
 		<div class="center big-green-checkmark">
-			<span class="material-icons">
-				check</span>
+			<span class="material-icons">check</span>
 			<p id="finishedFilesUploaded"></p>
 		</div>
 		<div class="buttons center">
@@ -106,6 +105,7 @@ array_push(
 
 	<!-- Progress bars, one for files, one for bits -->
 	<section class="box progress-bar-container margins-off" id="progress-bar-container" hidden>
+		<div class="loading" style="margin: auto 0;"></div>
 		<!-- Progress number of files -->
 		<label class="progress-bar-label">
 			<span class="label"><?= $lang->PROGRESS_FILES ?></span>

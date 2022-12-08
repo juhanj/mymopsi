@@ -16,6 +16,7 @@ const MB = 1048576;
  */
 const GB = 1073741824;
 
+const SEC = 1000; // One second, in milliseconds
 const MIN = 60; // seconds
 const HOUR = 3600; // 60 * MIN seconds
 const DAY = 86400; // 24 * HOUR seconds
@@ -35,6 +36,7 @@ export {
 	KB,
 	MB,
 	GB,
+	SEC,
 	MIN,
 	HOUR,
 	DAY,

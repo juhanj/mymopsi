@@ -134,6 +134,8 @@ header #header-coll-link:hover {
 
 .image-name {
 	text-align: center;
+	display: flex;
+	flex-direction: column;
 }
 
 .button#closeOverlay {

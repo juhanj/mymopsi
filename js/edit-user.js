@@ -57,6 +57,7 @@ deleteButton.onclick = () => {
 			.then( () => {
 				// Send back to previous page
 				// This could be done better? But I dunno how for now.
+				//TODO: check this comment --jj-22-07-19
 				window.location.href = "./index.php";
 			} )
 	}

@@ -10,5 +10,6 @@ $_SESSION = [];
 // Destroy old session
 session_destroy();
 
+setcookie( 'username', '', 1 );
 header( "location: index.php?loggedout" );
 exit();

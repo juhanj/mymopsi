@@ -22,9 +22,6 @@ class ImageController implements Controller {
 			case 'upload':
 				$result = $this->requestUploadNewImages( $db, $user, $req );
 				break;
-			case 'upload_mopsi_csv':
-				$result = $this->requestAddMopsiPhotosFromCSV( $db, $user, $req );
-				break;
 			case 'edit_gps':
 				$result = $this->requestEditGPSCoordinate( $db, $user, $req );
 				break;
@@ -42,6 +39,9 @@ class ImageController implements Controller {
 				break;
 			case 'singe_image_metadata':
 				$result = $this->requestSingleImageMetadata();
+				break;
+			case 'image_reverse_geocoding_get_address' :
+				$result = $this->requestReverseGeocoding( $db, $req );
 				break;
 			default:
 				$result = false;
@@ -130,7 +130,9 @@ class ImageController implements Controller {
 			. " -ImageSize"
 			. " -DateTimeOriginal "
 			. " -createdate "
-			. " -FileModifyDate ";
+			. " -FileModifyDate "
+			. " -FileCreateDate "
+		;
 		$metadata = Common::runExiftool( $folder, $commandOptions );
 
 		return $metadata;
@@ -238,16 +240,16 @@ class ImageController implements Controller {
 
 		// User has access to collection. Proceed to checking for errors and filetype.
 
-		if ( !$_FILES ) {
-			$this->setError( -4, 'No files received' );
-
-			return false;
-		}
-
 		// Would be very bad to have this empty, since it would write to root
 		// So check just in case
 		if ( strlen( INI[ 'Misc' ][ 'path_to_collections' ] ) < 20 ) {
 			$this->setError( -5, 'Config error' );
+
+			return false;
+		}
+
+		if ( !$_FILES ) {
+			$this->setError( -4, 'No files received' );
 
 			return false;
 		}
@@ -364,6 +366,28 @@ class ImageController implements Controller {
 						$file[ 'latitude' ] = $f->Main->GPSLatitude;
 						$file[ 'longitude' ] = $f->Main->GPSLongitude;
 					}
+
+					//TODO: in some rare cases, midnight is marked as 24:00:00.
+					// This does not parse in many places, and PHP parses it wrong.
+					// In MySQL it is marked as all zeros. Will not fix --jj 22-07-26
+					if ( isset( $f->Main->DateTimeOriginal ) ) {
+						$file['imageCreated'] = $f->Main->DateTimeOriginal;
+					}
+					elseif ( isset( $f->Main->CreateDate ) ) {
+						$file['imageCreated'] = $f->Main->CreateDate;
+					}
+					elseif ( isset( $f->Main->GPSDateStamp ) ) {
+						$file['imageCreated'] = $f->Main->GPSDateStamp;
+					}
+					elseif ( isset( $f->Main->FileModifyDate ) ) {
+						$file['imageCreated'] = $f->Main->FileModifyDate;
+					}
+
+					// Some weird MySQL version difference, doesn't accept +02:00 at the end
+					//  so need to strip it
+					if ( strlen( $file['imageCreated'] ) > 19 ) {
+						$file['imageCreated'] = substr( $file['imageCreated'], 0, 19 );
+					}
 				}
 			}
 
@@ -399,7 +423,7 @@ class ImageController implements Controller {
 					$file[ 'size' ],
 					$file[ 'latitude' ] ?? null,
 					$file[ 'longitude' ] ?? null,
-					$file[ 'fileLastModified' ],
+					$file[ 'imageCreated' ],
 				]
 			);
 
@@ -490,173 +514,6 @@ class ImageController implements Controller {
 			'error' => false,
 			'old_gps' => [ $image->latitude, $image->longitude ],
 			'new_gps' => [ $options[ 'lat' ], $options[ 'lng' ] ],
-		];
-
-		return true;
-	}
-
-	/**
-	 * This was made to help a student, and is not considered normal behaviour of the site.
-	 *
-	 * @param \DBConnection $db
-	 * @param \User         $user
-	 * @param array         $options
-	 *
-	 * @return bool
-	 */
-	public function requestAddMopsiPhotosFromCSV ( DBConnection $db, User $user, array $options ): bool {
-		if ( !$user->id ) {
-			$this->setError( -1, 'User not valid' );
-
-			return false;
-		}
-
-		$collection = (!empty( $options[ 'collection' ] ))
-			? Collection::fetchCollectionByRUID( $db, $options[ 'collection' ] )
-			: null;
-
-		if ( !$collection ) {
-			$this->setError( -2, 'Collection not valid' );
-
-			return false;
-		}
-
-		if ( $collection->owner_id !== $user->id
-			or ($collection->public and $collection->editable) ) {
-			$this->setError( -3, 'Access to collection denied' );
-
-			return false;
-		}
-
-		$photos = $options[ 'photos' ];
-		$good_uploads = [];
-		$bad_uploads = [];
-
-		// Values for prepared statement
-		$ids = array_map( function ( $photo ) {
-			return $photo[ 'photo_id' ];
-		}, $photos );
-		// Question marks for prepared statement
-		$inQuestionMarksString = str_repeat( '?,', count( $ids ) - 1 ) . '?';
-
-		$sql = "SELECT po.id as photo_id
-					, po.id as point_id
-					, po.name
-					, po.description
-					, po.latitude
-					, po.longitude
-					, po.timestamp
-					, ph.photo_id as filename
-					, ph.format
-					, ph.userid
-				FROM Point po
-					JOIN Photo ph on po.id = ph.point_id
-				WHERE ph.photo_id IN ({$inQuestionMarksString})";
-
-		$rows = $db->query( $sql, $ids, true );
-
-		//
-		$final_destination = INI[ 'Misc' ][ 'path_to_collections' ] . $collection->random_uid . '/';
-		$mopsi_images_dir = INI[ 'Misc' ][ 'path_to_mopsi_photos' ];
-
-		if ( !file_exists( $final_destination ) ) {
-			mkdir( $final_destination );
-		}
-
-		//
-		foreach ( $rows as $photo ) {
-			$photo->filepath = $mopsi_images_dir . $photo->filename;
-
-			/*
-			 * Duplicate check for already uploaded images
-			 */
-			$sql = 'select 1
-					from mymopsi_img
-					where collection_id = ?
-						and hash = ?
-						and size = ?';
-			$values = [
-				$collection->id,
-				$photo->hash = hash_file( 'md5', $photo->filepath ),
-				$photo->size = filesize( $photo->filepath ),
-			];
-
-			$is_duplicate = $db->query( $sql, $values );
-
-			if ( $is_duplicate ) {
-				$photo->error_msg = "Duplicate";
-				$bad_uploads[] = $photo;
-				unset( $photo );
-				continue;
-			}
-
-			/*
-			 * Duplicate check for images in current upload batch
-			 */
-			foreach ( $rows as $other_photo ) {
-				if ( $other_photo->photo_id === $photo->photo_id ) {
-					continue;
-				}
-
-				if ( isset( $other_photo->hash ) and ($photo->hash === $other_photo->hash) ) {
-					$photo->error_msg = "Duplicate";
-					$bad_uploads[] = $photo;
-					break;
-				}
-			}
-
-			if ( isset( $other_photo->error_msg ) and ($photo->error_msg === 'Duplicate') ) {
-				unset( $photo );
-				continue;
-			}
-
-			/*
-			 * Creating random unique identifier (RUID)
-			 */
-			$photo->new_ruid = Common::createRandomUID( $db );
-
-			$good_uploads[] = $photo;
-		}
-
-		foreach ( $good_uploads as $photo ) {
-			$sql = 'insert ignore into mymopsi_img (
-						collection_id, random_uid, hash, name, original_name,
-						filepath, mediatype, size, latitude, longitude,
-						date_created )
-				  values (?,?,?,?,?,?,?,?,?,?,?)';
-			$values = [
-				$collection->id,
-				$photo->new_ruid,
-				$photo->hash,
-				$photo->name,
-				$photo->name,
-				$photo->filepath,
-				'image/jpeg', // Mopsi photos are all JPEG
-				$photo->size,
-				$photo->latitude,
-				$photo->longitude,
-				$photo->timestamp,
-			];
-
-			$result = $db->query( $sql, $values );
-
-			if ( $result ) {
-				$good_uploads[] = $photo;
-			}
-			else {
-				$bad_uploads[] = $photo;
-			}
-		}
-
-		// Create (or update if already created) JSON for server-side clustering
-		$collContr = new CollectionController();
-		$collContr->createServerClusteringJSON( $db, $collection );
-
-		$this->result = [
-			'success' => true,
-			'error' => false,
-			'good_uploads' => $good_uploads,
-			'failed_uploads' => $bad_uploads,
 		];
 
 		return true;
@@ -760,7 +617,7 @@ class ImageController implements Controller {
 		return true;
 	}
 
-	public function requestEditName ( DBConnection $db, User $user, array $options ) {
+	public function requestEditName ( DBConnection $db, User $user, array $options ): bool {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
 
@@ -806,7 +663,7 @@ class ImageController implements Controller {
 		return true;
 	}
 
-	public function requestEditDescription ( DBConnection $db, User $user, array $options ) {
+	public function requestEditDescription ( DBConnection $db, User $user, array $options ): bool {
 		if ( !$user->id ) {
 			$this->setError( -1, 'User not valid' );
 
@@ -895,6 +752,20 @@ class ImageController implements Controller {
 			'error' => false,
 			'file' => $file,
 			'metadata' => $metadata,
+		];
+
+		return true;
+	}
+
+	private function requestReverseGeocoding ( DBConnection $db, array $req ): bool {
+		//TODO too lazy to write in sanity checks --jj 22-07-19
+		$imageId = $req['image'];
+		$image = Image::fetchImageByRUID( $db, $imageId );
+		$result = Common::getNominatimReverseGeocoding( $image->latitude, $image->longitude );
+
+		$this->result = [
+			'address' => $result,
+			'success' => true,
 		];
 
 		return true;

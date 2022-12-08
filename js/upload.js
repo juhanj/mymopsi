@@ -47,6 +47,7 @@ function handleRequestResponse ( response ) {
 		}
 
 		batchBitsProcessed += image.size;
+		++successfulUploadsNumber;
 	} );
 
 	// Failed uploads
@@ -66,9 +67,11 @@ function handleRequestResponse ( response ) {
 	doneBatchesNumber.innerText = progressBarBatches.value;
 
 	if ( progressBarFiles.value === progressBarFiles.max ) {
+		progressBars.hidden = true;
+		progressBars.style.display = 'none';
 		let finishedContainer = document.getElementById("uploadFinishedBox");
 		let finishedFilesUploaded = document.getElementById("finishedFilesUploaded")
-		finishedFilesUploaded.innerText = doneFilesNumber.innerText + " / " + totalFilesNumber.innerText;
+		finishedFilesUploaded.innerText = successfulUploadsNumber + " / " + totalFilesNumber.innerText;
 		finishedContainer.hidden = false;
 		finishedContainer.style.display = "flex";
 	}
@@ -125,6 +128,7 @@ function submitFiles ( event ) {
 		if ( currentBatchSizeBytes > 0 ) {
 			console.log( `Batch ${currentBatchIndx} sent, and waiting for response..`,
 				`${currentBatchSizeBytes} | ${currentBatchSizeFiles}` );
+			console.info( `Batch ${currentBatchIndx}: `, formData );
 
 			// Add batch-size and index to the request data. These are not used by
 			//  server, just for debuggin purposes
@@ -175,6 +179,8 @@ function handleFileInputChange () {
 	let totalFileSize = 0;
 	let i = 1;
 	Array.from( fileInput.files ).forEach( ( file ) => {
+		console.log( file );
+
 		let filetype = file.type.split( '/', 2 );
 		filetype = (filetype.length > 1 && filetype[0] === 'image')
 			? filetype[1].toUpperCase()
@@ -236,7 +242,8 @@ let progressBars = document.getElementById( 'progress-bar-container' );
 let progressBarFiles = document.getElementById( 'progress-files' );
 let doneFilesNumber = document.getElementById( 'doneFiles' );
 let totalFilesNumber = document.getElementById( 'totalFiles' );
-// Bytes / Bits (not sure which one)
+let successfulUploadsNumber = 0;
+// Bytes / Bits (not sure which one, doesn't matter)
 let progressBarBits = document.getElementById( 'progress-bits' );
 let doneBytesNumber = document.getElementById( 'doneBytes' );
 let totalBytesNumber = document.getElementById( 'totalBytes' );

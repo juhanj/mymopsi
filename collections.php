@@ -52,7 +52,7 @@ else {
 	}
 }
 
-if ($user->admin) {
+if ($user and $user->admin) {
 	$users = User::fetchAllUsers( $db );
 }
 ?>
@@ -78,10 +78,14 @@ if ($user->admin) {
 				<?php if ($user) : ?>
 					<option value="">You (<?= $user->number_of_collections ?>)</option>
 				<?php endif; ?>
-				<option value="public" <?= $user_id !== 'public' ?: 'selected'?> <?= $public_colls_nro ?: 'disabled' ?>>
+				<option value="public" <?= $user_id !== 'public' ?: 'selected'?>
+					<?= $public_colls_nro ?: 'disabled' ?>
+				>
 					<?= $lang->PUBLIC ?> (<?= $public_colls_nro ?>)
 				</option>
-				<option value="all" <?= $user_id !== 'all' ?: 'selected'?> <?= ($user != null and $user->admin) ?: 'disabled' ?>>
+				<option value="all"	<?= $user_id !== 'all' ?: 'selected'?>
+					<?= ($user != null and $user->admin) ?: 'disabled' ?>
+				>
 					<?= $lang->ALL ?> (<?= $all_colls_nro ?>)
 				</option>
 				<?php if ( $user->admin ) : ?>
@@ -97,6 +101,7 @@ if ($user->admin) {
 		</label>
 	</form>
 
+	<?php if ( $user ) : ?>
 	<!-- Create a new collection (link to new page) -->
 	<section class="buttons">
 		<a href="create-collection.php" class="button">
@@ -104,6 +109,7 @@ if ($user->admin) {
 			<span class="material-icons">create_new_folder</span>
 		</a>
 	</section>
+	<?php endif; ?>
 
 	<!-- Collections list -->
 	<article>
