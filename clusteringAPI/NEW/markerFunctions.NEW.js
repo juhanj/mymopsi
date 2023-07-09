@@ -451,15 +451,13 @@ class MarkerX {
 	    this.searchThroughChildSibling(i, j);
 	    let selected = mc.selClusterIW;
 	    if (mc.selItemIW < mc.clusters[selected]['n']) {
-	        latMin = mc.clusters[selected]['latMinO'];
-	        latMax = mc.clusters[selected]['latMaxO'];
-	        lngMin = mc.clusters[selected]['lngMinO'];
-	        lngMax = mc.clusters[selected]['lngMaxO'];
-
 	        photoInfo = this.getPhotoInfoInCell(
-				latMin, latMax, lngMin, lngMax,
-				mc.selItemIW,
-				this.markersClusteringObj.options.dataSize
+		        mc.clusters[selected]['latMinO']
+		        , mc.clusters[selected]['latMaxO']
+		        , mc.clusters[selected]['lngMinO']
+		        , mc.clusters[selected]['lngMaxO']
+		        , mc.selItemIW
+		        , this.markersClusteringObj.options.dataSize
 			);
 	    }
 	    else alert("The requested object exceeds cluster size (in cell) !");
@@ -469,7 +467,7 @@ class MarkerX {
 
 	getPhotoInfoInCell (minLat, maxLat, minLng, maxLng, k, dataSize) {
 		// ??? maybe the cell is over vertical line where new
-		//  world starts in google maps
+		//  world starts in Google Maps
 	    let reverseX = 0;
 	    let photoInfo = null;
 	    let type = "photoInfoBoundingBox";
@@ -480,8 +478,7 @@ class MarkerX {
 			+ '&reverseX=' + reverseX;
 
 		//TODO change this to fetch API --jj 21-05-14
-	    let query = encodeURI(query);
-	    let results = httpLoad(query);
+	    let results = httpLoad( encodeURI(query) );
 
 	    if (results !== "Error") {
 			//TODO: eval()...
@@ -514,13 +511,13 @@ class MarkerX {
 	    else {
 	        let flag = mc.contSearch;
 	        if (flag) {
-	            if (mc.clusters[i].child != -1) {
+	            if (mc.clusters[i].child !== -1) {
 					this.searchThroughChildSibling(mc.clusters[i].child, j);
 				}
 	        }
 	        flag = mc.contSearch;
 	        if (flag) {
-	            if (mc.clusters[i].sibling != -1) {
+	            if (mc.clusters[i].sibling !== -1) {
 					this.searchThroughChildSibling(mc.clusters[i].sibling, j);
 				}
 	        }
@@ -591,8 +588,8 @@ class Label extends Google.maps.OverlayView {
 
 	onAdd () {
 	    let pane;
-	    if (this.markerStyle == "thumbnail") pane = this.getPanes().floatPane;
-	    if (this.markerStyle == "marker1") pane = this.getPanes().overlayImage;
+	    if (this.markerStyle === "thumbnail") pane = this.getPanes().floatPane;
+	    if (this.markerStyle === "marker1") pane = this.getPanes().overlayImage;
 
 	    pane.appendChild(this.div_);
 

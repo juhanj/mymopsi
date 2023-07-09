@@ -4,7 +4,7 @@ export class Ajax {
 	/**
 	 * Send a JSON request to server, receive JSON back.
 	 * Usage: sendJSON(params).then( function(jsonResponse) );
-	 * @param data Changed to JSON before sending
+	 * @param data Changed to JSON string before sending
 	 * @param {string} url optional, default == ./ajax-handler.php
 	 * @param {boolean} returnJSON
 	 * @returns {Promise<object>} JSON

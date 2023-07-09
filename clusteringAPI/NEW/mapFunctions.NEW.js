@@ -120,6 +120,7 @@ class ClusteringMap {
 		latlng = new google.maps.LatLng( maxLat, maxLng );
 		bounds.extend( latlng );
 
+		//TODO: How would this ever be null?
 		if ( bounds != null ) {
 			this.setBounds( bounds );
 		}
@@ -210,7 +211,7 @@ class ClusteringMap {
 	}
 
 	removeMarkersWithId ( Ids ) {
-		if ( Ids == undefined ) {
+		if ( Ids === undefined ) {
 			return;
 		}
 
@@ -236,7 +237,7 @@ class ClusteringMap {
 				if ( overlay[i] === undefined ) {
 					continue;
 				}
-				if ( overlay[i].myLat == latStamp && overlay[i].myLng == lngStamp ) {
+				if ( overlay[i].myLat === latStamp && overlay[i].myLng === lngStamp ) {
 					return overlay[i];
 				}
 			}

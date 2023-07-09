@@ -43,6 +43,9 @@ $param = [
 	'request_type' => 'get_address',
 	'lat' => 62.5913800,
 	'lon' => 29.7796980,
+
+	// Berlin: 52.51500498885672, 13.40485769825909
+	// Joensuun keskusairaala: 62.5913800, 29.7796980
 ];
 
 $mopsiServer = 'https://cs.uef.fi/mopsi/mobile/server.php?param=' . urlencode( json_encode( $param ) );

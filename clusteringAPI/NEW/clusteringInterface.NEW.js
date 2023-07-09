@@ -1,8 +1,7 @@
+CLUSTER = "Cluster";
+ROUTE = "Route";
+
 class MopsiMarkerClustering {
-
-	CLUSTER = "Cluster";
-	ROUTE = "Route";
-
 	mapContainer;
 	googleMap;
 	clusteringOptions;
@@ -12,9 +11,6 @@ class MopsiMarkerClustering {
 	doClustering = true; // ... isn't that why were here to begin with?
 	singleMarkerIcons = []; // array
 
-	clusterMarkerSource = null; // string
-	singleMarkerSource = null; // string
-
 	multipleSingleMarker = false; // bool (what is this?)
 
 	markersData = []; // array
@@ -22,8 +18,6 @@ class MopsiMarkerClustering {
 
 	markersData_old = null;
 	clustersDel = [];
-
-	gridsTestID = [];
 
 	constructor ( mapContainer, googleMap, clusteringOptions ) {
 		this.googleMap = googleMap;
@@ -41,26 +35,10 @@ class MopsiMarkerClustering {
 	}
 
 	verifyParameters ( opt ) {
-		// This is for debugging
-		// Print this after to know how many settings were set to defaults
-		let defaultsCounter = 0;
+		opt.clusteringMethod = 'gridBased';
 
 		/*
-		 * Clustering method used
-		 */
-		// Pretty sure only gridBased actually works, never tried others
-		switch ( opt.clusteringMethod ) {
-			case "gridBased" :
-			case "distanceBased" :
-			case "PNN" :
-				break;
-			default:
-				opt.clusteringMethod = 'gridBased';
-				++defaultsCounter;
-		}
-
-		/*
-		 * Do clustering on client or server side
+		 * Cluster on client or server side
 		 */
 		opt.serverSide = (typeof opt.serverSide !== 'undefined')
 			? !!opt.serverSide
@@ -76,7 +54,6 @@ class MopsiMarkerClustering {
 				break;
 			default:
 				opt.serverClient = 'marker1';
-				++defaultsCounter;
 		}
 
 		/*
@@ -90,13 +67,12 @@ class MopsiMarkerClustering {
 				break;
 			default:
 				opt.serverClient = 'mean';
-				++defaultsCounter;
 		}
 
 		/*
 		 * Cluster thumbnail item counter position
 		 * [top|center|bottom] - [left|center|right]
-		 *   [ 0 | 1 | 2 ]     -    [ 0 | 1 | 2 ]
+		 *   [ 0 | 1 | 2 ]     -   [ 0 | 1 | 2 ]
 		 * e.g. int[] = [ 2 , 0 ] OR string = 'top-left'
 		 */
 		// String format (old way)
